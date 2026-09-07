@@ -8,3 +8,5 @@ target/
 !.env.example
 apps/mobile/android/
 apps/mobile/ios/
+# Generated PDF.js runtime assets (created by scripts/sync-pdfjs-assets.mjs)
+apps/client/public/pdfjs/
