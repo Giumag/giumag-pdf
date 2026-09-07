@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Giumag PDF",
+  "version": "0.2.0",
+  "identifier": "com.giumag.pdf",
+  "build": {
+    "beforeDevCommand": "pnpm --filter @giumag/pdf-client dev",
+    "beforeBuildCommand": "pnpm --filter @giumag/pdf-client build",
+    "devUrl": "http://localhost:5173",
+    "frontendDist": "../../client/dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Giumag PDF",
+        "width": 1280,
+        "height": 820,
+        "minWidth": 920,
+        "minHeight": 620
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all"
+  }
+}

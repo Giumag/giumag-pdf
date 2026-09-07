@@ -1,0 +1,12 @@
+{
+  "name": "giumag-pdf",
+  "private": true,
+  "version": "0.2.0-dev",
+  "packageManager": "pnpm@10.34.5",
+  "scripts": {
+    "dev": "pnpm --dir apps/client dev",
+    "build:web": "pnpm --dir apps/client build",
+    "typecheck": "pnpm --dir apps/client typecheck",
+    "test": "pnpm --recursive --if-present test"
+  }
+}

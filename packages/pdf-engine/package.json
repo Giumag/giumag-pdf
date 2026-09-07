@@ -1,0 +1,8 @@
+{
+  "name": "@giumag/pdf-engine",
+  "private": true,
+  "version": "0.2.0-dev",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": { "pdf-lib": "^1.17.1" }
+}

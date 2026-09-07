@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="referrer" content="no-referrer" />
+  <title>Giumag PDF Studio</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Giumag PDF Studio">
+      <span class="brand-mark">G</span>
+      <span class="brand-copy"><strong>Giumag</strong><small>PDF Studio</small></span>
+    </a>
+    <div class="top-actions">
+      <button id="diagnosticsBtn" class="ghost-btn"><span class="dot online"></span> Locale</button>
+      <button id="themeBtn" class="icon-btn" aria-label="Cambia tema">◐</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-kicker">100% LOCALE · ZERO UPLOAD CLOUD</div>
+      <h1>I tuoi PDF.<br><span>Solo tuoi.</span></h1>
+      <p>Una suite completa per lavorare con PDF, immagini e documenti Office direttamente sul tuo computer.</p>
+      <div class="hero-actions">
+        <label class="primary-cta" for="quickFile">Apri un file</label>
+        <input id="quickFile" type="file" hidden multiple />
+        <button class="secondary-cta" id="scrollTools">Esplora strumenti</button>
+      </div>
+      <div class="privacy-row">
+        <span>● Server: 127.0.0.1</span><span>● Nessun CDN</span><span>● Nessun account</span><span>● Nessun limite artificiale</span>
+      </div>
+    </section>
+
+    <section class="workspace" id="toolsSection">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">STRUMENTI</span>
+          <h2>Tutto ciò che serve, in un posto solo.</h2>
+        </div>
+        <div class="search-wrap">
+          <span>⌕</span>
+          <input id="toolSearch" type="search" placeholder="Cerca uno strumento…" autocomplete="off" />
+        </div>
+      </div>
+
+      <div id="categoryChips" class="chips"></div>
+      <div id="toolsGrid" class="tools-grid"></div>
+      <div id="noResults" class="empty-state hidden">Nessuno strumento trovato.</div>
+    </section>
+
+    <section class="status-strip">
+      <div class="status-card">
+        <span class="status-icon">⌁</span>
+        <div><small>PRIVACY</small><strong>Elaborazione sul dispositivo</strong></div>
+      </div>
+      <div class="status-card">
+        <span class="status-icon">∞</span>
+        <div><small>LIMITI</small><strong>Dipendono solo dal tuo PC</strong></div>
+      </div>
+      <div class="status-card">
+        <span class="status-icon">✓</span>
+        <div><small>FIRMA</small><strong>Giumag</strong></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-brand"><span class="brand-mark small">G</span><strong>Giumag PDF Studio</strong></div>
+    <p>Progettato per lavorare in locale. I file temporanei vengono eliminati al termine dell’operazione.</p>
+    <span>v0.1.0</span>
+  </footer>
+
+  <div id="modalBackdrop" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <section class="modal">
+      <button id="modalClose" class="modal-close" aria-label="Chiudi">×</button>
+      <div class="modal-title-row">
+        <div id="modalIcon" class="tool-icon large"></div>
+        <div><span id="modalCategory" class="eyebrow"></span><h3 id="modalTitle"></h3><p id="modalDesc"></p></div>
+      </div>
+
+      <div id="requirementNotice" class="requirement-notice hidden"></div>
+
+      <label id="dropZone" class="drop-zone">
+        <input id="fileInput" type="file" multiple hidden />
+        <div class="drop-icon">＋</div>
+        <strong>Trascina qui i file</strong>
+        <span>oppure clicca per selezionarli</span>
+        <small>I file vengono inviati esclusivamente al server locale sul tuo computer.</small>
+      </label>
+
+      <div id="selectedFiles" class="selected-files hidden"></div>
+      <div id="optionsForm" class="options-form"></div>
+
+      <div class="modal-footer">
+        <div class="local-lock">◆ Elaborazione locale</div>
+        <button id="processBtn" class="process-btn">Esegui operazione</button>
+      </div>
+      <div id="progressBox" class="progress-box hidden">
+        <div class="progress-line"><span></span></div>
+        <div><strong id="progressTitle">Elaborazione…</strong><small id="progressSub">Il file resta sul dispositivo.</small></div>
+      </div>
+    </section>
+  </div>
+
+  <aside id="diagnosticsPanel" class="side-panel hidden">
+    <div class="panel-head"><div><span class="eyebrow">SISTEMA</span><h3>Diagnostica locale</h3></div><button id="diagnosticsClose" class="icon-btn">×</button></div>
+    <p>Il core PDF funziona da solo. Alcune funzioni avanzate sfruttano software locale opzionale.</p>
+    <div id="dependencyList" class="dependency-list"></div>
+    <div class="panel-note">Nessun dato diagnostico viene inviato fuori dal computer.</div>
+  </aside>
+  <div id="panelShade" class="panel-shade hidden"></div>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="/app.js"></script>
+</body>
+</html>

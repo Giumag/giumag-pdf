@@ -1,0 +1,5 @@
+Giumag PDF
+Copyright © 2026 Giumag. All rights reserved.
+
+No open-source license for the Giumag PDF application code has been granted by this file.
+Third-party components are governed by their respective licenses.
