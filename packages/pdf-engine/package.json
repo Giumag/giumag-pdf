@@ -3,6 +3,17 @@
   "private": true,
   "version": "0.7.0-dev",
   "type": "module",
-  "exports": { ".": "./src/index.ts" },
-  "dependencies": { "pdf-lib": "^1.17.1" }
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "pdf-lib": "^1.17.1"
+  },
+  "devDependencies": {
+    "vitest": "^5.0.0"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  }
 }
