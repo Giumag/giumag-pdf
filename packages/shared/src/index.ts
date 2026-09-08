@@ -11,7 +11,7 @@ const allPlatforms: Platform[] = ['web', 'windows', 'macos', 'linux', 'ios', 'an
 
 export const UNIVERSAL_TOOLS: ToolDefinition[] = [
   { id: 'merge', name: 'Unisci PDF', description: 'Combina più documenti nell’ordine che preferisci.', platforms: allPlatforms },
-  { id: 'split', name: 'Dividi PDF', description: 'Crea PDF separati per intervallo o pagine selezionate.', platforms: allPlatforms },
+  { id: 'split', name: 'Dividi PDF', description: 'Crea PDF separati per intervallo oppure una pagina per file.', platforms: allPlatforms },
   { id: 'organize', name: 'Organizza pagine', description: 'Riordina, estrai, rimuovi e ruota le pagine visivamente.', platforms: allPlatforms },
   { id: 'crop', name: 'Ritaglia PDF', description: 'Regola l’area visibile delle pagine con un editor grafico.', platforms: allPlatforms },
   { id: 'compress', name: 'Comprimi PDF', description: 'Ottimizza il documento e riduci localmente il peso delle immagini.', platforms: allPlatforms },

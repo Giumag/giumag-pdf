@@ -4,11 +4,13 @@ import type { LoadedPdf } from './lib/pdf';
 import { loadPdfFile } from './lib/pdf';
 import { MergePdfWorkspace } from './components/MergePdfWorkspace';
 import { PdfWorkspace } from './components/PdfWorkspace';
+import { SplitPdfWorkspace } from './components/SplitPdfWorkspace';
 import { ArrowUpRightIcon, DocumentIcon, LockIcon, ShieldIcon, ToolIcon } from './components/Icons';
 
 export function App() {
   const [pdf, setPdf] = useState<LoadedPdf | null>(null);
   const [mergeOpen, setMergeOpen] = useState(false);
+  const [splitOpen, setSplitOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -60,6 +62,14 @@ export function App() {
     return (
       <MergePdfWorkspace
         onClose={() => setMergeOpen(false)}
+      />
+    );
+  }
+
+  if (splitOpen) {
+    return (
+      <SplitPdfWorkspace
+        onClose={() => setSplitOpen(false)}
       />
     );
   }
@@ -192,6 +202,11 @@ export function App() {
                 onClick={() => {
                   if (tool.id === 'merge') {
                     setMergeOpen(true);
+                    return;
+                  }
+
+                  if (tool.id === 'split') {
+                    setSplitOpen(true);
                     return;
                   }
 
