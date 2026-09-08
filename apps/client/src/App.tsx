@@ -3,6 +3,7 @@ import { UNIVERSAL_TOOLS } from '@giumag/shared';
 import type { LoadedPdf } from './lib/pdf';
 import { loadPdfFile } from './lib/pdf';
 import { CompressPdfWorkspace } from './components/CompressPdfWorkspace';
+import { ImagesToPdfWorkspace } from './components/ImagesToPdfWorkspace';
 import { CropPdfWorkspace } from './components/CropPdfWorkspace';
 import { MergePdfWorkspace } from './components/MergePdfWorkspace';
 import { PdfWorkspace } from './components/PdfWorkspace';
@@ -14,6 +15,7 @@ type ActiveWorkspace =
   | 'split'
   | 'crop'
   | 'compress'
+  | 'images-to-pdf'
   | null;
 
 export function App() {
@@ -93,6 +95,13 @@ export function App() {
   if (activeWorkspace === 'compress') {
     return (
       <CompressPdfWorkspace
+        onClose={() => setActiveWorkspace(null)}
+      />
+    );
+  }
+  if (activeWorkspace === 'images-to-pdf') {
+    return (
+      <ImagesToPdfWorkspace
         onClose={() => setActiveWorkspace(null)}
       />
     );
@@ -240,6 +249,10 @@ export function App() {
 
                   if (tool.id === 'compress') {
                     setActiveWorkspace('compress');
+                    return;
+                  }
+                  if (tool.id === 'images-to-pdf') {
+                    setActiveWorkspace('images-to-pdf');
                     return;
                   }
 
