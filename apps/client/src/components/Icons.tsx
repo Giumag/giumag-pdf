@@ -133,3 +133,32 @@ export function ToolIcon({ id, ...props }: IconProps & { id: string }) {
       return <DocumentIcon {...props} />;
   }
 }
+
+// Page Organizer v0.4.0-dev icons
+export function RotateIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M20 7v5h-5" /><path d="M18.3 16.5A8 8 0 1 1 19.6 9" /></IconBase>;
+}
+
+export function TrashIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5" /></IconBase>;
+}
+
+export function ExtractIcon(props: IconProps) {
+  return <IconBase {...props}><path d="M7 3h7l4 4v14H7V3Z" /><path d="M14 3v5h5M12 11v6M9.5 14.5 12 17l2.5-2.5" /></IconBase>;
+}
+
+export function UndoIcon(props: IconProps) {
+  return <IconBase {...props}><path d="m9 7-5 5 5 5" /><path d="M5 12h8a6 6 0 0 1 6 6" /></IconBase>;
+}
+
+export function RedoIcon(props: IconProps) {
+  return <IconBase {...props}><path d="m15 7 5 5-5 5" /><path d="M19 12h-8a6 6 0 0 0-6 6" /></IconBase>;
+}
+
+export function MoveEarlierIcon(props: IconProps) {
+  return <IconBase {...props}><path d="m14 7-5 5 5 5" /><path d="M19 5v14" /></IconBase>;
+}
+
+export function MoveLaterIcon(props: IconProps) {
+  return <IconBase {...props}><path d="m10 7 5 5-5 5" /><path d="M5 5v14" /></IconBase>;
+}

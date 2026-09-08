@@ -1,31 +1,54 @@
 import { useEffect, useRef, useState } from 'react';
+import type { DragEvent, MouseEvent } from 'react';
 import type { PDFDocumentProxy, RenderTask } from 'pdfjs-dist';
+import type { PageRotation } from '@giumag/pdf-engine';
 
 interface PdfThumbnailProps {
   document: PDFDocumentProxy;
-  pageNumber: number;
+  sourcePageNumber: number;
+  displayNumber: number;
   active: boolean;
-  onSelect: () => void;
+  selected: boolean;
+  rotation: PageRotation;
+  dragging?: boolean;
+  onSelect: (event: MouseEvent<HTMLButtonElement>) => void;
+  onDragStart: (event: DragEvent<HTMLButtonElement>) => void;
+  onDragOver: (event: DragEvent<HTMLButtonElement>) => void;
+  onDrop: (event: DragEvent<HTMLButtonElement>) => void;
+  onDragEnd: () => void;
 }
 
-export function PdfThumbnail({ document, pageNumber, active, onSelect }: PdfThumbnailProps) {
+export function PdfThumbnail({
+  document,
+  sourcePageNumber,
+  displayNumber,
+  active,
+  selected,
+  rotation,
+  dragging = false,
+  onSelect,
+  onDragStart,
+  onDragOver,
+  onDrop,
+  onDragEnd,
+}: PdfThumbnailProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const renderTaskRef = useRef<RenderTask | null>(null);
-  const [visible, setVisible] = useState(active || pageNumber <= 4);
+  const [visible, setVisible] = useState(active || displayNumber <= 4);
   const [rendered, setRendered] = useState(false);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     setRendered(false);
     setFailed(false);
-    setVisible(active || pageNumber <= 4);
+    setVisible(active || displayNumber <= 4);
     const canvas = canvasRef.current;
     if (canvas) {
       canvas.width = 0;
       canvas.height = 0;
     }
-  }, [document, pageNumber]);
+  }, [active, displayNumber, document, rotation, sourcePageNumber]);
 
   useEffect(() => {
     if (active) setVisible(true);
@@ -57,12 +80,15 @@ export function PdfThumbnail({ document, pageNumber, active, onSelect }: PdfThum
 
     async function render() {
       try {
-        const page = await document.getPage(pageNumber);
+        const page = await document.getPage(sourcePageNumber);
         if (disposed) return;
 
-        const base = page.getViewport({ scale: 1 });
+        const base = page.getViewport({ scale: 1, rotation: (page.rotate + rotation) % 360 });
         const targetWidth = 116;
-        const viewport = page.getViewport({ scale: targetWidth / base.width });
+        const viewport = page.getViewport({
+          scale: targetWidth / base.width,
+          rotation: (page.rotate + rotation) % 360,
+        });
         const canvas = canvasRef.current;
         if (!canvas) return;
 
@@ -93,23 +119,29 @@ export function PdfThumbnail({ document, pageNumber, active, onSelect }: PdfThum
       disposed = true;
       renderTaskRef.current?.cancel();
     };
-  }, [document, failed, pageNumber, rendered, visible]);
+  }, [document, failed, rendered, rotation, sourcePageNumber, visible]);
 
   return (
     <button
       ref={buttonRef}
-      className={`thumbnail${active ? ' thumbnail-active' : ''}`}
+      className={`thumbnail${active ? ' thumbnail-active' : ''}${selected ? ' thumbnail-selected' : ''}${dragging ? ' thumbnail-dragging' : ''}`}
       type="button"
+      draggable
       onClick={onSelect}
-      aria-label={`Open page ${pageNumber}`}
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      onDragEnd={onDragEnd}
+      aria-label={`Page ${displayNumber}${selected ? ', selected' : ''}`}
       aria-current={active ? 'page' : undefined}
+      aria-pressed={selected}
     >
       <span className={`thumbnail-canvas-wrap${rendered ? ' is-rendered' : ''}${failed ? ' is-failed' : ''}`}>
         {!rendered && !failed && <span className="thumbnail-placeholder" aria-hidden="true" />}
-        {failed && <span className="thumbnail-fallback" aria-hidden="true">{pageNumber}</span>}
+        {failed && <span className="thumbnail-fallback" aria-hidden="true">{displayNumber}</span>}
         <canvas ref={canvasRef} />
       </span>
-      <span className="thumbnail-number">{pageNumber}</span>
+      <span className="thumbnail-number">{displayNumber}</span>
     </button>
   );
 }
