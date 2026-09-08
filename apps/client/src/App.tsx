@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { UNIVERSAL_TOOLS } from '@giumag/shared';
 import type { LoadedPdf } from './lib/pdf';
 import { loadPdfFile } from './lib/pdf';
+import { CropPdfWorkspace } from './components/CropPdfWorkspace';
 import { MergePdfWorkspace } from './components/MergePdfWorkspace';
 import { PdfWorkspace } from './components/PdfWorkspace';
 import { SplitPdfWorkspace } from './components/SplitPdfWorkspace';
@@ -11,6 +12,7 @@ export function App() {
   const [pdf, setPdf] = useState<LoadedPdf | null>(null);
   const [mergeOpen, setMergeOpen] = useState(false);
   const [splitOpen, setSplitOpen] = useState(false);
+  const [cropOpen, setCropOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -70,6 +72,13 @@ export function App() {
     return (
       <SplitPdfWorkspace
         onClose={() => setSplitOpen(false)}
+      />
+    );
+  }
+  if (cropOpen) {
+    return (
+      <CropPdfWorkspace
+        onClose={() => setCropOpen(false)}
       />
     );
   }
@@ -168,7 +177,7 @@ export function App() {
             </button>
           </div>
 
-          <div className="privacy-row" aria-label="Privacy and platform features">
+          <div className="privacy-row" aria-label="Privacy e funzionalità della piattaforma">
             <span><i />Nessun caricamento di file</span>
             <span><i />Disponibile anche offline</span>
             <span><i />Web, desktop e mobile</span>
@@ -207,6 +216,10 @@ export function App() {
 
                   if (tool.id === 'split') {
                     setSplitOpen(true);
+                    return;
+                  }
+                  if (tool.id === 'crop') {
+                    setCropOpen(true);
                     return;
                   }
 

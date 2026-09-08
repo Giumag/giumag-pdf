@@ -11,6 +11,7 @@ interface PdfThumbnailProps {
   selected: boolean;
   rotation: PageRotation;
   dragging?: boolean;
+  draggable?: boolean;
   onSelect: (event: MouseEvent<HTMLButtonElement>) => void;
   onDragStart: (event: DragEvent<HTMLButtonElement>) => void;
   onDragOver: (event: DragEvent<HTMLButtonElement>) => void;
@@ -26,6 +27,7 @@ export function PdfThumbnail({
   selected,
   rotation,
   dragging = false,
+  draggable = true,
   onSelect,
   onDragStart,
   onDragOver,
@@ -126,13 +128,13 @@ export function PdfThumbnail({
       ref={buttonRef}
       className={`thumbnail${active ? ' thumbnail-active' : ''}${selected ? ' thumbnail-selected' : ''}${dragging ? ' thumbnail-dragging' : ''}`}
       type="button"
-      draggable
+      draggable={draggable}
       onClick={onSelect}
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDrop={onDrop}
       onDragEnd={onDragEnd}
-      aria-label={`Page ${displayNumber}${selected ? ', selected' : ''}`}
+      aria-label={`Pagina ${displayNumber}${selected ? ', selezionata' : ''}`}
       aria-current={active ? 'page' : undefined}
       aria-pressed={selected}
     >

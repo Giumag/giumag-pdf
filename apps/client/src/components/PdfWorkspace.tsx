@@ -379,7 +379,7 @@ export function PdfWorkspace({ pdf, onClose, onReplace }: PdfWorkspaceProps) {
 
         <div className="document-title" title={pdf.name}>
           <strong>{pdf.name}</strong>
-          <span><ShieldIcon /> Documento locale · {pages.length} pages · {formatBytes(pdf.size)}</span>
+          <span><ShieldIcon /> Documento locale · {pages.length} pagine · {formatBytes(pdf.size)}</span>
         </div>
 
         <div className="topbar-actions">
