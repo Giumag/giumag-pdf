@@ -2,8 +2,10 @@ import { useRef, useState } from 'react';
 import { UNIVERSAL_TOOLS } from '@giumag/shared';
 import type { LoadedPdf } from './lib/pdf';
 import { loadPdfFile } from './lib/pdf';
+import { useAutoAdvanceScroll } from './lib/use-auto-advance-scroll';
 import { CompressPdfWorkspace } from './components/CompressPdfWorkspace';
 import { ImagesToPdfWorkspace } from './components/ImagesToPdfWorkspace';
+import { PdfToImagesWorkspace } from './components/PdfToImagesWorkspace';
 import { CropPdfWorkspace } from './components/CropPdfWorkspace';
 import { MergePdfWorkspace } from './components/MergePdfWorkspace';
 import { PdfWorkspace } from './components/PdfWorkspace';
@@ -16,9 +18,12 @@ type ActiveWorkspace =
   | 'crop'
   | 'compress'
   | 'images-to-pdf'
+  | 'pdf-to-images'
   | null;
 
 export function App() {
+  useAutoAdvanceScroll();
+
   const [pdf, setPdf] = useState<LoadedPdf | null>(null);
   const [activeWorkspace, setActiveWorkspace] =
     useState<ActiveWorkspace>(null);
@@ -102,6 +107,14 @@ export function App() {
   if (activeWorkspace === 'images-to-pdf') {
     return (
       <ImagesToPdfWorkspace
+        onClose={() => setActiveWorkspace(null)}
+      />
+    );
+  }
+
+  if (activeWorkspace === 'pdf-to-images') {
+    return (
+      <PdfToImagesWorkspace
         onClose={() => setActiveWorkspace(null)}
       />
     );
@@ -253,6 +266,11 @@ export function App() {
                   }
                   if (tool.id === 'images-to-pdf') {
                     setActiveWorkspace('images-to-pdf');
+                    return;
+                  }
+
+                  if (tool.id === 'pdf-to-images') {
+                    setActiveWorkspace('pdf-to-images');
                     return;
                   }
 
