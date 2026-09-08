@@ -6,6 +6,36 @@ export type CompressionPreset =
   | 'light'
   | 'recommended'
   | 'strong';
+export type PdfImageFormat =
+  | 'jpeg'
+  | 'png';
+
+export type ImagesPdfPageSize =
+  | 'auto'
+  | 'a4'
+  | 'letter';
+
+export type ImagesPdfOrientation =
+  | 'auto'
+  | 'portrait'
+  | 'landscape';
+
+export type ImagesPdfFit =
+  | 'contain'
+  | 'cover';
+
+export interface PdfImageSource {
+  bytes: Bytes;
+  format: PdfImageFormat;
+  rotation?: PageRotation;
+}
+
+export interface ImagesToPdfOptions {
+  pageSize?: ImagesPdfPageSize;
+  orientation?: ImagesPdfOrientation;
+  margin?: number;
+  fit?: ImagesPdfFit;
+}
 
 export interface PageTransform {
   sourceIndex: number;
@@ -30,6 +60,10 @@ export interface PdfEngine {
   compress(
     file: Bytes,
     preset?: CompressionPreset,
+  ): Promise<Bytes>;
+  imagesToPdf(
+    images: PdfImageSource[],
+    options?: ImagesToPdfOptions,
   ): Promise<Bytes>;
 }
 
@@ -133,6 +167,141 @@ function qpdfCompressionArgs(
   ];
 }
 
+const IMAGES_TO_PDF_A4_SIZE:
+  readonly [number, number] = [
+    595.28,
+    841.89,
+  ];
+
+const IMAGES_TO_PDF_LETTER_SIZE:
+  readonly [number, number] = [
+    612,
+    792,
+  ];
+
+function validateImagesToPdfOptions(
+  options: ImagesToPdfOptions,
+) {
+  const margin = options.margin ?? 24;
+  const pageSize = options.pageSize ?? 'auto';
+  const orientation =
+    options.orientation ?? 'auto';
+  const fit = options.fit ?? 'contain';
+
+  if (
+    !Number.isFinite(margin) ||
+    margin < 0
+  ) {
+    throw new Error(
+      'Il margine deve essere maggiore o uguale a zero.',
+    );
+  }
+
+  if (
+    pageSize !== 'auto' &&
+    pageSize !== 'a4' &&
+    pageSize !== 'letter'
+  ) {
+    throw new Error(
+      'Formato pagina non valido.',
+    );
+  }
+
+  if (
+    orientation !== 'auto' &&
+    orientation !== 'portrait' &&
+    orientation !== 'landscape'
+  ) {
+    throw new Error(
+      'Orientamento pagina non valido.',
+    );
+  }
+
+  if (
+    fit !== 'contain' &&
+    fit !== 'cover'
+  ) {
+    throw new Error(
+      'Modalità di adattamento non valida.',
+    );
+  }
+
+  return {
+    margin,
+    pageSize,
+    orientation,
+    fit,
+  } as const;
+}
+
+function rotatedImageDimensions(
+  width: number,
+  height: number,
+  rotation: PageRotation,
+) {
+  if (
+    rotation === 90 ||
+    rotation === 270
+  ) {
+    return {
+      width: height,
+      height: width,
+    };
+  }
+
+  return {
+    width,
+    height,
+  };
+}
+
+function resolveImagesPdfPageSize(
+  pageSize: ImagesPdfPageSize,
+  orientation: ImagesPdfOrientation,
+  imageWidth: number,
+  imageHeight: number,
+  margin: number,
+): [number, number] {
+  if (pageSize === 'auto') {
+    let width =
+      imageWidth + margin * 2;
+
+    let height =
+      imageHeight + margin * 2;
+
+    if (
+      orientation === 'portrait' &&
+      width > height
+    ) {
+      [width, height] = [height, width];
+    }
+
+    if (
+      orientation === 'landscape' &&
+      height > width
+    ) {
+      [width, height] = [height, width];
+    }
+
+    return [width, height];
+  }
+
+  const base =
+    pageSize === 'a4'
+      ? IMAGES_TO_PDF_A4_SIZE
+      : IMAGES_TO_PDF_LETTER_SIZE;
+
+  const landscape =
+    orientation === 'landscape' ||
+    (
+      orientation === 'auto' &&
+      imageWidth > imageHeight
+    );
+
+  return landscape
+    ? [base[1], base[0]]
+    : [base[0], base[1]];
+}
 export class BrowserPdfEngine implements PdfEngine {
   async merge(files: Bytes[]): Promise<Bytes> {
     const output = await PDFDocument.create();
@@ -305,5 +474,211 @@ export class BrowserPdfEngine implements PdfEngine {
       [imageOptimized],
       qpdfCompressionArgs(selectedPreset),
     );
+  }
+
+  async imagesToPdf(
+    images: PdfImageSource[],
+    options: ImagesToPdfOptions = {},
+  ): Promise<Bytes> {
+    if (images.length === 0) {
+      throw new Error(
+        'Aggiungi almeno un’immagine.',
+      );
+    }
+
+    const {
+      margin,
+      pageSize,
+      orientation,
+      fit,
+    } = validateImagesToPdfOptions(options);
+
+    const output =
+      await PDFDocument.create();
+
+    for (const source of images) {
+      if (source.bytes.byteLength === 0) {
+        throw new Error(
+          'Una delle immagini è vuota.',
+        );
+      }
+
+      if (
+        source.format !== 'jpeg' &&
+        source.format !== 'png'
+      ) {
+        throw new Error(
+          'Formato immagine non supportato.',
+        );
+      }
+
+      const rotation =
+        source.rotation ?? 0;
+
+      if (
+        rotation !== 0 &&
+        rotation !== 90 &&
+        rotation !== 180 &&
+        rotation !== 270
+      ) {
+        throw new Error(
+          'Rotazione immagine non valida.',
+        );
+      }
+
+      const embedded =
+        source.format === 'jpeg'
+          ? await output.embedJpg(source.bytes)
+          : await output.embedPng(source.bytes);
+
+      const rotated =
+        rotatedImageDimensions(
+          embedded.width,
+          embedded.height,
+          rotation,
+        );
+
+      /*
+       * In modalità cover il contenuto riempie
+       * l'intera pagina, quindi il margine visivo
+       * viene intenzionalmente ignorato.
+       */
+      const contentMargin =
+        fit === 'cover'
+          ? 0
+          : margin;
+
+      const [
+        pageWidth,
+        pageHeight,
+      ] = resolveImagesPdfPageSize(
+        pageSize,
+        orientation,
+        rotated.width,
+        rotated.height,
+        contentMargin,
+      );
+
+      const availableWidth =
+        pageWidth -
+        contentMargin * 2;
+
+      const availableHeight =
+        pageHeight -
+        contentMargin * 2;
+
+      if (
+        availableWidth <= 0 ||
+        availableHeight <= 0
+      ) {
+        throw new Error(
+          'Il margine è troppo grande per il formato pagina selezionato.',
+        );
+      }
+
+      const scaleX =
+        availableWidth /
+        rotated.width;
+
+      const scaleY =
+        availableHeight /
+        rotated.height;
+
+      const scale =
+        fit === 'cover'
+          ? Math.max(
+              scaleX,
+              scaleY,
+            )
+          : Math.min(
+              scaleX,
+              scaleY,
+            );
+
+      const drawWidth =
+        embedded.width * scale;
+
+      const drawHeight =
+        embedded.height * scale;
+
+      const page =
+        output.addPage([
+          pageWidth,
+          pageHeight,
+        ]);
+
+      if (rotation === 0) {
+        page.drawImage(
+          embedded,
+          {
+            x:
+              (pageWidth -
+                drawWidth) / 2,
+            y:
+              (pageHeight -
+                drawHeight) / 2,
+            width: drawWidth,
+            height: drawHeight,
+          },
+        );
+
+        continue;
+      }
+
+      if (rotation === 90) {
+        page.drawImage(
+          embedded,
+          {
+            x:
+              (pageWidth +
+                drawHeight) / 2,
+            y:
+              (pageHeight -
+                drawWidth) / 2,
+            width: drawWidth,
+            height: drawHeight,
+            rotate: degrees(90),
+          },
+        );
+
+        continue;
+      }
+
+      if (rotation === 180) {
+        page.drawImage(
+          embedded,
+          {
+            x:
+              (pageWidth +
+                drawWidth) / 2,
+            y:
+              (pageHeight +
+                drawHeight) / 2,
+            width: drawWidth,
+            height: drawHeight,
+            rotate: degrees(180),
+          },
+        );
+
+        continue;
+      }
+
+      page.drawImage(
+        embedded,
+        {
+          x:
+            (pageWidth -
+              drawHeight) / 2,
+          y:
+            (pageHeight +
+              drawWidth) / 2,
+          width: drawWidth,
+          height: drawHeight,
+          rotate: degrees(270),
+        },
+      );
+    }
+
+    return output.save();
   }
 }
