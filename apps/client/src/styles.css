@@ -4032,3 +4032,777 @@ h1 span { background: linear-gradient(110deg, var(--text) 0%, var(--text) 30%, v
     font-size: 7.5px;
   }
 }
+
+/* Compress PDF */
+
+.compress-shell {
+  background: var(--content-bg);
+}
+
+.compress-workspace {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  background:
+    radial-gradient(
+      circle at 50% -18%,
+      color-mix(in srgb, var(--accent) 10%, transparent),
+      transparent 34%
+    ),
+    var(--content-bg);
+  scrollbar-width: thin;
+  scrollbar-color: var(--separator-strong) transparent;
+}
+
+.compress-workspace-dragging {
+  background:
+    radial-gradient(
+      circle at 50% -18%,
+      color-mix(in srgb, var(--accent) 17%, transparent),
+      transparent 38%
+    ),
+    var(--content-bg);
+}
+
+.compress-content {
+  width: min(1040px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 54px 0 56px;
+}
+
+.compress-heading {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.25fr)
+    minmax(280px, .75fr);
+  gap: 48px;
+  align-items: end;
+  margin-bottom: 28px;
+}
+
+.compress-kicker {
+  margin: 0;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 720;
+  letter-spacing: .018em;
+}
+
+.compress-title {
+  max-width: 720px;
+  margin: 8px 0 0;
+  font-size: clamp(38px, 5vw, 62px);
+  line-height: 1;
+  letter-spacing: -0.046em;
+  text-align: left;
+}
+
+.compress-description {
+  margin: 0 0 5px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.compress-empty-dropzone {
+  min-height: 330px;
+  padding: 44px 28px;
+  border: 1px dashed
+    color-mix(
+      in srgb,
+      var(--separator-strong) 90%,
+      transparent
+    );
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background:
+    color-mix(
+      in srgb,
+      var(--bg-elevated) 86%,
+      transparent
+    );
+  transition:
+    transform .2s ease,
+    border-color .2s ease,
+    background .2s ease;
+}
+
+.compress-empty-dropzone.is-dragging {
+  transform: scale(1.008);
+  border-color:
+    color-mix(
+      in srgb,
+      var(--accent) 62%,
+      var(--separator)
+    );
+  background:
+    color-mix(
+      in srgb,
+      var(--accent-soft) 46%,
+      var(--bg-elevated)
+    );
+}
+
+.compress-empty-icon {
+  position: relative;
+  width: 78px;
+  height: 92px;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  color: var(--accent);
+  background:
+    linear-gradient(
+      145deg,
+      var(--accent-soft),
+      color-mix(
+        in srgb,
+        var(--accent-soft) 40%,
+        transparent
+      )
+    );
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--accent) 18%,
+      var(--separator)
+    );
+}
+
+.compress-empty-icon > svg {
+  width: 34px;
+  height: 34px;
+}
+
+.compress-empty-badge {
+  position: absolute;
+  right: -9px;
+  bottom: -8px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  color: white;
+  background: var(--accent);
+  box-shadow: var(--shadow-sm);
+}
+
+.compress-empty-badge svg {
+  width: 17px;
+  height: 17px;
+}
+
+.compress-empty-copy {
+  max-width: 520px;
+  margin: 24px 0 22px;
+}
+
+.compress-empty-copy strong {
+  display: block;
+  font-size: 22px;
+  letter-spacing: -0.024em;
+}
+
+.compress-empty-copy span {
+  display: block;
+  margin-top: 8px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.compress-document-card,
+.compress-action-panel,
+.compress-result-section,
+.compress-preset-section {
+  border: 1px solid var(--separator);
+  border-radius: 26px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-sm);
+}
+
+.compress-document-card {
+  min-height: 92px;
+  padding: 16px 18px;
+  display: grid;
+  grid-template-columns:
+    auto
+    minmax(0, 1fr)
+    auto;
+  gap: 15px;
+  align-items: center;
+}
+
+.compress-document-icon {
+  width: 54px;
+  height: 62px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.compress-document-icon svg {
+  width: 25px;
+  height: 25px;
+}
+
+.compress-document-copy {
+  min-width: 0;
+}
+
+.compress-document-copy strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 16px;
+  letter-spacing: -0.014em;
+}
+
+.compress-document-copy span,
+.compress-document-copy small {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.compress-document-copy small {
+  color: var(--text-tertiary);
+}
+
+.compress-preset-section,
+.compress-result-section {
+  margin-top: 14px;
+  padding: 22px;
+}
+
+.compress-section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.compress-section-heading h2,
+.compress-action-panel h2 {
+  margin: 5px 0 0;
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 1.1;
+  letter-spacing: -0.027em;
+}
+
+.compress-section-heading > span {
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.compress-preset-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.compress-preset-card {
+  min-height: 132px;
+  padding: 17px;
+  border: 1px solid var(--separator);
+  border-radius: 20px;
+  background:
+    color-mix(
+      in srgb,
+      var(--control) 62%,
+      transparent
+    );
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform .18s ease,
+    border-color .18s ease,
+    background .18s ease,
+    box-shadow .18s ease;
+}
+
+.compress-preset-card:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: var(--separator-strong);
+  background: var(--control-hover);
+}
+
+.compress-preset-card.is-active {
+  border-color:
+    color-mix(
+      in srgb,
+      var(--accent) 54%,
+      var(--separator)
+    );
+  background:
+    color-mix(
+      in srgb,
+      var(--accent-soft) 82%,
+      var(--bg-elevated)
+    );
+  box-shadow:
+    inset 0 0 0 1px
+    color-mix(
+      in srgb,
+      var(--accent) 22%,
+      transparent
+    );
+}
+
+.compress-preset-card:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+
+.compress-preset-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.compress-preset-topline strong {
+  font-size: 16px;
+  letter-spacing: -0.014em;
+}
+
+.compress-preset-topline small {
+  padding: 4px 7px;
+  border-radius: 999px;
+  color: var(--text-tertiary);
+  background:
+    color-mix(
+      in srgb,
+      var(--control) 78%,
+      transparent
+    );
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.compress-preset-card.is-active
+.compress-preset-topline small {
+  color: var(--accent);
+  background:
+    color-mix(
+      in srgb,
+      var(--accent-soft) 72%,
+      transparent
+    );
+}
+
+.compress-preset-description {
+  display: block;
+  margin-top: 24px;
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.compress-action-panel {
+  margin-top: 14px;
+  padding: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+}
+
+.compress-action-panel > div {
+  max-width: 640px;
+}
+
+.compress-action-panel p:last-child {
+  margin: 8px 0 0;
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.compress-main-action {
+  min-width: 188px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.compress-main-action svg {
+  width: 16px;
+  height: 16px;
+}
+
+.compress-stats-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.compress-stat-card {
+  min-height: 104px;
+  padding: 16px;
+  border: 1px solid var(--separator);
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background:
+    color-mix(
+      in srgb,
+      var(--control) 56%,
+      transparent
+    );
+}
+
+.compress-stat-card span {
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.compress-stat-card strong {
+  margin-top: 14px;
+  font-size: 24px;
+  letter-spacing: -0.028em;
+}
+
+.compress-stat-highlight strong {
+  color: var(--success);
+}
+
+.compress-stat-highlight.is-negative strong {
+  color: var(--danger);
+}
+
+.compress-result-actions {
+  margin-top: 14px;
+  padding-top: 16px;
+  border-top: 1px solid var(--separator);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.compress-result-actions > div {
+  min-width: 0;
+}
+
+.compress-result-actions strong {
+  display: block;
+  font-size: 13px;
+}
+
+.compress-result-actions span {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+}
+
+.compress-message {
+  margin-top: 12px;
+  padding: 11px 14px;
+  border-radius: 14px;
+  font-size: 12px;
+}
+
+.compress-error {
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--danger) 26%,
+      var(--separator)
+    );
+  background:
+    color-mix(
+      in srgb,
+      var(--danger) 8%,
+      var(--bg-elevated)
+    );
+  color: var(--danger);
+}
+
+.compress-success {
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--success) 28%,
+      var(--separator)
+    );
+  background:
+    color-mix(
+      in srgb,
+      var(--success) 8%,
+      var(--bg-elevated)
+    );
+  color: var(--success);
+}
+
+.compress-privacy-note {
+  margin-top: 14px;
+  padding: 13px 15px;
+  border-radius: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--text-tertiary);
+  background:
+    color-mix(
+      in srgb,
+      var(--surface-soft) 76%,
+      transparent
+    );
+  border: 1px solid var(--separator);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.compress-privacy-note svg {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin-top: 1px;
+  color: var(--success);
+}
+
+@media (max-width: 760px) {
+  .compress-content {
+    width: min(100% - 24px, 1040px);
+    padding-top: 34px;
+  }
+
+  .compress-heading {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .compress-description {
+    max-width: 620px;
+  }
+
+  .compress-preset-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .compress-preset-card {
+    min-height: 0;
+  }
+
+  .compress-preset-description {
+    margin-top: 12px;
+  }
+}
+
+@media (max-width: 620px) {
+  .compress-content {
+    width: calc(100% - 16px);
+    padding: 22px 0 28px;
+  }
+
+  .compress-title {
+    font-size: clamp(34px, 10.5vw, 46px);
+  }
+
+  .compress-heading {
+    margin-bottom: 18px;
+  }
+
+  .compress-description {
+    font-size: 12.5px;
+  }
+
+  .compress-empty-dropzone {
+    min-height: 300px;
+    padding: 34px 20px;
+    border-radius: 22px;
+  }
+
+  .compress-document-card {
+    min-height: 78px;
+    padding: 11px;
+    grid-template-columns:
+      auto
+      minmax(0, 1fr);
+  }
+
+  .compress-document-card
+  > .secondary-button {
+    display: none;
+  }
+
+  .compress-document-icon {
+    width: 44px;
+    height: 50px;
+    border-radius: 12px;
+  }
+
+  .compress-document-copy strong {
+    font-size: 14px;
+  }
+
+  .compress-document-copy span,
+  .compress-document-copy small {
+    font-size: 10px;
+  }
+
+  .compress-preset-section,
+  .compress-result-section,
+  .compress-action-panel {
+    border-radius: 20px;
+  }
+
+  .compress-preset-section,
+  .compress-result-section {
+    padding: 15px;
+  }
+
+  .compress-section-heading {
+    align-items: flex-start;
+  }
+
+  .compress-section-heading > span {
+    display: none;
+  }
+
+  .compress-section-heading h2,
+  .compress-action-panel h2 {
+    font-size: 20px;
+  }
+
+  .compress-preset-grid {
+    gap: 7px;
+    margin-top: 13px;
+  }
+
+  .compress-preset-card {
+    padding: 13px;
+    border-radius: 16px;
+  }
+
+  .compress-preset-topline strong {
+    font-size: 14px;
+  }
+
+  .compress-preset-description {
+    font-size: 11px;
+  }
+
+  .compress-action-panel {
+    padding: 15px;
+    display: grid;
+    gap: 14px;
+  }
+
+  .compress-action-panel p:last-child {
+    font-size: 11px;
+  }
+
+  .compress-main-action {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .compress-stats-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .compress-stat-card {
+    min-height: 82px;
+    padding: 10px;
+    border-radius: 14px;
+  }
+
+  .compress-stat-card span {
+    font-size: 9px;
+  }
+
+  .compress-stat-card strong {
+    margin-top: 10px;
+    font-size: clamp(16px, 5vw, 21px);
+  }
+
+  .compress-result-actions {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .compress-result-actions
+  .primary-button {
+    width: 100%;
+  }
+
+  .compress-privacy-note {
+    padding: 10px 11px;
+    font-size: 9.5px;
+  }
+}
+/* Compress real-result polish */
+
+.compress-preset-card.is-measured {
+  border-color:
+    color-mix(
+      in srgb,
+      var(--success) 24%,
+      var(--separator)
+    );
+}
+
+.compress-preset-card.is-active.is-measured {
+  border-color:
+    color-mix(
+      in srgb,
+      var(--accent) 62%,
+      var(--separator)
+    );
+}
+
+.compress-preset-topline small.is-calculated {
+  color: var(--success);
+  background:
+    color-mix(
+      in srgb,
+      var(--success) 12%,
+      transparent
+    );
+  font-variant-numeric: tabular-nums;
+}
+
+.compress-preset-result {
+  display: block;
+  margin-top: 10px;
+  color: var(--text-tertiary);
+  font-size: 10.5px;
+  line-height: 1.3;
+}
+
+.compress-preset-card.is-measured
+.compress-preset-result {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+@media (max-width: 620px) {
+  .compress-preset-result {
+    margin-top: 7px;
+    font-size: 9px;
+  }
+}

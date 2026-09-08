@@ -2,6 +2,10 @@ import { PDFDocument, degrees } from 'pdf-lib';
 
 export type Bytes = Uint8Array;
 export type PageRotation = 0 | 90 | 180 | 270;
+export type CompressionPreset =
+  | 'light'
+  | 'recommended'
+  | 'strong';
 
 export interface PageTransform {
   sourceIndex: number;
@@ -23,6 +27,10 @@ export interface PdfEngine {
   organize(file: Bytes, pages: PageTransform[]): Promise<Bytes>;
   extract(file: Bytes, pages: PageTransform[]): Promise<Bytes>;
   crop(file: Bytes, crops: PageCrop[]): Promise<Bytes>;
+  compress(
+    file: Bytes,
+    preset?: CompressionPreset,
+  ): Promise<Bytes>;
 }
 
 function validateTransforms(pageCount: number, pages: PageTransform[]) {
@@ -68,6 +76,61 @@ function validateCrop(pageCount: number, crop: PageCrop) {
       'L?area di ritaglio deve avere larghezza e altezza maggiori di zero.',
     );
   }
+}
+
+function validateCompressionPreset(
+  preset: CompressionPreset,
+): CompressionPreset {
+  if (
+    preset !== 'light' &&
+    preset !== 'recommended' &&
+    preset !== 'strong'
+  ) {
+    throw new Error(
+      'Livello di compressione non valido.',
+    );
+  }
+
+  return preset;
+}
+
+async function createCompressionToolkit() {
+  const { createPdfToolkit } = await import('pdfstudio');
+
+  return createPdfToolkit();
+}
+
+let compressionToolkitPromise:
+  | ReturnType<typeof createCompressionToolkit>
+  | null = null;
+
+function getCompressionToolkit() {
+  if (!compressionToolkitPromise) {
+    compressionToolkitPromise = createCompressionToolkit();
+  }
+
+  return compressionToolkitPromise;
+}
+
+function qpdfCompressionArgs(
+  preset: Exclude<CompressionPreset, 'light'>,
+): string[] {
+  const jpegQuality =
+    preset === 'recommended'
+      ? 78
+      : 55;
+
+  return [
+    '--compress-streams=y',
+    '--decode-level=generalized',
+    '--recompress-flate',
+    '--compression-level=9',
+    '--object-streams=generate',
+    '--optimize-images',
+    '--jpeg-quality=' + jpegQuality,
+    '$in0',
+    '$out',
+  ];
 }
 
 export class BrowserPdfEngine implements PdfEngine {
@@ -206,5 +269,41 @@ export class BrowserPdfEngine implements PdfEngine {
     }
 
     return doc.save();
+  }
+
+  async compress(
+    file: Bytes,
+    preset: CompressionPreset = 'recommended',
+  ): Promise<Bytes> {
+    if (file.byteLength === 0) {
+      throw new Error(
+        'Il PDF da comprimere è vuoto.',
+      );
+    }
+
+    const selectedPreset =
+      validateCompressionPreset(preset);
+
+    const toolkit =
+      await getCompressionToolkit();
+
+    if (selectedPreset === 'light') {
+      return toolkit.compress(file);
+    }
+
+    const {
+      recompressEmbeddedJpegs,
+    } = await import('./compress-images');
+
+    const imageOptimized =
+      await recompressEmbeddedJpegs(
+        file,
+        selectedPreset,
+      );
+
+    return toolkit.raw(
+      [imageOptimized],
+      qpdfCompressionArgs(selectedPreset),
+    );
   }
 }

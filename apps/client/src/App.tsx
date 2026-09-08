@@ -2,17 +2,24 @@ import { useRef, useState } from 'react';
 import { UNIVERSAL_TOOLS } from '@giumag/shared';
 import type { LoadedPdf } from './lib/pdf';
 import { loadPdfFile } from './lib/pdf';
+import { CompressPdfWorkspace } from './components/CompressPdfWorkspace';
 import { CropPdfWorkspace } from './components/CropPdfWorkspace';
 import { MergePdfWorkspace } from './components/MergePdfWorkspace';
 import { PdfWorkspace } from './components/PdfWorkspace';
 import { SplitPdfWorkspace } from './components/SplitPdfWorkspace';
 import { ArrowUpRightIcon, DocumentIcon, LockIcon, ShieldIcon, ToolIcon } from './components/Icons';
 
+type ActiveWorkspace =
+  | 'merge'
+  | 'split'
+  | 'crop'
+  | 'compress'
+  | null;
+
 export function App() {
   const [pdf, setPdf] = useState<LoadedPdf | null>(null);
-  const [mergeOpen, setMergeOpen] = useState(false);
-  const [splitOpen, setSplitOpen] = useState(false);
-  const [cropOpen, setCropOpen] = useState(false);
+  const [activeWorkspace, setActiveWorkspace] =
+    useState<ActiveWorkspace>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -60,25 +67,33 @@ export function App() {
     );
   }
 
-  if (mergeOpen) {
+  if (activeWorkspace === 'merge') {
     return (
       <MergePdfWorkspace
-        onClose={() => setMergeOpen(false)}
+        onClose={() => setActiveWorkspace(null)}
       />
     );
   }
 
-  if (splitOpen) {
+  if (activeWorkspace === 'split') {
     return (
       <SplitPdfWorkspace
-        onClose={() => setSplitOpen(false)}
+        onClose={() => setActiveWorkspace(null)}
       />
     );
   }
-  if (cropOpen) {
+  if (activeWorkspace === 'crop') {
     return (
       <CropPdfWorkspace
-        onClose={() => setCropOpen(false)}
+        onClose={() => setActiveWorkspace(null)}
+      />
+    );
+  }
+
+  if (activeWorkspace === 'compress') {
+    return (
+      <CompressPdfWorkspace
+        onClose={() => setActiveWorkspace(null)}
       />
     );
   }
@@ -210,16 +225,21 @@ export function App() {
                 type="button"
                 onClick={() => {
                   if (tool.id === 'merge') {
-                    setMergeOpen(true);
+                    setActiveWorkspace('merge');
                     return;
                   }
 
                   if (tool.id === 'split') {
-                    setSplitOpen(true);
+                    setActiveWorkspace('split');
                     return;
                   }
                   if (tool.id === 'crop') {
-                    setCropOpen(true);
+                    setActiveWorkspace('crop');
+                    return;
+                  }
+
+                  if (tool.id === 'compress') {
+                    setActiveWorkspace('compress');
                     return;
                   }
 

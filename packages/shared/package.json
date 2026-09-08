@@ -1,7 +1,9 @@
 {
   "name": "@giumag/shared",
   "private": true,
-  "version": "0.7.0-dev",
+  "version": "0.8.0-dev",
   "type": "module",
-  "exports": { ".": "./src/index.ts" }
+  "exports": {
+    ".": "./src/index.ts"
+  }
 }
