@@ -344,10 +344,10 @@ export function PdfWorkspace({ pdf, onClose, onReplace }: PdfWorkspaceProps) {
     try {
       const engine = await getPdfEngine();
       const bytes = await engine.organize(pdf.bytes, transformsFor(pages));
-      downloadPdf(bytes, outputName(pdf.name, 'organized'));
-      setStatusMessage('Organized PDF exported locally.');
+      downloadPdf(bytes, outputName(pdf.name, 'organizzato'));
+      setStatusMessage('PDF organizzato esportato localmente.');
     } catch (error) {
-      setStatusMessage(error instanceof Error ? error.message : 'Unable to export this PDF.');
+      setStatusMessage(error instanceof Error ? error.message : 'Impossibile esportare questo PDF.');
     } finally {
       setBusyAction(null);
     }
@@ -360,10 +360,10 @@ export function PdfWorkspace({ pdf, onClose, onReplace }: PdfWorkspaceProps) {
     try {
       const engine = await getPdfEngine();
       const bytes = await engine.extract(pdf.bytes, transformsFor(selectedPages));
-      downloadPdf(bytes, outputName(pdf.name, selectionCount === 1 ? 'page' : 'pages'));
-      setStatusMessage(`${selectionCount} selected ${selectionCount === 1 ? 'page' : 'pages'} extracted locally.`);
+      downloadPdf(bytes, outputName(pdf.name, selectionCount === 1 ? 'pagina' : 'pagine'));
+      setStatusMessage(`${selectionCount} ${selectionCount === 1 ? 'pagina selezionata estratta' : 'pagine selezionate estratte'} localmente.`);
     } catch (error) {
-      setStatusMessage(error instanceof Error ? error.message : 'Unable to extract the selected pages.');
+      setStatusMessage(error instanceof Error ? error.message : 'Impossibile estrarre le pagine selezionate.');
     } finally {
       setBusyAction(null);
     }
@@ -372,14 +372,14 @@ export function PdfWorkspace({ pdf, onClose, onReplace }: PdfWorkspaceProps) {
   return (
     <main className="workspace-shell">
       <header className="workspace-topbar glass-surface">
-        <button className="brand-button" type="button" onClick={onClose} aria-label="Back to Giumag PDF home">
+        <button className="brand-button" type="button" onClick={onClose} aria-label="Torna alla home di Giumag PDF">
           <span className="brand-mark">G</span>
           <span>Giumag PDF</span>
         </button>
 
         <div className="document-title" title={pdf.name}>
           <strong>{pdf.name}</strong>
-          <span><ShieldIcon /> Local document · {pages.length} pages · {formatBytes(pdf.size)}</span>
+          <span><ShieldIcon /> Documento locale · {pages.length} pages · {formatBytes(pdf.size)}</span>
         </div>
 
         <div className="topbar-actions">
@@ -396,19 +396,19 @@ export function PdfWorkspace({ pdf, onClose, onReplace }: PdfWorkspaceProps) {
           />
           <button className="secondary-button compact-button" type="button" onClick={() => fileInputRef.current?.click()}>
             <ReplaceIcon />
-            <span>Replace</span>
+            <span>Sostituisci</span>
           </button>
           <button className="primary-button compact-button" type="button" disabled={busyAction !== null} onClick={() => void exportDocument()}>
             <DownloadIcon />
-            <span>{busyAction === 'export' ? 'Exporting...' : 'Export'}</span>
+            <span>{busyAction === 'export' ? 'Esportazione...' : 'Esporta'}</span>
           </button>
         </div>
       </header>
 
       <div className="workspace-layout">
-        <aside className="thumbnail-sidebar" aria-label="Document pages">
+        <aside className="thumbnail-sidebar" aria-label="Pagine del documento">
           <div className="sidebar-heading">
-            <span>{selectionCount > 1 ? `${selectionCount} selected` : 'Pages'}</span>
+            <span>{selectionCount > 1 ? `${selectionCount} selezionate` : 'Pagine'}</span>
             <span className="count-badge">{pages.length}</span>
           </div>
           <div className="thumbnail-list">
@@ -443,15 +443,15 @@ export function PdfWorkspace({ pdf, onClose, onReplace }: PdfWorkspaceProps) {
           </div>
         </aside>
 
-        <section className="viewer" aria-label={`Viewing page ${activeIndex + 1} of ${pages.length}`}>
-          <div className="viewer-toolbar glass-surface" role="toolbar" aria-label="PDF viewer controls">
+        <section className="viewer" aria-label={`Visualizzazione pagina ${activeIndex + 1} di ${pages.length}`}>
+          <div className="viewer-toolbar glass-surface" role="toolbar" aria-label="Controlli del visualizzatore PDF">
             <div className="toolbar-group">
-              <button type="button" className="toolbar-button" onClick={() => setSafePage(activeIndex)} disabled={activeIndex === 0} aria-label="Previous page">
+              <button type="button" className="toolbar-button" onClick={() => setSafePage(activeIndex)} disabled={activeIndex === 0} aria-label="Pagina precedente">
                 <ChevronLeftIcon />
               </button>
               <div className="page-counter">
                 <input
-                  aria-label="Current page"
+                  aria-label="Pagina corrente"
                   inputMode="numeric"
                   value={activeIndex + 1}
                   onChange={(event) => {
@@ -459,9 +459,9 @@ export function PdfWorkspace({ pdf, onClose, onReplace }: PdfWorkspaceProps) {
                     if (Number.isFinite(parsed)) setSafePage(parsed);
                   }}
                 />
-                <span>of {pages.length}</span>
+                <span>di {pages.length}</span>
               </div>
-              <button type="button" className="toolbar-button" onClick={() => setSafePage(activeIndex + 2)} disabled={activeIndex === pages.length - 1} aria-label="Next page">
+              <button type="button" className="toolbar-button" onClick={() => setSafePage(activeIndex + 2)} disabled={activeIndex === pages.length - 1} aria-label="Pagina successiva">
                 <ChevronRightIcon />
               </button>
             </div>
@@ -469,11 +469,11 @@ export function PdfWorkspace({ pdf, onClose, onReplace }: PdfWorkspaceProps) {
             <span className="toolbar-divider" aria-hidden="true" />
 
             <div className="toolbar-group zoom-controls">
-              <button type="button" className="toolbar-button" onClick={() => changeZoom(-ZOOM_STEP)} disabled={zoom <= MIN_ZOOM} aria-label="Zoom out">
+              <button type="button" className="toolbar-button" onClick={() => changeZoom(-ZOOM_STEP)} disabled={zoom <= MIN_ZOOM} aria-label="Riduci zoom">
                 <MinusIcon />
               </button>
-              <button type="button" className="zoom-value" onClick={resetZoom} title="Reset zoom">{Math.round(zoom * 100)}%</button>
-              <button type="button" className="toolbar-button" onClick={() => changeZoom(ZOOM_STEP)} disabled={zoom >= MAX_ZOOM} aria-label="Zoom in">
+              <button type="button" className="zoom-value" onClick={resetZoom} title="Ripristina zoom">{Math.round(zoom * 100)}%</button>
+              <button type="button" className="toolbar-button" onClick={() => changeZoom(ZOOM_STEP)} disabled={zoom >= MAX_ZOOM} aria-label="Aumenta zoom">
                 <PlusIcon />
               </button>
             </div>
@@ -490,30 +490,30 @@ export function PdfWorkspace({ pdf, onClose, onReplace }: PdfWorkspaceProps) {
             )}
           </div>
 
-          <div className="organizer-toolbar glass-surface" role="toolbar" aria-label="Page organizer controls">
-            <span className="selection-pill">{selectionCount || 0} selected</span>
+          <div className="organizer-toolbar glass-surface" role="toolbar" aria-label="Controlli organizzazione pagine">
+            <span className="selection-pill">{selectionCount === 1 ? '1 selezionata' : `${selectionCount || 0} selezionate`}</span>
             <span className="toolbar-divider" aria-hidden="true" />
-            <button type="button" className="organizer-action" disabled={!canMoveEarlier} onClick={() => moveSelected(-1)} title="Move selected pages earlier">
-              <MoveEarlierIcon /><span>Earlier</span>
+            <button type="button" className="organizer-action" disabled={!canMoveEarlier} onClick={() => moveSelected(-1)} title="Sposta prima le pagine selezionate">
+              <MoveEarlierIcon /><span>Prima</span>
             </button>
-            <button type="button" className="organizer-action" disabled={!canMoveLater} onClick={() => moveSelected(1)} title="Move selected pages later">
-              <MoveLaterIcon /><span>Later</span>
+            <button type="button" className="organizer-action" disabled={!canMoveLater} onClick={() => moveSelected(1)} title="Sposta dopo le pagine selezionate">
+              <MoveLaterIcon /><span>Dopo</span>
             </button>
-            <button type="button" className="organizer-action" disabled={selectionCount === 0} onClick={rotateSelected} title="Rotate selected pages clockwise">
-              <RotateIcon /><span>Rotate</span>
+            <button type="button" className="organizer-action" disabled={selectionCount === 0} onClick={rotateSelected} title="Ruota le pagine selezionate in senso orario">
+              <RotateIcon /><span>Ruota</span>
             </button>
-            <button type="button" className="organizer-action" disabled={selectionCount === 0 || busyAction !== null} onClick={() => void extractSelected()} title="Extract selected pages">
-              <ExtractIcon /><span>{busyAction === 'extract' ? 'Extracting...' : 'Extract'}</span>
+            <button type="button" className="organizer-action" disabled={selectionCount === 0 || busyAction !== null} onClick={() => void extractSelected()} title="Estrai le pagine selezionate">
+              <ExtractIcon /><span>{busyAction === 'extract' ? 'Estrazione...' : 'Estrai'}</span>
             </button>
-            <button type="button" className="organizer-action organizer-danger" disabled={!canRemove} onClick={removeSelected} title={canRemove ? 'Remove selected pages' : 'A PDF must keep at least one page'}>
-              <TrashIcon /><span>Remove</span>
+            <button type="button" className="organizer-action organizer-danger" disabled={!canRemove} onClick={removeSelected} title={canRemove ? 'Rimuovi le pagine selezionate' : 'Un PDF deve contenere almeno una pagina'}>
+              <TrashIcon /><span>Rimuovi</span>
             </button>
             <span className="toolbar-divider" aria-hidden="true" />
-            <button type="button" className="organizer-action icon-only-action" disabled={past.length === 0} onClick={undo} title="Undo">
-              <UndoIcon /><span className="visually-hidden">Undo</span>
+            <button type="button" className="organizer-action icon-only-action" disabled={past.length === 0} onClick={undo} title="Annulla">
+              <UndoIcon /><span className="visually-hidden">Annulla</span>
             </button>
-            <button type="button" className="organizer-action icon-only-action" disabled={future.length === 0} onClick={redo} title="Redo">
-              <RedoIcon /><span className="visually-hidden">Redo</span>
+            <button type="button" className="organizer-action icon-only-action" disabled={future.length === 0} onClick={redo} title="Ripeti">
+              <RedoIcon /><span className="visually-hidden">Ripeti</span>
             </button>
           </div>
 
