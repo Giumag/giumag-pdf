@@ -1,7 +1,7 @@
 {
   "name": "giumag-pdf",
   "private": true,
-  "version": "0.9.0-dev",
+  "version": "0.10.0-dev",
   "packageManager": "pnpm@10.34.5",
   "scripts": {
     "dev": "pnpm --dir apps/client dev",
