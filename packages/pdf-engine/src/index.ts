@@ -17,10 +17,10 @@ export interface PdfEngine {
 }
 
 function validateTransforms(pageCount: number, pages: PageTransform[]) {
-  if (pages.length === 0) throw new Error('A PDF must contain at least one page.');
+  if (pages.length === 0) throw new Error('Un PDF deve contenere almeno una pagina.');
   for (const page of pages) {
     if (!Number.isInteger(page.sourceIndex) || page.sourceIndex < 0 || page.sourceIndex >= pageCount) {
-      throw new Error(`Invalid source page index: ${page.sourceIndex}`);
+      throw new Error(`Indice pagina sorgente non valido: ${page.sourceIndex}`);
     }
   }
 }

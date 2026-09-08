@@ -18,7 +18,7 @@ export interface LoadedPdf {
 
 export async function loadPdfFile(file: File): Promise<LoadedPdf> {
   if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
-    throw new Error('Select a PDF document.');
+    throw new Error('Seleziona un documento PDF.');
   }
 
   const buffer = await file.arrayBuffer();
@@ -26,7 +26,7 @@ export async function loadPdfFile(file: File): Promise<LoadedPdf> {
 
   const signatureWindow = new TextDecoder('ascii').decode(bytes.subarray(0, Math.min(bytes.length, 1024)));
   if (!signatureWindow.includes('%PDF-')) {
-    throw new Error('The selected file is not a valid PDF document.');
+    throw new Error('Il file selezionato non è un documento PDF valido.');
   }
 
   const document = await getDocument({
