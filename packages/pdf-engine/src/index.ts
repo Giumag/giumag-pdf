@@ -65,7 +65,7 @@ function validateCrop(pageCount: number, crop: PageCrop) {
 
   if (crop.width <= 0 || crop.height <= 0) {
     throw new Error(
-      'L’area di ritaglio deve avere larghezza e altezza maggiori di zero.',
+      'L?area di ritaglio deve avere larghezza e altezza maggiori di zero.',
     );
   }
 }
@@ -116,8 +116,28 @@ export class BrowserPdfEngine implements PdfEngine {
     pageIndexes: number[],
   ): Promise<Bytes> {
     const doc = await PDFDocument.load(file);
+    const pageCount = doc.getPageCount();
+    const uniqueIndexes = [...new Set(pageIndexes)];
 
-    [...new Set(pageIndexes)]
+    for (const index of uniqueIndexes) {
+      if (
+        !Number.isInteger(index) ||
+        index < 0 ||
+        index >= pageCount
+      ) {
+        throw new Error(
+          `Indice pagina da rimuovere non valido: ${index}`,
+        );
+      }
+    }
+
+    if (uniqueIndexes.length >= pageCount) {
+      throw new Error(
+        'Un PDF deve contenere almeno una pagina.',
+      );
+    }
+
+    uniqueIndexes
       .sort((a, b) => b - a)
       .forEach((index) => doc.removePage(index));
 
