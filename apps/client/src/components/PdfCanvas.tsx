@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import type { PDFDocumentProxy, RenderTask } from 'pdfjs-dist';
+import type { PageRotation } from '@giumag/pdf-engine';
 
 interface PdfCanvasProps {
   document: PDFDocumentProxy;
   pageNumber: number;
   zoom: number;
+  rotation?: PageRotation;
 }
 
-export function PdfCanvas({ document, pageNumber, zoom }: PdfCanvasProps) {
+export function PdfCanvas({ document, pageNumber, zoom, rotation = 0 }: PdfCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const renderTaskRef = useRef<RenderTask | null>(null);
   const [rendering, setRendering] = useState(true);
@@ -22,7 +24,7 @@ export function PdfCanvas({ document, pageNumber, zoom }: PdfCanvasProps) {
       const page = await document.getPage(pageNumber);
       if (disposed) return;
 
-      const viewport = page.getViewport({ scale: zoom });
+      const viewport = page.getViewport({ scale: zoom, rotation: (page.rotate + rotation) % 360 });
       const canvas = canvasRef.current;
       if (!canvas) return;
 
@@ -43,9 +45,7 @@ export function PdfCanvas({ document, pageNumber, zoom }: PdfCanvasProps) {
         await task.promise;
         if (!disposed) setRendering(false);
       } catch (error) {
-        if (!(error instanceof Error && error.name === 'RenderingCancelledException')) {
-          throw error;
-        }
+        if (!(error instanceof Error && error.name === 'RenderingCancelledException')) throw error;
       }
     }
 
@@ -55,11 +55,11 @@ export function PdfCanvas({ document, pageNumber, zoom }: PdfCanvasProps) {
       disposed = true;
       renderTaskRef.current?.cancel();
     };
-  }, [document, pageNumber, zoom]);
+  }, [document, pageNumber, rotation, zoom]);
 
   return (
     <div className="page-canvas-frame" aria-busy={rendering}>
-      {rendering && <div className="canvas-loading">Rendering page…</div>}
+      {rendering && <div className="canvas-loading">Rendering page...</div>}
       <canvas ref={canvasRef} className="pdf-canvas" />
     </div>
   );

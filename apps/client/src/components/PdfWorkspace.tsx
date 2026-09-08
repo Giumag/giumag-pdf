@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import type { BrowserPdfEngine, PageRotation, PageTransform } from '@giumag/pdf-engine';
 import type { LoadedPdf } from '../lib/pdf';
 import { formatBytes } from '../lib/pdf';
 import { PdfCanvas } from './PdfCanvas';
@@ -7,10 +8,17 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   DownloadIcon,
+  ExtractIcon,
   MinusIcon,
+  MoveEarlierIcon,
+  MoveLaterIcon,
   PlusIcon,
+  RedoIcon,
   ReplaceIcon,
+  RotateIcon,
   ShieldIcon,
+  TrashIcon,
+  UndoIcon,
 } from './Icons';
 
 interface PdfWorkspaceProps {
@@ -19,30 +27,346 @@ interface PdfWorkspaceProps {
   onReplace: (file: File) => void;
 }
 
-const MIN_ZOOM = 0.5;
+interface WorkspacePage {
+  id: string;
+  sourceIndex: number;
+  rotation: PageRotation;
+}
+
+interface HistorySnapshot {
+  pages: WorkspacePage[];
+  selectedIds: string[];
+  activeId: string | null;
+}
+
+const MIN_ZOOM = 0.2;
 const MAX_ZOOM = 2.5;
 const ZOOM_STEP = 0.1;
+const HISTORY_LIMIT = 50;
+
+let pdfEnginePromise: Promise<BrowserPdfEngine> | null = null;
+
+function getPdfEngine(): Promise<BrowserPdfEngine> {
+  if (!pdfEnginePromise) {
+    pdfEnginePromise = import('@giumag/pdf-engine').then(
+      ({ BrowserPdfEngine }) => new BrowserPdfEngine(),
+    );
+  }
+
+  return pdfEnginePromise;
+}
+
+function makeInitialPages(count: number): WorkspacePage[] {
+  return Array.from({ length: count }, (_, index) => ({
+    id: `source-page-${index}`,
+    sourceIndex: index,
+    rotation: 0,
+  }));
+}
+
+function transformsFor(pages: WorkspacePage[]): PageTransform[] {
+  return pages.map(({ sourceIndex, rotation }) => ({ sourceIndex, rotation }));
+}
+
+function downloadPdf(bytes: Uint8Array, fileName: string) {
+  const copy = new Uint8Array(bytes.byteLength);
+  copy.set(bytes);
+  const blob = new Blob([copy.buffer], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = fileName;
+  anchor.click();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function outputName(name: string, suffix: string) {
+  const base = name.replace(/\.pdf$/i, '') || 'document';
+  return `${base}-${suffix}.pdf`;
+}
 
 export function PdfWorkspace({ pdf, onClose, onReplace }: PdfWorkspaceProps) {
-  const [pageNumber, setPageNumber] = useState(1);
+
+  const initialPages = useMemo(() => makeInitialPages(pdf.document.numPages), [pdf.document.numPages]);
+  const [pages, setPages] = useState<WorkspacePage[]>(initialPages);
+  const [activeId, setActiveId] = useState<string | null>(initialPages[0]?.id ?? null);
+  const [selectedIds, setSelectedIds] = useState<string[]>(initialPages[0] ? [initialPages[0].id] : []);
+  const [past, setPast] = useState<HistorySnapshot[]>([]);
+  const [future, setFuture] = useState<HistorySnapshot[]>([]);
   const [zoom, setZoom] = useState(1);
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [busyAction, setBusyAction] = useState<'export' | 'extract' | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const selectionAnchorRef = useRef<string | null>(initialPages[0]?.id ?? null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const pageNumbers = useMemo(
-    () => Array.from({ length: pdf.document.numPages }, (_, index) => index + 1),
-    [pdf.document.numPages],
-  );
+  const viewerScrollRef = useRef<HTMLDivElement>(null);
+  const fitRequestRef = useRef(0);
 
   useEffect(() => {
-    setPageNumber(1);
+    const next = makeInitialPages(pdf.document.numPages);
+    setPages(next);
+    setActiveId(next[0]?.id ?? null);
+    setSelectedIds(next[0] ? [next[0].id] : []);
+    setPast([]);
+    setFuture([]);
     setZoom(1);
+    setDraggingId(null);
+    setStatusMessage(null);
+    selectionAnchorRef.current = next[0]?.id ?? null;
   }, [pdf]);
 
+  const activeIndex = Math.max(0, pages.findIndex((page) => page.id === activeId));
+  const activePage = pages[activeIndex] ?? pages[0];
+  const selectedSet = useMemo(() => new Set(selectedIds), [selectedIds]);
+  const selectedPages = useMemo(() => pages.filter((page) => selectedSet.has(page.id)), [pages, selectedSet]);
+  const selectionCount = selectedPages.length;
+  const canRemove = selectionCount > 0 && selectionCount < pages.length;
+  const canMoveEarlier = selectedPages.some((page) => pages.indexOf(page) > 0 && !selectedSet.has(pages[pages.indexOf(page) - 1]?.id));
+  const canMoveLater = selectedPages.some((page) => pages.indexOf(page) < pages.length - 1 && !selectedSet.has(pages[pages.indexOf(page) + 1]?.id));
+
+  async function fitActivePageToWidth() {
+    const container = viewerScrollRef.current;
+    if (!container || !activePage) return;
+
+    const requestId = ++fitRequestRef.current;
+    const page = await pdf.document.getPage(activePage.sourceIndex + 1);
+
+    if (requestId !== fitRequestRef.current) return;
+
+    const rotation = (page.rotate + activePage.rotation) % 360;
+    const viewport = page.getViewport({ scale: 1, rotation });
+    const styles = window.getComputedStyle(container);
+
+    const paddingLeft = Number.parseFloat(styles.paddingLeft) || 0;
+    const paddingRight = Number.parseFloat(styles.paddingRight) || 0;
+    const availableWidth = Math.max(
+      1,
+      container.clientWidth - paddingLeft - paddingRight,
+    );
+
+    const nextZoom = Math.max(
+      MIN_ZOOM,
+      Math.min(1, availableWidth / viewport.width),
+    );
+
+    setZoom(Number(nextZoom.toFixed(3)));
+
+    window.requestAnimationFrame(() => {
+      if (viewerScrollRef.current === container) {
+        container.scrollLeft = 0;
+      }
+    });
+  }
+
+  useEffect(() => {
+    const container = viewerScrollRef.current;
+    if (!container || !activePage) return;
+
+    let frameId = 0;
+
+    function scheduleFit() {
+      if (!window.matchMedia('(max-width: 620px)').matches) return;
+
+      window.cancelAnimationFrame(frameId);
+      frameId = window.requestAnimationFrame(() => {
+        void fitActivePageToWidth();
+      });
+    }
+
+    const observer = new ResizeObserver(scheduleFit);
+    observer.observe(container);
+
+    scheduleFit();
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      fitRequestRef.current += 1;
+      observer.disconnect();
+    };
+  }, [
+    pdf.document,
+    activePage?.sourceIndex,
+    activePage?.rotation,
+  ]);
+
+  function resetZoom() {
+    if (window.matchMedia('(max-width: 620px)').matches) {
+      void fitActivePageToWidth();
+      return;
+    }
+
+    setZoom(1);
+  }
+  function currentSnapshot(): HistorySnapshot {
+    return {
+      pages: pages.map((page) => ({ ...page })),
+      selectedIds: [...selectedIds],
+      activeId,
+    };
+  }
+
+  function commit(nextPages: WorkspacePage[], nextSelectedIds = selectedIds, nextActiveId = activeId) {
+    setPast((history) => [...history.slice(-(HISTORY_LIMIT - 1)), currentSnapshot()]);
+    setFuture([]);
+    setPages(nextPages);
+    setSelectedIds(nextSelectedIds);
+    setActiveId(nextActiveId);
+    setStatusMessage(null);
+  }
+
+  function restore(snapshot: HistorySnapshot) {
+    setPages(snapshot.pages.map((page) => ({ ...page })));
+    setSelectedIds([...snapshot.selectedIds]);
+    setActiveId(snapshot.activeId);
+    selectionAnchorRef.current = snapshot.activeId;
+    setStatusMessage(null);
+  }
+
+  function undo() {
+    const previous = past[past.length - 1];
+    if (!previous) return;
+    setPast(past.slice(0, -1));
+    setFuture([currentSnapshot(), ...future].slice(0, HISTORY_LIMIT));
+    restore(previous);
+  }
+
+  function redo() {
+    const next = future[0];
+    if (!next) return;
+    setFuture(future.slice(1));
+    setPast([...past.slice(-(HISTORY_LIMIT - 1)), currentSnapshot()]);
+    restore(next);
+  }
+
   function setSafePage(next: number) {
-    setPageNumber(Math.max(1, Math.min(pdf.document.numPages, next)));
+    if (pages.length === 0) return;
+    const index = Math.max(0, Math.min(pages.length - 1, next - 1));
+    const page = pages[index];
+    setActiveId(page.id);
+    selectionAnchorRef.current = page.id;
   }
 
   function changeZoom(delta: number) {
     setZoom((current) => Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, Number((current + delta).toFixed(2)))));
+  }
+
+  function selectPage(id: string, index: number, shiftKey: boolean, additive: boolean) {
+    setActiveId(id);
+
+    if (shiftKey && selectionAnchorRef.current) {
+      const anchorIndex = pages.findIndex((page) => page.id === selectionAnchorRef.current);
+      if (anchorIndex >= 0) {
+        const start = Math.min(anchorIndex, index);
+        const end = Math.max(anchorIndex, index);
+        const rangeIds = pages.slice(start, end + 1).map((page) => page.id);
+        setSelectedIds(additive ? [...new Set([...selectedIds, ...rangeIds])] : rangeIds);
+        return;
+      }
+    }
+
+    if (additive) {
+      setSelectedIds((current) => current.includes(id) ? current.filter((selectedId) => selectedId !== id) : [...current, id]);
+      selectionAnchorRef.current = id;
+      return;
+    }
+
+    setSelectedIds([id]);
+    selectionAnchorRef.current = id;
+  }
+
+  function rotateSelected() {
+    if (selectionCount === 0) return;
+    const nextPages = pages.map((page) => selectedSet.has(page.id)
+      ? { ...page, rotation: ((page.rotation + 90) % 360) as PageRotation }
+      : page);
+    commit(nextPages);
+  }
+
+  function removeSelected() {
+    if (!canRemove) return;
+    const oldActiveIndex = activeIndex;
+    const nextPages = pages.filter((page) => !selectedSet.has(page.id));
+    const nextActive = nextPages[Math.min(oldActiveIndex, nextPages.length - 1)] ?? nextPages[0] ?? null;
+    commit(nextPages, nextActive ? [nextActive.id] : [], nextActive?.id ?? null);
+    selectionAnchorRef.current = nextActive?.id ?? null;
+  }
+
+  function moveSelected(direction: -1 | 1) {
+    if (selectionCount === 0) return;
+    const nextPages = [...pages];
+
+    if (direction < 0) {
+      for (let index = 1; index < nextPages.length; index += 1) {
+        if (selectedSet.has(nextPages[index].id) && !selectedSet.has(nextPages[index - 1].id)) {
+          [nextPages[index - 1], nextPages[index]] = [nextPages[index], nextPages[index - 1]];
+        }
+      }
+    } else {
+      for (let index = nextPages.length - 2; index >= 0; index -= 1) {
+        if (selectedSet.has(nextPages[index].id) && !selectedSet.has(nextPages[index + 1].id)) {
+          [nextPages[index], nextPages[index + 1]] = [nextPages[index + 1], nextPages[index]];
+        }
+      }
+    }
+
+    if (nextPages.every((page, index) => page.id === pages[index].id)) return;
+    commit(nextPages);
+  }
+
+  function dropPages(targetId: string) {
+    if (!draggingId || draggingId === targetId) return;
+
+    const movingIds = selectedSet.has(draggingId)
+      ? pages.filter((page) => selectedSet.has(page.id)).map((page) => page.id)
+      : [draggingId];
+    const movingSet = new Set(movingIds);
+    if (movingSet.has(targetId)) return;
+
+    const movingPages = pages.filter((page) => movingSet.has(page.id));
+    const remaining = pages.filter((page) => !movingSet.has(page.id));
+    const targetIndex = remaining.findIndex((page) => page.id === targetId);
+    if (targetIndex < 0) return;
+
+    const nextPages = [
+      ...remaining.slice(0, targetIndex),
+      ...movingPages,
+      ...remaining.slice(targetIndex),
+    ];
+    const nextSelection = movingPages.map((page) => page.id);
+    const nextActiveId = movingSet.has(activeId ?? '') ? activeId : movingPages[0]?.id ?? activeId;
+    commit(nextPages, nextSelection, nextActiveId);
+    selectionAnchorRef.current = nextActiveId;
+  }
+
+  async function exportDocument() {
+    setBusyAction('export');
+    setStatusMessage(null);
+    try {
+      const engine = await getPdfEngine();
+      const bytes = await engine.organize(pdf.bytes, transformsFor(pages));
+      downloadPdf(bytes, outputName(pdf.name, 'organized'));
+      setStatusMessage('Organized PDF exported locally.');
+    } catch (error) {
+      setStatusMessage(error instanceof Error ? error.message : 'Unable to export this PDF.');
+    } finally {
+      setBusyAction(null);
+    }
+  }
+
+  async function extractSelected() {
+    if (selectionCount === 0) return;
+    setBusyAction('extract');
+    setStatusMessage(null);
+    try {
+      const engine = await getPdfEngine();
+      const bytes = await engine.extract(pdf.bytes, transformsFor(selectedPages));
+      downloadPdf(bytes, outputName(pdf.name, selectionCount === 1 ? 'page' : 'pages'));
+      setStatusMessage(`${selectionCount} selected ${selectionCount === 1 ? 'page' : 'pages'} extracted locally.`);
+    } catch (error) {
+      setStatusMessage(error instanceof Error ? error.message : 'Unable to extract the selected pages.');
+    } finally {
+      setBusyAction(null);
+    }
   }
 
   return (
@@ -55,7 +379,7 @@ export function PdfWorkspace({ pdf, onClose, onReplace }: PdfWorkspaceProps) {
 
         <div className="document-title" title={pdf.name}>
           <strong>{pdf.name}</strong>
-          <span><ShieldIcon /> Local document · {pdf.document.numPages} pages · {formatBytes(pdf.size)}</span>
+          <span><ShieldIcon /> Local document · {pages.length} pages · {formatBytes(pdf.size)}</span>
         </div>
 
         <div className="topbar-actions">
@@ -74,9 +398,9 @@ export function PdfWorkspace({ pdf, onClose, onReplace }: PdfWorkspaceProps) {
             <ReplaceIcon />
             <span>Replace</span>
           </button>
-          <button className="primary-button compact-button" type="button" disabled title="Export will be enabled with editing tools">
+          <button className="primary-button compact-button" type="button" disabled={busyAction !== null} onClick={() => void exportDocument()}>
             <DownloadIcon />
-            <span>Export</span>
+            <span>{busyAction === 'export' ? 'Exporting...' : 'Export'}</span>
           </button>
         </div>
       </header>
@@ -84,41 +408,60 @@ export function PdfWorkspace({ pdf, onClose, onReplace }: PdfWorkspaceProps) {
       <div className="workspace-layout">
         <aside className="thumbnail-sidebar" aria-label="Document pages">
           <div className="sidebar-heading">
-            <span>Pages</span>
-            <span className="count-badge">{pdf.document.numPages}</span>
+            <span>{selectionCount > 1 ? `${selectionCount} selected` : 'Pages'}</span>
+            <span className="count-badge">{pages.length}</span>
           </div>
           <div className="thumbnail-list">
-            {pageNumbers.map((number) => (
+            {pages.map((page, index) => (
               <PdfThumbnail
-                key={number}
+                key={page.id}
                 document={pdf.document}
-                pageNumber={number}
-                active={number === pageNumber}
-                onSelect={() => setPageNumber(number)}
+                sourcePageNumber={page.sourceIndex + 1}
+                displayNumber={index + 1}
+                active={page.id === activeId}
+                selected={selectedSet.has(page.id)}
+                rotation={page.rotation}
+                dragging={page.id === draggingId}
+                onSelect={(event) => selectPage(page.id, index, event.shiftKey, event.ctrlKey || event.metaKey)}
+                onDragStart={(event) => {
+                  setDraggingId(page.id);
+                  event.dataTransfer.effectAllowed = 'move';
+                  event.dataTransfer.setData('text/plain', page.id);
+                }}
+                onDragOver={(event) => {
+                  event.preventDefault();
+                  event.dataTransfer.dropEffect = 'move';
+                }}
+                onDrop={(event) => {
+                  event.preventDefault();
+                  dropPages(page.id);
+                  setDraggingId(null);
+                }}
+                onDragEnd={() => setDraggingId(null)}
               />
             ))}
           </div>
         </aside>
 
-        <section className="viewer" aria-label={`Viewing page ${pageNumber} of ${pdf.document.numPages}`}>
+        <section className="viewer" aria-label={`Viewing page ${activeIndex + 1} of ${pages.length}`}>
           <div className="viewer-toolbar glass-surface" role="toolbar" aria-label="PDF viewer controls">
             <div className="toolbar-group">
-              <button type="button" className="toolbar-button" onClick={() => setSafePage(pageNumber - 1)} disabled={pageNumber === 1} aria-label="Previous page">
+              <button type="button" className="toolbar-button" onClick={() => setSafePage(activeIndex)} disabled={activeIndex === 0} aria-label="Previous page">
                 <ChevronLeftIcon />
               </button>
               <div className="page-counter">
                 <input
                   aria-label="Current page"
                   inputMode="numeric"
-                  value={pageNumber}
+                  value={activeIndex + 1}
                   onChange={(event) => {
                     const parsed = Number.parseInt(event.currentTarget.value, 10);
                     if (Number.isFinite(parsed)) setSafePage(parsed);
                   }}
                 />
-                <span>of {pdf.document.numPages}</span>
+                <span>of {pages.length}</span>
               </div>
-              <button type="button" className="toolbar-button" onClick={() => setSafePage(pageNumber + 1)} disabled={pageNumber === pdf.document.numPages} aria-label="Next page">
+              <button type="button" className="toolbar-button" onClick={() => setSafePage(activeIndex + 2)} disabled={activeIndex === pages.length - 1} aria-label="Next page">
                 <ChevronRightIcon />
               </button>
             </div>
@@ -129,16 +472,52 @@ export function PdfWorkspace({ pdf, onClose, onReplace }: PdfWorkspaceProps) {
               <button type="button" className="toolbar-button" onClick={() => changeZoom(-ZOOM_STEP)} disabled={zoom <= MIN_ZOOM} aria-label="Zoom out">
                 <MinusIcon />
               </button>
-              <button type="button" className="zoom-value" onClick={() => setZoom(1)} title="Reset zoom to 100%">{Math.round(zoom * 100)}%</button>
+              <button type="button" className="zoom-value" onClick={resetZoom} title="Reset zoom">{Math.round(zoom * 100)}%</button>
               <button type="button" className="toolbar-button" onClick={() => changeZoom(ZOOM_STEP)} disabled={zoom >= MAX_ZOOM} aria-label="Zoom in">
                 <PlusIcon />
               </button>
             </div>
           </div>
 
-          <div className="viewer-scroll-area">
-            <PdfCanvas document={pdf.document} pageNumber={pageNumber} zoom={zoom} />
+          <div ref={viewerScrollRef} className="viewer-scroll-area organizer-scroll-area">
+            {activePage && (
+              <PdfCanvas
+                document={pdf.document}
+                pageNumber={activePage.sourceIndex + 1}
+                zoom={zoom}
+                rotation={activePage.rotation}
+              />
+            )}
           </div>
+
+          <div className="organizer-toolbar glass-surface" role="toolbar" aria-label="Page organizer controls">
+            <span className="selection-pill">{selectionCount || 0} selected</span>
+            <span className="toolbar-divider" aria-hidden="true" />
+            <button type="button" className="organizer-action" disabled={!canMoveEarlier} onClick={() => moveSelected(-1)} title="Move selected pages earlier">
+              <MoveEarlierIcon /><span>Earlier</span>
+            </button>
+            <button type="button" className="organizer-action" disabled={!canMoveLater} onClick={() => moveSelected(1)} title="Move selected pages later">
+              <MoveLaterIcon /><span>Later</span>
+            </button>
+            <button type="button" className="organizer-action" disabled={selectionCount === 0} onClick={rotateSelected} title="Rotate selected pages clockwise">
+              <RotateIcon /><span>Rotate</span>
+            </button>
+            <button type="button" className="organizer-action" disabled={selectionCount === 0 || busyAction !== null} onClick={() => void extractSelected()} title="Extract selected pages">
+              <ExtractIcon /><span>{busyAction === 'extract' ? 'Extracting...' : 'Extract'}</span>
+            </button>
+            <button type="button" className="organizer-action organizer-danger" disabled={!canRemove} onClick={removeSelected} title={canRemove ? 'Remove selected pages' : 'A PDF must keep at least one page'}>
+              <TrashIcon /><span>Remove</span>
+            </button>
+            <span className="toolbar-divider" aria-hidden="true" />
+            <button type="button" className="organizer-action icon-only-action" disabled={past.length === 0} onClick={undo} title="Undo">
+              <UndoIcon /><span className="visually-hidden">Undo</span>
+            </button>
+            <button type="button" className="organizer-action icon-only-action" disabled={future.length === 0} onClick={redo} title="Redo">
+              <RedoIcon /><span className="visually-hidden">Redo</span>
+            </button>
+          </div>
+
+          {statusMessage && <div className="workspace-status" role="status">{statusMessage}</div>}
         </section>
       </div>
     </main>

@@ -220,10 +220,31 @@ h1 span { background: linear-gradient(110deg, var(--text) 0%, var(--text) 30%, v
   .topbar-actions .secondary-button { display: none; }
   .topbar-actions .primary-button { min-width: 44px; min-height: 44px; padding: 0; }
   .topbar-actions .primary-button span { display: none; }
-  .workspace-layout { grid-template-columns: 1fr; grid-template-rows: minmax(0,1fr) 104px; }
-  .thumbnail-sidebar { order: 2; width: auto; border-right: 0; border-top: 1px solid var(--separator); }
+  .workspace-layout {
+    width: 100%;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0,1fr) 104px;
+  }
+  .thumbnail-sidebar {
+    order: 2;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    border-right: 0;
+    border-top: 1px solid var(--separator);
+  }
   .sidebar-heading { display: none; }
-  .thumbnail-list { display: flex; gap: 5px; overflow-x: auto; overflow-y: hidden; padding: 8px 10px; }
+  .thumbnail-list {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    display: flex;
+    gap: 5px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px 10px;
+  }
   .thumbnail { width: 68px; min-width: 68px; height: 86px; padding: 5px; justify-content: center; }
   .thumbnail-canvas-wrap { width: 54px; min-height: 68px; max-height: 68px; }
   .thumbnail-canvas-wrap canvas { max-width: 48px; max-height: 62px; width: auto !important; height: auto !important; }
@@ -249,4 +270,243 @@ h1 span { background: linear-gradient(110deg, var(--text) 0%, var(--text) 30%, v
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+
+/* Page Organizer v0.4.0-dev */
+.thumbnail { position: relative; user-select: none; }
+.thumbnail-selected { background: color-mix(in srgb, var(--accent-soft) 58%, transparent); }
+.thumbnail-selected::before { content: ""; position: absolute; inset: 4px; border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent); border-radius: 12px; pointer-events: none; }
+.thumbnail-active.thumbnail-selected::before { border-color: color-mix(in srgb, var(--accent) 72%, transparent); }
+.thumbnail-dragging { opacity: .45; transform: scale(.97); }
+.thumbnail[draggable="true"] { cursor: grab; }
+.thumbnail[draggable="true"]:active { cursor: grabbing; }
+
+.organizer-scroll-area { padding-bottom: 126px; }
+.organizer-toolbar { position: absolute; z-index: 14; left: 50%; bottom: 18px; transform: translateX(-50%); min-height: 52px; max-width: calc(100% - 32px); padding: 5px 6px; display: flex; align-items: center; gap: 3px; border-radius: 18px; white-space: nowrap; }
+.selection-pill { min-width: 76px; padding: 0 9px; color: var(--text-tertiary); font-size: 11.5px; font-weight: 650; text-align: center; }
+.organizer-action { min-height: 40px; padding: 0 10px; border: 0; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: transparent; color: var(--text-secondary); cursor: pointer; font-size: 12px; font-weight: 620; transition: background .16s ease, color .16s ease, opacity .16s ease, transform .14s ease; }
+.organizer-action svg { width: 16px; height: 16px; flex: 0 0 auto; }
+.organizer-action:hover:not(:disabled) { background: var(--control-hover); color: var(--text); }
+.organizer-action:active:not(:disabled) { transform: scale(.97); }
+.organizer-action:disabled { opacity: .28; cursor: not-allowed; }
+.organizer-danger:hover:not(:disabled) { color: var(--danger); background: color-mix(in srgb, var(--danger) 9%, transparent); }
+.icon-only-action { width: 40px; padding: 0; }
+.workspace-status { position: absolute; z-index: 13; left: 50%; bottom: 82px; transform: translateX(-50%); max-width: min(520px, calc(100% - 32px)); padding: 8px 12px; border: 1px solid var(--separator); border-radius: 999px; background: color-mix(in srgb, var(--surface-strong) 94%, transparent); -webkit-backdrop-filter: blur(22px) saturate(180%); backdrop-filter: blur(22px) saturate(180%); box-shadow: var(--shadow-sm); color: var(--text-secondary); font-size: 11.5px; font-weight: 580; text-align: center; }
+
+@media (max-width: 900px) {
+  .organizer-toolbar { max-width: calc(100% - 20px); overflow-x: auto; scrollbar-width: none; }
+  .organizer-toolbar::-webkit-scrollbar { display: none; }
+  .organizer-action { padding: 0 8px; }
+  .selection-pill { min-width: 66px; }
+}
+
+@media (max-width: 620px) {
+  .organizer-scroll-area { padding-bottom: 104px; }
+  .organizer-toolbar { bottom: 10px; min-height: 48px; max-width: calc(100% - 16px); border-radius: 16px; }
+  .organizer-action { width: 42px; min-width: 42px; height: 42px; padding: 0; }
+  .organizer-action > span:not(.visually-hidden) { display: none; }
+  .selection-pill { min-width: 58px; padding: 0 6px; font-size: 10.5px; }
+  .workspace-status { bottom: 66px; font-size: 10.5px; }
+  .thumbnail-selected::before { inset: 2px; border-radius: 10px; }
+}
+
+/* GIUMAG PDF MOBILE VIEWER FIX */
+@media (max-width: 620px) {
+  /*
+   * Mobile uses normal document flow instead of floating toolbars.
+   * This prevents clipping, off-screen controls and unstable canvas
+   * positioning inside the scroll container.
+   */
+  .viewer {
+    order: 1;
+    min-width: 0;
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    overflow: hidden;
+  }
+
+  .viewer-toolbar {
+    position: relative;
+    z-index: 12;
+    grid-row: 1;
+
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+
+    transform: none;
+
+    width: auto;
+    min-width: 0;
+    min-height: 44px;
+    max-width: none;
+
+    margin: 8px 8px 0;
+    padding: 3px 4px;
+
+    justify-self: stretch;
+    justify-content: center;
+
+    gap: 2px;
+
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .viewer-toolbar .toolbar-group {
+    flex: 0 0 auto;
+    height: 36px;
+    gap: 1px;
+  }
+
+  .viewer-toolbar .toolbar-button {
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+    padding: 0;
+  }
+
+  .viewer-toolbar .zoom-value {
+    min-width: 48px;
+    height: 36px;
+    padding: 0 5px;
+  }
+
+  .viewer-toolbar .page-counter {
+    min-width: 70px;
+    height: 36px;
+    padding: 0 5px;
+  }
+
+  .viewer-toolbar .page-counter input {
+    width: 25px;
+  }
+
+  .viewer-toolbar .toolbar-divider {
+    height: 20px;
+    margin: 0 1px;
+  }
+
+  /*
+   * Block layout is intentional.
+   *
+   * width:max-content + auto margins:
+   * - centers a page when it fits;
+   * - falls back naturally to the left edge when zoom makes it wider
+   *   than the scroll viewport.
+   */
+  .viewer-scroll-area,
+  .viewer-scroll-area.organizer-scroll-area {
+    grid-row: 2;
+
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+
+    display: block;
+
+    overflow-x: auto;
+    overflow-y: auto;
+    overflow-anchor: none;
+
+    padding: 16px 12px;
+  }
+
+  .page-canvas-frame {
+    width: max-content;
+    max-width: none;
+
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 0;
+    margin-left: auto;
+  }
+
+  /*
+   * Organizer becomes the third grid row instead of an absolute
+   * overlay over the document.
+   */
+  .organizer-toolbar {
+    position: relative;
+    z-index: 14;
+    grid-row: 3;
+
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+
+    transform: none;
+
+    width: auto;
+    min-width: 0;
+    min-height: 46px;
+    max-width: none;
+
+    margin: 0 8px 8px;
+    padding: 3px 4px;
+
+    justify-self: stretch;
+    justify-content: center;
+
+    gap: 2px;
+
+    border-radius: 16px;
+
+    overflow: hidden;
+  }
+
+  .selection-pill {
+    min-width: 50px;
+    padding: 0 3px;
+
+    font-size: 10px;
+  }
+
+  .organizer-action {
+    width: 36px;
+    min-width: 36px;
+
+    height: 36px;
+    min-height: 36px;
+
+    padding: 0;
+  }
+
+  .organizer-action > span:not(.visually-hidden) {
+    display: none;
+  }
+
+  .organizer-action svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .icon-only-action {
+    width: 36px;
+    min-width: 36px;
+  }
+
+  .organizer-toolbar .toolbar-divider {
+    height: 20px;
+    margin: 0;
+  }
+
+  /*
+   * Status remains an overlay, but now sits above the organizer row.
+   */
+  .workspace-status {
+    right: 8px;
+    bottom: 62px;
+    left: 8px;
+
+    width: auto;
+    max-width: none;
+
+    transform: none;
+
+    font-size: 10.5px;
+  }
 }

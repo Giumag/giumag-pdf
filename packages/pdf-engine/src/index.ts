@@ -1,11 +1,28 @@
 import { PDFDocument, degrees } from 'pdf-lib';
 
 export type Bytes = Uint8Array;
+export type PageRotation = 0 | 90 | 180 | 270;
+
+export interface PageTransform {
+  sourceIndex: number;
+  rotation: PageRotation;
+}
 
 export interface PdfEngine {
   merge(files: Bytes[]): Promise<Bytes>;
   rotate(file: Bytes, pageIndexes: number[], clockwiseDegrees: 90 | 180 | 270): Promise<Bytes>;
   removePages(file: Bytes, pageIndexes: number[]): Promise<Bytes>;
+  organize(file: Bytes, pages: PageTransform[]): Promise<Bytes>;
+  extract(file: Bytes, pages: PageTransform[]): Promise<Bytes>;
+}
+
+function validateTransforms(pageCount: number, pages: PageTransform[]) {
+  if (pages.length === 0) throw new Error('A PDF must contain at least one page.');
+  for (const page of pages) {
+    if (!Number.isInteger(page.sourceIndex) || page.sourceIndex < 0 || page.sourceIndex >= pageCount) {
+      throw new Error(`Invalid source page index: ${page.sourceIndex}`);
+    }
+  }
 }
 
 export class BrowserPdfEngine implements PdfEngine {
@@ -36,5 +53,26 @@ export class BrowserPdfEngine implements PdfEngine {
       .sort((a, b) => b - a)
       .forEach((index) => doc.removePage(index));
     return doc.save();
+  }
+
+  async organize(file: Bytes, pages: PageTransform[]): Promise<Bytes> {
+    const source = await PDFDocument.load(file);
+    validateTransforms(source.getPageCount(), pages);
+
+    const output = await PDFDocument.create();
+    const copiedPages = await output.copyPages(source, pages.map((page) => page.sourceIndex));
+
+    copiedPages.forEach((page, index) => {
+      const transform = pages[index];
+      const current = page.getRotation().angle;
+      page.setRotation(degrees((current + transform.rotation) % 360));
+      output.addPage(page);
+    });
+
+    return output.save();
+  }
+
+  async extract(file: Bytes, pages: PageTransform[]): Promise<Bytes> {
+    return this.organize(file, pages);
   }
 }
