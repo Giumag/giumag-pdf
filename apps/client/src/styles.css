@@ -6791,3 +6791,707 @@ h1 span { background: linear-gradient(110deg, var(--text) 0%, var(--text) 30%, v
     font-size: 8px;
   }
 }
+
+/* GIUMAG UX SIMPLIFICATION 0.10.1 */
+
+/*
+ * Progressive disclosure e linguaggio
+ * orientato al risultato.
+ */
+
+.ux-panel-intro {
+  max-width: 42rem;
+  margin: 8px 0 0;
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.ux-title-row {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.ux-badge {
+  min-height: 20px;
+  padding: 0 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: var(--accent);
+  background:
+    color-mix(
+      in srgb,
+      var(--accent) 11%,
+      transparent
+    );
+  font-family: var(--font-ui);
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 720;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.ux-badge.is-neutral {
+  color: var(--text-secondary);
+  background: var(--control);
+}
+
+.ux-field-explainer {
+  margin-top: 9px;
+  padding: 11px 12px;
+  border-radius: 13px;
+  background:
+    color-mix(
+      in srgb,
+      var(--accent-soft) 28%,
+      var(--control)
+    );
+}
+
+.ux-field-explainer > strong,
+.ux-field-explainer > span,
+.ux-field-explainer > small {
+  display: block;
+}
+
+.ux-field-explainer > strong {
+  color: var(--text);
+  font-size: 10.5px;
+  font-weight: 680;
+}
+
+.ux-field-explainer > span {
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 9.5px;
+  line-height: 1.45;
+}
+
+.ux-field-explainer > small {
+  margin-top: 8px;
+  color: var(--text-tertiary);
+  font-size: 8.5px;
+  line-height: 1.45;
+}
+
+.ux-example-row {
+  margin-top: 9px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.ux-example-row span {
+  min-height: 24px;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--separator);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  background: var(--bg-elevated);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 9px;
+}
+
+.ux-simple-result {
+  min-height: 126px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.ux-simple-result > strong {
+  margin-top: 10px;
+}
+
+.ux-recommended-card {
+  margin-top: 17px;
+  padding: 13px;
+  border:
+    1px solid
+    color-mix(
+      in srgb,
+      var(--accent) 16%,
+      var(--separator)
+    );
+  border-radius: 15px;
+  background:
+    color-mix(
+      in srgb,
+      var(--accent-soft) 32%,
+      var(--bg-elevated)
+    );
+}
+
+.ux-recommended-card.is-custom {
+  border-color: var(--separator);
+  background:
+    color-mix(
+      in srgb,
+      var(--control) 62%,
+      var(--bg-elevated)
+    );
+}
+
+.ux-recommended-card > strong,
+.ux-recommended-card > span:not(.ux-badge) {
+  display: block;
+}
+
+.ux-recommended-card > .ux-badge {
+  width: max-content;
+  max-width: 100%;
+  display: inline-flex;
+}
+
+.ux-recommended-card > strong {
+  margin-top: 8px;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.ux-recommended-card > span:not(.ux-badge) {
+  margin-top: 5px;
+  color: var(--text-secondary);
+  font-size: 9.5px;
+  line-height: 1.45;
+}
+
+.ux-inline-action {
+  min-height: 32px;
+  margin-top: 10px;
+  padding: 0 10px;
+  border: 1px solid var(--separator);
+  border-radius: 9px;
+  color: var(--accent);
+  background: var(--bg-elevated);
+  cursor: pointer;
+  font: inherit;
+  font-size: 9px;
+  font-weight: 650;
+}
+
+.ux-inline-action:hover:not(:disabled) {
+  background: var(--control-hover);
+}
+
+.ux-inline-action:disabled {
+  cursor: default;
+  opacity: .42;
+}
+
+/*
+ * Native <details> mantiene tastiera,
+ * screen reader e comportamento browser.
+ */
+
+.ux-advanced {
+  margin-top: 12px;
+  border: 1px solid var(--separator);
+  border-radius: 14px;
+  overflow: hidden;
+  background:
+    color-mix(
+      in srgb,
+      var(--control) 35%,
+      transparent
+    );
+}
+
+.ux-advanced > summary {
+  min-height: 54px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.ux-advanced > summary::-webkit-details-marker {
+  display: none;
+}
+
+.ux-advanced > summary > span:first-child {
+  min-width: 0;
+}
+
+.ux-advanced > summary strong,
+.ux-advanced > summary small {
+  display: block;
+}
+
+.ux-advanced > summary strong {
+  color: var(--text);
+  font-size: 10.5px;
+  font-weight: 670;
+}
+
+.ux-advanced > summary small {
+  margin-top: 3px;
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: 8.5px;
+  font-weight: 500;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+}
+
+.ux-advanced-chevron {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  color: var(--text-tertiary);
+  background:
+    color-mix(
+      in srgb,
+      var(--control) 72%,
+      transparent
+    );
+}
+
+.ux-advanced-chevron::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform:
+    translateY(-2px)
+    rotate(45deg);
+  transition:
+    transform .18s ease;
+}
+
+.ux-advanced[open]
+.ux-advanced-chevron::before {
+  transform:
+    translateY(2px)
+    rotate(225deg);
+}
+
+.ux-advanced-body {
+  padding: 4px 12px 13px;
+  border-top: 1px solid var(--separator);
+}
+
+.ux-advanced-body
+> :first-child {
+  margin-top: 12px;
+}
+
+.ux-advanced > summary:focus-visible,
+.ux-inline-action:focus-visible,
+.pdf-images-format-card:focus-visible {
+  outline:
+    2px solid
+    color-mix(
+      in srgb,
+      var(--accent) 70%,
+      transparent
+    );
+  outline-offset: -2px;
+}
+
+/*
+ * Split
+ */
+
+.split-mode-button
+.ux-title-row {
+  justify-content: flex-start;
+}
+
+.split-mode-button
+.ux-title-row strong {
+  display: inline;
+}
+
+.split-range-field
+.ux-field-explainer {
+  margin-top: 9px;
+}
+
+/*
+ * Images -> PDF
+ */
+
+.images-pdf-settings
+.ux-advanced {
+  margin-top: 11px;
+}
+
+.images-pdf-settings
+.ux-advanced-body
+.images-pdf-field:first-child {
+  margin-top: 12px;
+}
+
+.images-pdf-settings
+.ux-advanced-body
+.images-pdf-field + .images-pdf-field {
+  margin-top: 14px;
+}
+
+/*
+ * PDF -> Images
+ */
+
+.pdf-images-format-grid {
+  margin-top: 17px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 7px;
+}
+
+.pdf-images-format-card {
+  width: 100%;
+  min-height: 72px;
+  padding: 11px 12px;
+  border: 1px solid var(--separator);
+  border-radius: 14px;
+  color: var(--text);
+  background:
+    color-mix(
+      in srgb,
+      var(--control) 45%,
+      transparent
+    );
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color .15s ease,
+    background .15s ease,
+    transform .15s ease;
+}
+
+.pdf-images-format-card:hover:not(:disabled) {
+  border-color: var(--separator-strong);
+  transform: translateY(-1px);
+}
+
+.pdf-images-format-card.is-active {
+  border-color:
+    color-mix(
+      in srgb,
+      var(--accent) 55%,
+      transparent
+    );
+  background:
+    color-mix(
+      in srgb,
+      var(--accent-soft) 45%,
+      var(--bg-elevated)
+    );
+}
+
+.pdf-images-format-card > small {
+  display: block;
+  margin-top: 6px;
+  color: var(--text-tertiary);
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.pdf-images-format-card:disabled {
+  cursor: default;
+  opacity: .5;
+}
+
+.pdf-images-settings
+.ux-advanced {
+  margin-top: 10px;
+}
+
+.pdf-images-resolution-grid button {
+  padding: 5px 2px;
+}
+
+.pdf-images-resolution-grid button strong,
+.pdf-images-resolution-grid button small {
+  display: block;
+}
+
+.pdf-images-resolution-grid button strong {
+  font-size: 10px;
+  font-weight: 680;
+}
+
+.pdf-images-resolution-grid button small {
+  margin-top: 2px;
+  color: var(--text-tertiary);
+  font-size: 7px;
+  font-weight: 540;
+}
+
+.pdf-images-resolution-grid
+button.is-active small {
+  color: var(--accent);
+}
+
+@media (max-width: 620px) {
+  .ux-panel-intro {
+    font-size: 10px;
+  }
+
+  .ux-badge {
+    min-height: 19px;
+    font-size: 7.5px;
+  }
+
+  /*
+   * I target realmente azionabili
+   * rimangono comodi su touch.
+   */
+  .ux-advanced > summary {
+    min-height: 56px;
+  }
+
+  .ux-inline-action {
+    min-height: 40px;
+  }
+
+  .pdf-images-format-card {
+    min-height: 76px;
+  }
+
+  .ux-field-explainer {
+    padding: 10px;
+  }
+
+  .ux-advanced-body {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ux-advanced-chevron,
+  .pdf-images-format-card {
+    transition: none;
+  }
+}
+/* GIUMAG UX SIMPLIFICATION PHASE 2 */
+
+/* Compress */
+
+.compress-preset-topline
+.ux-title-row {
+  min-width: 0;
+  flex: 1;
+}
+
+.compress-preset-topline
+.ux-title-row strong {
+  display: inline;
+}
+
+.compress-preset-card
+.ux-badge {
+  flex: 0 0 auto;
+}
+
+/* Crop */
+
+.crop-measure-details {
+  margin-top: 15px;
+}
+
+.crop-measure-details
+.ux-advanced-body {
+  padding-top: 0;
+}
+
+.crop-measure-details
+.crop-measure-grid {
+  margin-top: 12px;
+}
+
+.crop-apply-choice h2 {
+  margin: 5px 0 0;
+  font-family: var(--font-display);
+  font-size: 21px;
+  line-height: 1.12;
+  letter-spacing: -.024em;
+}
+
+.crop-apply-choice
+.crop-panel-description {
+  margin-top: 7px;
+}
+
+/* Organizer */
+
+.organizer-sidebar-helper {
+  margin:
+    -2px 14px
+    11px;
+  color: var(--text-tertiary);
+  font-size: 9.5px;
+  line-height: 1.42;
+}
+
+.selection-pill.is-empty {
+  color: var(--text-secondary);
+}
+
+@media (max-width: 620px) {
+  .organizer-sidebar-helper {
+    margin:
+      -1px 10px
+      9px;
+    font-size: 9px;
+  }
+
+  .selection-pill.is-empty {
+    min-width: 62px;
+  }
+
+  .crop-apply-choice h2 {
+    font-size: 19px;
+  }
+}
+/* GIUMAG UX HOME CATALOG */
+
+.home-planned-tools {
+  margin-top: 28px;
+  border: 1px solid var(--separator);
+  border-radius: 22px;
+  background:
+    color-mix(
+      in srgb,
+      var(--bg-elevated) 72%,
+      transparent
+    );
+  overflow: hidden;
+}
+
+.home-planned-tools > summary {
+  min-height: 76px;
+  padding: 15px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.home-planned-tools
+> summary::-webkit-details-marker {
+  display: none;
+}
+
+.home-planned-tools
+> summary > span:first-child {
+  min-width: 0;
+}
+
+.home-planned-tools
+> summary strong,
+.home-planned-tools
+> summary small {
+  display: block;
+}
+
+.home-planned-tools
+> summary strong {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -.015em;
+}
+
+.home-planned-tools
+> summary small {
+  margin-top: 4px;
+  color: var(--text-tertiary);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.home-planned-tools[open]
+.ux-advanced-chevron::before {
+  transform:
+    translateY(2px)
+    rotate(225deg);
+}
+
+.home-planned-grid {
+  padding: 0 12px 12px;
+}
+
+.tool-card-planned {
+  position: relative;
+  cursor: default;
+  opacity: .62;
+}
+
+.tool-card-planned:hover {
+  transform: none;
+  border-color: var(--separator);
+  box-shadow:
+    0 1px 0
+    rgba(255,255,255,.03)
+    inset;
+}
+
+.tool-card-planned
+.tool-icon {
+  filter: saturate(.45);
+}
+
+.tool-status-badge {
+  position: absolute;
+  top: 21px;
+  right: 21px;
+  min-height: 22px;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  color: var(--text-tertiary);
+  background: var(--control);
+  font-size: 8px;
+  font-weight: 700;
+}
+
+@media (max-width: 620px) {
+  .home-planned-tools {
+    margin-top: 18px;
+    border-radius: 18px;
+  }
+
+  .home-planned-tools > summary {
+    min-height: 70px;
+    padding: 12px 14px;
+  }
+
+  .home-planned-grid {
+    padding:
+      0
+      8px
+      8px;
+  }
+
+  .tool-status-badge {
+    top: 18px;
+    right: 18px;
+  }
+}

@@ -1111,145 +1111,204 @@ export function PdfToImagesWorkspace({
                       </p>
 
                       <h2>
-                        Formato e qualità
+                        Scegli il formato
                       </h2>
                     </div>
                   </div>
 
-                  <div className="pdf-images-field">
-                    <span>
-                      Formato
-                    </span>
+                  <div
+                    className="pdf-images-format-grid"
+                    role="group"
+                    aria-label="Formato delle immagini"
+                  >
+                    <button
+                      type="button"
+                      className={[
+                        'pdf-images-format-card',
+                        format === 'png'
+                          ? 'is-active'
+                          : '',
+                      ].filter(Boolean).join(' ')}
+                      disabled={busy}
+                      aria-pressed={format === 'png'}
+                      onClick={() => {
+                        setFormat('png');
+                        invalidateResults();
+                      }}
+                    >
+                      <span className="ux-title-row">
+                        <strong>
+                          PNG
+                        </strong>
 
-                    <div className="pdf-images-segmented">
-                      <button
-                        type="button"
-                        className={
-                          format === 'png'
-                            ? 'is-active'
-                            : undefined
-                        }
-                        disabled={busy}
-                        onClick={() => {
-                          setFormat(
-                            'png',
-                          );
-
-                          invalidateResults();
-                        }}
-                      >
-                        PNG
-                      </button>
-
-                      <button
-                        type="button"
-                        className={
-                          format === 'jpeg'
-                            ? 'is-active'
-                            : undefined
-                        }
-                        disabled={busy}
-                        onClick={() => {
-                          setFormat(
-                            'jpeg',
-                          );
-
-                          invalidateResults();
-                        }}
-                      >
-                        JPEG
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="pdf-images-field">
-                    <span className="pdf-images-field-line">
-                      <span>
-                        Risoluzione
+                        <em className="ux-badge">
+                          Documenti
+                        </em>
                       </span>
 
-                      <strong>
-                        {dpi} DPI
-                      </strong>
-                    </span>
+                      <small>
+                        Ideale per testo, scansioni,
+                        schermate e grafica nitida.
+                      </small>
+                    </button>
 
-                    <div className="pdf-images-resolution-grid">
-                      {RESOLUTION_SCALES.map(
-                        (
-                          resolutionScale,
-                        ) => (
-                          <button
-                            key={
-                              resolutionScale
-                            }
-                            type="button"
-                            className={
-                              scale ===
-                              resolutionScale
-                                ? 'is-active'
-                                : undefined
-                            }
+                    <button
+                      type="button"
+                      className={[
+                        'pdf-images-format-card',
+                        format === 'jpeg'
+                          ? 'is-active'
+                          : '',
+                      ].filter(Boolean).join(' ')}
+                      disabled={busy}
+                      aria-pressed={format === 'jpeg'}
+                      onClick={() => {
+                        setFormat('jpeg');
+                        invalidateResults();
+                      }}
+                    >
+                      <span className="ux-title-row">
+                        <strong>
+                          JPEG
+                        </strong>
+
+                        <em className="ux-badge is-neutral">
+                          Più leggero
+                        </em>
+                      </span>
+
+                      <small>
+                        Ideale per fotografie e quando
+                        vuoi file generalmente più piccoli.
+                      </small>
+                    </button>
+                  </div>
+
+<details className="ux-advanced">
+                    <summary>
+                      <span>
+                        <strong>
+                          Impostazioni avanzate
+                        </strong>
+
+                        <small>
+                          Risoluzione {dpi} DPI
+                          {format === 'jpeg'
+                            ? ` · qualità ${Math.round(
+                                jpegQuality * 100,
+                              )}%`
+                            : ''}
+                        </small>
+                      </span>
+
+                      <span className="ux-advanced-chevron" aria-hidden="true" />
+                    </summary>
+
+                    <div className="ux-advanced-body">
+                      <div className="pdf-images-field">
+                        <span className="pdf-images-field-line">
+                          <span>
+                            Risoluzione
+                          </span>
+
+                          <strong>
+                            {dpi} DPI
+                          </strong>
+                        </span>
+
+                        <div className="pdf-images-resolution-grid">
+                          {RESOLUTION_SCALES.map(
+                            (
+                              resolutionScale,
+                            ) => (
+                              <button
+                                key={
+                                  resolutionScale
+                                }
+                                type="button"
+                                className={
+                                  scale ===
+                                  resolutionScale
+                                    ? 'is-active'
+                                    : undefined
+                                }
+                                disabled={busy}
+                                onClick={() => {
+                                  setScale(
+                                    resolutionScale,
+                                  );
+
+                                  invalidateResults();
+                                }}
+                              >
+                                <strong>
+                                  {pdfToImagesDpi(
+                                    resolutionScale,
+                                  )}
+                                </strong>
+
+                                <small>
+                                  {resolutionScale === 2
+                                    ? 'Consigliato'
+                                    : 'DPI'}
+                                </small>
+                              </button>
+                            ),
+                          )}
+                        </div>
+
+                        <small>
+                          144 DPI è un buon equilibrio
+                          tra nitidezza, peso e velocità.
+                        </small>
+                      </div>
+
+                      {format === 'jpeg' && (
+                        <label className="pdf-images-field">
+                          <span className="pdf-images-field-line">
+                            <span>
+                              Qualità JPEG
+                            </span>
+
+                            <strong>
+                              {Math.round(
+                                jpegQuality *
+                                  100,
+                              )}
+                              %
+                            </strong>
+                          </span>
+
+                          <input
+                            type="range"
+                            min="0.5"
+                            max="1"
+                            step="0.05"
+                            value={jpegQuality}
                             disabled={busy}
-                            onClick={() => {
-                              setScale(
-                                resolutionScale,
+                            onChange={(event) => {
+                              setJpegQuality(
+                                Number(
+                                  event.target.value,
+                                ),
                               );
 
                               invalidateResults();
                             }}
-                          >
-                            {pdfToImagesDpi(
-                              resolutionScale,
-                            )}
-                          </button>
-                        ),
+                          />
+
+                          <small>
+                            Più alta = immagine più fedele.
+                            Più bassa = file più leggero.
+                          </small>
+                        </label>
                       )}
                     </div>
-
-                    <small>
-                      DPI dell'immagine esportata.
-                    </small>
-                  </div>
-
-                  {format === 'jpeg' && (
-                    <label className="pdf-images-field">
-                      <span className="pdf-images-field-line">
-                        <span>
-                          Qualità JPEG
-                        </span>
-
-                        <strong>
-                          {Math.round(
-                            jpegQuality *
-                              100,
-                          )}
-                          %
-                        </strong>
-                      </span>
-
-                      <input
-                        type="range"
-                        min="0.5"
-                        max="1"
-                        step="0.05"
-                        value={jpegQuality}
-                        disabled={busy}
-                        onChange={(event) => {
-                          setJpegQuality(
-                            Number(
-                              event.target.value,
-                            ),
-                          );
-
-                          invalidateResults();
-                        }}
-                      />
-                    </label>
-                  )}
+                  </details>
 
                   <div className="pdf-images-summary">
                     <span>
-                      Output
+                      Pronto per l’esportazione
                     </span>
 
                     <strong>
@@ -1261,10 +1320,20 @@ export function PdfToImagesWorkspace({
                     </strong>
 
                     <small>
-                      {format.toUpperCase()}
-                      {' · '}
+                      {format === 'png'
+                        ? 'PNG · nitidezza massima'
+                        : `JPEG · qualità ${Math.round(
+                            jpegQuality * 100,
+                          )}%`}
+                    </small>
+
+                    <small>
                       {dpi}
                       {' DPI'}
+
+                      {selectedCount > 1
+                        ? ' · download in ZIP'
+                        : ' · download diretto'}
                     </small>
 
                     {estimate && (
@@ -1283,7 +1352,7 @@ export function PdfToImagesWorkspace({
                     <div className="pdf-images-progress">
                       <div className="pdf-images-progress-line">
                         <span>
-                          Rendering
+                          Preparazione immagini
                         </span>
 
                         <strong>
@@ -1324,7 +1393,7 @@ export function PdfToImagesWorkspace({
 
                     <span>
                       {exporting
-                        ? 'Esportazione...'
+                        ? 'Preparazione...'
                         : selectedCount === 1
                           ? 'Esporta immagine'
                           : `Esporta ${selectedCount} immagini`}

@@ -598,7 +598,7 @@ export function SplitPdfWorkspace({
           >
             <DownloadIcon />
             <span>
-              {busy ? 'Esportazione...' : 'Dividi ed esporta'}
+              {busy ? 'Divisione...' : 'Dividi PDF'}
             </span>
           </button>
         </div>
@@ -768,18 +768,23 @@ export function SplitPdfWorkspace({
                 <div className="split-panel">
                   <div className="split-panel-heading">
                     <p className="split-panel-kicker">
-                      Modalità
+                      Passo 1
                     </p>
 
                     <h2>
-                      Come vuoi dividerlo?
+                      Cosa vuoi ottenere?
                     </h2>
+
+                    <p className="ux-panel-intro">
+                      Scegli l’opzione che descrive meglio
+                      il risultato che ti serve.
+                    </p>
                   </div>
 
                   <div
                     className="split-mode-grid"
                     role="group"
-                    aria-label="Modalità di divisione"
+                    aria-label="Tipo di divisione"
                   >
                     <button
                       className={[
@@ -802,12 +807,19 @@ export function SplitPdfWorkspace({
                       </span>
 
                       <span>
-                        <strong>
-                          Intervalli personalizzati
-                        </strong>
+                        <span className="ux-title-row">
+                          <strong>
+                            Creare più PDF per gruppi di pagine
+                          </strong>
+
+                          <em className="ux-badge">
+                            Consigliato
+                          </em>
+                        </span>
 
                         <small>
-                          Crea un PDF per ciascun intervallo.
+                          Decidi quali pagine devono restare
+                          insieme in ciascun nuovo PDF.
                         </small>
                       </span>
                     </button>
@@ -834,11 +846,12 @@ export function SplitPdfWorkspace({
 
                       <span>
                         <strong>
-                          Una pagina per PDF
+                          Separare ogni pagina
                         </strong>
 
                         <small>
-                          Genera un file separato per ogni pagina.
+                          Ottieni un PDF distinto per
+                          ciascuna pagina del documento.
                         </small>
                       </span>
                     </button>
@@ -848,20 +861,22 @@ export function SplitPdfWorkspace({
                 <div className="split-panel">
                   <div className="split-panel-heading">
                     <p className="split-panel-kicker">
-                      Impostazioni
+                      {mode === 'ranges'
+                        ? 'Passo 2'
+                        : 'Risultato'}
                     </p>
 
                     <h2>
                       {mode === 'ranges'
-                        ? 'Definisci gli intervalli'
-                        : 'Divisione pagina per pagina'}
+                        ? 'Quali pagine vanno insieme?'
+                        : 'Un file per ogni pagina'}
                     </h2>
                   </div>
 
                   {mode === 'ranges' ? (
                     <div className="split-range-field">
                       <label htmlFor="split-ranges">
-                        Intervalli
+                        Gruppi di pagine
                       </label>
 
                       <input
@@ -873,7 +888,7 @@ export function SplitPdfWorkspace({
                         type="text"
                         value={rangeInput}
                         disabled={controlsDisabled}
-                        placeholder="1-3, 4-7, 8-12"
+                        placeholder="Es. 1-3, 5, 8-10"
                         spellCheck={false}
                         autoComplete="off"
                         aria-invalid={Boolean(planError)}
@@ -884,11 +899,36 @@ export function SplitPdfWorkspace({
                         }}
                       />
 
-                      <span className="split-range-help">
-                        Usa virgole per separare gli output. Puoi
-                        inserire anche una singola pagina, ad esempio
-                        1-3, 5, 8-10.
-                      </span>
+                      <div className="ux-field-explainer">
+                        <strong>
+                          Come funziona
+                        </strong>
+
+                        <span>
+                          Ogni elemento separato da una
+                          virgola diventa un PDF distinto.
+                        </span>
+
+                        <div className="ux-example-row">
+                          <span>
+                            1-3
+                          </span>
+
+                          <span>
+                            5
+                          </span>
+
+                          <span>
+                            8-10
+                          </span>
+                        </div>
+
+                        <small>
+                          Nell’esempio verranno creati
+                          3 PDF: pagine 1-3, pagina 5
+                          e pagine 8-10.
+                        </small>
+                      </div>
 
                       {planError && (
                         <span
@@ -900,18 +940,22 @@ export function SplitPdfWorkspace({
                       )}
                     </div>
                   ) : (
-                    <div className="split-pages-mode-note">
+                    <div className="split-pages-mode-note ux-simple-result">
+                      <span className="ux-badge">
+                        Nessuna configurazione
+                      </span>
+
                       <strong>
-                        {pageCount}
+                        Creeremo {pageCount}
                         {' '}
                         {pageCount === 1
-                          ? 'PDF verrà creato'
-                          : 'PDF verranno creati'}
+                          ? 'PDF'
+                          : 'PDF'}
                       </strong>
 
                       <span>
-                        Ogni file conterrà una sola pagina del
-                        documento originale.
+                        Ogni file conterrà una sola pagina.
+                        Non devi scegliere altro.
                       </span>
                     </div>
                   )}
