@@ -89,9 +89,9 @@ export const UNIVERSAL_TOOLS: ToolDefinition[] = [
     id: 'watermark',
     name: 'Filigrana',
     description:
-      'Aggiungi testo o immagini sopra le pagine del PDF.',
+      'Aggiungi una filigrana testuale alle pagine del PDF.',
     platforms: allPlatforms,
-    status: 'planned',
+    status: 'available',
   },
   {
     id: 'page-numbers',
