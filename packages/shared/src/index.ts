@@ -113,9 +113,9 @@ export const UNIVERSAL_TOOLS: ToolDefinition[] = [
     id: 'protect',
     name: 'Proteggi PDF',
     description:
-      'Proteggi un PDF con password e autorizzazioni.',
+      'Cifra il PDF con una password AES-256 e scegli i permessi.',
     platforms: allPlatforms,
-    status: 'planned',
+    status: 'available',
   },
   {
     id: 'unlock',

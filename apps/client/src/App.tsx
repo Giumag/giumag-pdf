@@ -9,6 +9,7 @@ import { PdfToImagesWorkspace } from './components/PdfToImagesWorkspace';
 import { PageNumbersWorkspace } from './components/PageNumbersWorkspace';
 import { WatermarkWorkspace } from './components/WatermarkWorkspace';
 import { MetadataWorkspace } from './components/MetadataWorkspace';
+import { ProtectPdfWorkspace } from './components/ProtectPdfWorkspace';
 import { CropPdfWorkspace } from './components/CropPdfWorkspace';
 import { MergePdfWorkspace } from './components/MergePdfWorkspace';
 import { PdfWorkspace } from './components/PdfWorkspace';
@@ -25,6 +26,7 @@ type ActiveWorkspace =
   | 'page-numbers'
   | 'watermark'
   | 'metadata'
+  | 'protect'
   | null;
 
 const AVAILABLE_TOOLS =
@@ -125,6 +127,14 @@ export function App() {
   if (activeWorkspace === 'images-to-pdf') {
     return (
       <ImagesToPdfWorkspace
+        onClose={() => setActiveWorkspace(null)}
+      />
+    );
+  }
+
+  if (activeWorkspace === 'protect') {
+    return (
+      <ProtectPdfWorkspace
         onClose={() => setActiveWorkspace(null)}
       />
     );
@@ -325,6 +335,10 @@ export function App() {
 
                     case 'images-to-pdf':
                       setActiveWorkspace('images-to-pdf');
+                      return;
+
+                    case 'protect':
+                      setActiveWorkspace('protect');
                       return;
 
                     case 'metadata':

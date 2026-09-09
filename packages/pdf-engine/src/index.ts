@@ -48,6 +48,33 @@ export interface ImagesToPdfOptions {
   fit?: ImagesPdfFit;
 }
 
+export interface ProtectPdfPermissions {
+  print?: boolean;
+  modify?: boolean;
+  extract?: boolean;
+}
+
+export interface ProtectPdfOptions {
+  password: string;
+  permissions?: ProtectPdfPermissions;
+}
+
+export interface PdfProtectionPermissions {
+  print: boolean;
+  modify: boolean;
+  extract: boolean;
+}
+
+export interface PdfProtectionInfo {
+  encrypted: boolean;
+  requiresPassword: boolean;
+  bits?: number;
+  method?: string;
+  userPasswordMatched?: boolean;
+  ownerPasswordMatched?: boolean;
+  permissions?: PdfProtectionPermissions;
+}
+
 export interface PdfMetadataSummary {
   title?: string;
   author?: string;
@@ -113,6 +140,14 @@ export interface PdfEngine {
   organize(file: Bytes, pages: PageTransform[]): Promise<Bytes>;
   extract(file: Bytes, pages: PageTransform[]): Promise<Bytes>;
   crop(file: Bytes, crops: PageCrop[]): Promise<Bytes>;
+  inspectProtection(
+    file: Bytes,
+    password?: string,
+  ): Promise<PdfProtectionInfo>;
+  protect(
+    file: Bytes,
+    options: ProtectPdfOptions,
+  ): Promise<Bytes>;
   compress(
     file: Bytes,
     preset?: CompressionPreset,
@@ -968,6 +1003,148 @@ function visualToPagePoint(
   }
 }
 
+async function createProtectionToolkit() {
+  const {
+    createPdfToolkit,
+  } =
+    await import(
+      'pdfstudio'
+    );
+
+  return createPdfToolkit();
+}
+
+let protectionToolkitPromise:
+  | ReturnType<
+      typeof createProtectionToolkit
+    >
+  | null = null;
+
+function getProtectionToolkit() {
+  if (!protectionToolkitPromise) {
+    protectionToolkitPromise =
+      createProtectionToolkit();
+  }
+
+  return protectionToolkitPromise;
+}
+
+interface ResolvedProtectPdfOptions {
+  password: string;
+  permissions: Required<ProtectPdfPermissions>;
+}
+
+function validateProtectPdfOptions(
+  options: ProtectPdfOptions,
+): ResolvedProtectPdfOptions {
+  if (
+    options.password.trim().length === 0 ||
+    options.password.length < 8
+  ) {
+    throw new Error(
+      'La password deve contenere almeno 8 caratteri.',
+    );
+  }
+
+  return {
+    password:
+      options.password,
+    permissions: {
+      print:
+        options.permissions?.print ??
+        true,
+      modify:
+        options.permissions?.modify ??
+        true,
+      extract:
+        options.permissions?.extract ??
+        true,
+    },
+  };
+}
+
+function createOwnerPassword() {
+  const cryptoApi =
+    globalThis.crypto;
+
+  if (!cryptoApi?.getRandomValues) {
+    throw new Error(
+      'Impossibile generare in modo sicuro la protezione del PDF.',
+    );
+  }
+
+  const bytes =
+    new Uint8Array(32);
+
+  cryptoApi.getRandomValues(
+    bytes,
+  );
+
+  return Array
+    .from(
+      bytes,
+      (value) =>
+        value
+          .toString(16)
+          .padStart(2, '0'),
+    )
+    .join('');
+}
+
+function protectionInfoFromToolkit(
+  encrypted: boolean,
+  requiresPassword: boolean,
+  info?: {
+    encryption?: {
+      bits: number;
+      method: string;
+      userPasswordMatched: boolean;
+      ownerPasswordMatched: boolean;
+      permissions: {
+        print: boolean;
+        modify: boolean;
+        extract: boolean;
+      };
+    };
+  },
+): PdfProtectionInfo {
+  if (
+    !encrypted ||
+    !info?.encryption
+  ) {
+    return {
+      encrypted,
+      requiresPassword,
+    };
+  }
+
+  return {
+    encrypted,
+    requiresPassword,
+    bits:
+      info.encryption.bits,
+    method:
+      info.encryption.method,
+    userPasswordMatched:
+      info.encryption
+        .userPasswordMatched,
+    ownerPasswordMatched:
+      info.encryption
+        .ownerPasswordMatched,
+    permissions: {
+      print:
+        info.encryption
+          .permissions.print,
+      modify:
+        info.encryption
+          .permissions.modify,
+      extract:
+        info.encryption
+          .permissions.extract,
+    },
+  };
+}
+
 function validateCompressionPreset(
   preset: CompressionPreset,
 ): CompressionPreset {
@@ -1294,6 +1471,155 @@ export class BrowserPdfEngine implements PdfEngine {
     }
 
     return doc.save();
+  }
+
+  async inspectProtection(
+    file: Bytes,
+    password?: string,
+  ): Promise<PdfProtectionInfo> {
+    if (file.byteLength === 0) {
+      throw new Error(
+        'Il PDF da controllare è vuoto.',
+      );
+    }
+
+    const toolkit =
+      await getProtectionToolkit();
+
+    const encrypted =
+      await toolkit.isEncrypted(
+        file,
+      );
+
+    if (!encrypted) {
+      return {
+        encrypted: false,
+        requiresPassword: false,
+      };
+    }
+
+    const requiresPassword =
+      await toolkit.requiresPassword(
+        file,
+      );
+
+    if (password === undefined) {
+      return {
+        encrypted: true,
+        requiresPassword,
+      };
+    }
+
+    const info =
+      await toolkit.getInfo(
+        file,
+        {
+          password,
+        },
+      );
+
+    return protectionInfoFromToolkit(
+      true,
+      requiresPassword,
+      info,
+    );
+  }
+
+  async protect(
+    file: Bytes,
+    options: ProtectPdfOptions,
+  ): Promise<Bytes> {
+    if (file.byteLength === 0) {
+      throw new Error(
+        'Il PDF da proteggere è vuoto.',
+      );
+    }
+
+    const {
+      password,
+      permissions,
+    } =
+      validateProtectPdfOptions(
+        options,
+      );
+
+    const toolkit =
+      await getProtectionToolkit();
+
+    if (
+      await toolkit.isEncrypted(
+        file,
+      )
+    ) {
+      throw new Error(
+        'Il PDF è già protetto da cifratura.',
+      );
+    }
+
+    const output =
+      await toolkit.lock(
+        file,
+        {
+          userPassword:
+            password,
+          ownerPassword:
+            createOwnerPassword(),
+          keyLength: 256,
+          permissions: {
+            print:
+              permissions.print
+                ? 'full'
+                : 'none',
+            modify:
+              permissions.modify
+                ? 'all'
+                : 'none',
+            extract:
+              permissions.extract,
+          },
+        },
+      );
+
+    const verification =
+      await toolkit.getInfo(
+        output,
+        {
+          password,
+        },
+      );
+
+    const encryption =
+      verification.encryption;
+
+    if (
+      !verification.encrypted ||
+      !encryption ||
+      encryption.bits !== 256 ||
+      !encryption.method
+        .toUpperCase()
+        .includes('AES') ||
+      !encryption
+        .userPasswordMatched
+    ) {
+      throw new Error(
+        'La verifica della cifratura AES-256 non è riuscita.',
+      );
+    }
+
+    if (
+      encryption.permissions.print !==
+        permissions.print ||
+      encryption.permissions.modify !==
+        permissions.modify ||
+      encryption.permissions.extract !==
+        permissions.extract
+    ) {
+      throw new Error(
+        'La verifica dei permessi del PDF non è riuscita.',
+      );
+    }
+
+    return output;
   }
 
   async compress(
