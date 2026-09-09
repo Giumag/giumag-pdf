@@ -6,6 +6,7 @@ import { useAutoAdvanceScroll } from './lib/use-auto-advance-scroll';
 import { CompressPdfWorkspace } from './components/CompressPdfWorkspace';
 import { ImagesToPdfWorkspace } from './components/ImagesToPdfWorkspace';
 import { PdfToImagesWorkspace } from './components/PdfToImagesWorkspace';
+import { PageNumbersWorkspace } from './components/PageNumbersWorkspace';
 import { CropPdfWorkspace } from './components/CropPdfWorkspace';
 import { MergePdfWorkspace } from './components/MergePdfWorkspace';
 import { PdfWorkspace } from './components/PdfWorkspace';
@@ -19,6 +20,7 @@ type ActiveWorkspace =
   | 'compress'
   | 'images-to-pdf'
   | 'pdf-to-images'
+  | 'page-numbers'
   | null;
 
 const AVAILABLE_TOOLS =
@@ -119,6 +121,14 @@ export function App() {
   if (activeWorkspace === 'images-to-pdf') {
     return (
       <ImagesToPdfWorkspace
+        onClose={() => setActiveWorkspace(null)}
+      />
+    );
+  }
+
+  if (activeWorkspace === 'page-numbers') {
+    return (
+      <PageNumbersWorkspace
         onClose={() => setActiveWorkspace(null)}
       />
     );
@@ -295,6 +305,10 @@ export function App() {
 
                     case 'images-to-pdf':
                       setActiveWorkspace('images-to-pdf');
+                      return;
+
+                    case 'page-numbers':
+                      setActiveWorkspace('page-numbers');
                       return;
 
                     case 'pdf-to-images':

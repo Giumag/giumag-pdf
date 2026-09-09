@@ -97,9 +97,9 @@ export const UNIVERSAL_TOOLS: ToolDefinition[] = [
     id: 'page-numbers',
     name: 'Numeri di pagina',
     description:
-      'Aggiungi numerazione, intestazioni e piè di pagina.',
+      'Aggiungi una numerazione chiara alle pagine del PDF.',
     platforms: allPlatforms,
-    status: 'planned',
+    status: 'available',
   },
   {
     id: 'forms',
