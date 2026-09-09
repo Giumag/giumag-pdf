@@ -667,7 +667,7 @@ export function CropPdfWorkspace({
             <span>
               {busy
                 ? 'Esportazione...'
-                : 'Esporta ritaglio'}
+                : 'Esporta PDF'}
             </span>
           </button>
         </div>
@@ -948,8 +948,8 @@ export function CropPdfWorkspace({
               </div>
 
               <div className="crop-editor-hint">
-                Trascina il rettangolo per spostarlo.
-                Usa le maniglie per ridimensionarlo.
+                Sposta il rettangolo e trascina le maniglie:
+                tutto ciò che rimane dentro sarà visibile.
               </div>
             </section>
 
@@ -957,72 +957,103 @@ export function CropPdfWorkspace({
               <div className="crop-controls-scroll">
                 <section className="crop-control-section">
                   <p className="crop-panel-kicker">
-                    Pagina {activePageIndex + 1}
+                    Passo 1 · Pagina {activePageIndex + 1}
                   </p>
 
                   <h2>
-                    Area visibile
+                    Scegli cosa mantenere
                   </h2>
 
                   <p className="crop-panel-description">
-                    La parte interna al rettangolo
-                    rimarrà visibile nel PDF esportato.
+                    Regola il rettangolo direttamente
+                    sulla pagina. Tutto ciò che resta
+                    all’interno sarà visibile nel PDF.
                   </p>
 
-                  <div className="crop-measure-grid">
-                    <div>
+                  <details className="ux-advanced crop-measure-details">
+                    <summary>
                       <span>
-                        Sinistra
+                        <strong>
+                          Misure dell’area
+                        </strong>
+
+                        <small>
+                          Mostra i margini esatti
+                        </small>
                       </span>
 
-                      <strong>
-                        {percentage(
-                          draftCrop.x,
-                        )}
-                      </strong>
+                      <span
+                        className="ux-advanced-chevron"
+                        aria-hidden="true"
+                      />
+                    </summary>
+
+                    <div className="ux-advanced-body">
+                      <div className="crop-measure-grid">
+                        <div>
+                          <span>
+                            Sinistra
+                          </span>
+
+                          <strong>
+                            {percentage(
+                              draftCrop.x,
+                            )}
+                          </strong>
+                        </div>
+
+                        <div>
+                          <span>
+                            Alto
+                          </span>
+
+                          <strong>
+                            {percentage(
+                              draftCrop.y,
+                            )}
+                          </strong>
+                        </div>
+
+                        <div>
+                          <span>
+                            Destra
+                          </span>
+
+                          <strong>
+                            {percentage(
+                              rightMargin,
+                            )}
+                          </strong>
+                        </div>
+
+                        <div>
+                          <span>
+                            Basso
+                          </span>
+
+                          <strong>
+                            {percentage(
+                              bottomMargin,
+                            )}
+                          </strong>
+                        </div>
+                      </div>
                     </div>
-
-                    <div>
-                      <span>
-                        Alto
-                      </span>
-
-                      <strong>
-                        {percentage(
-                          draftCrop.y,
-                        )}
-                      </strong>
-                    </div>
-
-                    <div>
-                      <span>
-                        Destra
-                      </span>
-
-                      <strong>
-                        {percentage(
-                          rightMargin,
-                        )}
-                      </strong>
-                    </div>
-
-                    <div>
-                      <span>
-                        Basso
-                      </span>
-
-                      <strong>
-                        {percentage(
-                          bottomMargin,
-                        )}
-                      </strong>
-                    </div>
-                  </div>
+                  </details>
                 </section>
 
-                <section className="crop-control-section">
+                <section className="crop-control-section crop-apply-choice">
                   <p className="crop-panel-kicker">
-                    Applica
+                    Passo 2
+                  </p>
+
+                  <h2>
+                    Dove vuoi applicarlo?
+                  </h2>
+
+                  <p className="crop-panel-description">
+                    Usa “Solo questa pagina” se le pagine
+                    hanno layout diversi.
                   </p>
 
                   <div className="crop-action-stack">
@@ -1039,7 +1070,7 @@ export function CropPdfWorkspace({
                       <ToolIcon id="crop" />
 
                       <span>
-                        Applica a questa pagina
+                        Solo questa pagina
                       </span>
                     </button>
 
@@ -1056,7 +1087,7 @@ export function CropPdfWorkspace({
                       <ToolIcon id="crop" />
 
                       <span>
-                        Applica a tutte
+                        Tutte le {pageCount} pagine
                       </span>
                     </button>
                   </div>
@@ -1064,7 +1095,7 @@ export function CropPdfWorkspace({
 
                 <section className="crop-control-section">
                   <p className="crop-panel-kicker">
-                    Ripristina
+                    Annulla modifiche
                   </p>
 
                   <div className="crop-action-stack">
@@ -1098,7 +1129,7 @@ export function CropPdfWorkspace({
                       <UndoIcon />
 
                       <span>
-                        Ripristina tutte
+                        Ripristina tutto il documento
                       </span>
                     </button>
                   </div>
@@ -1106,7 +1137,7 @@ export function CropPdfWorkspace({
 
                 <section className="crop-control-section crop-summary-section">
                   <span>
-                    Pagine ritagliate
+                    Pagine con ritaglio
                   </span>
 
                   <strong>

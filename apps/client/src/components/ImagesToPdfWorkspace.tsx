@@ -1039,161 +1039,241 @@ export function ImagesToPdfWorkspace({
                 <div className="images-pdf-section-header">
                   <div>
                     <p className="images-pdf-kicker">
-                      Documento
+                      Creazione
                     </p>
 
                     <h2>
-                      Impaginazione
+                      Pronto a creare il PDF
                     </h2>
                   </div>
                 </div>
 
-                <label className="images-pdf-field">
-                  <span>
-                    Formato pagina
-                  </span>
-
-                  <select
-                    value={pageSize}
-                    disabled={busy}
-                    onChange={(event) => {
-                      setPageSize(
-                        event.target.value as ImagesPdfPageSize
-                      );
-
-                      invalidateResult();
-                    }}
-                  >
-                    <option value="a4">
-                      A4
-                    </option>
-
-                    <option value="letter">
-                      Letter
-                    </option>
-
-                    <option value="auto">
-                      Automatico
-                    </option>
-                  </select>
-                </label>
-
-                <label className="images-pdf-field">
-                  <span>
-                    Orientamento
-                  </span>
-
-                  <select
-                    value={orientation}
-                    disabled={busy}
-                    onChange={(event) => {
-                      setOrientation(
-                        event.target.value as ImagesPdfOrientation
-                      );
-
-                      invalidateResult();
-                    }}
-                  >
-                    <option value="auto">
-                      Automatico
-                    </option>
-
-                    <option value="portrait">
-                      Verticale
-                    </option>
-
-                    <option value="landscape">
-                      Orizzontale
-                    </option>
-                  </select>
-                </label>
-
-                <div className="images-pdf-field">
-                  <span>
-                    Adattamento
-                  </span>
-
-                  <div className="images-pdf-segmented">
-                    <button
-                      type="button"
-                      className={
-                        fit === 'contain'
-                          ? 'is-active'
-                          : undefined
-                      }
-                      disabled={busy}
-                      onClick={() => {
-                        setFit('contain');
-                        invalidateResult();
-                      }}
-                    >
-                      Adatta
-                    </button>
-
-                    <button
-                      type="button"
-                      className={
-                        fit === 'cover'
-                          ? 'is-active'
-                          : undefined
-                      }
-                      disabled={busy}
-                      onClick={() => {
-                        setFit('cover');
-                        invalidateResult();
-                      }}
-                    >
-                      Riempi
-                    </button>
-                  </div>
-                </div>
-
-                <label className="images-pdf-field">
-                  <span className="images-pdf-field-line">
-                    <span>
-                      Margini
+                {pageSize === 'a4' &&
+                orientation === 'auto' &&
+                fit === 'contain' &&
+                margin === 24 ? (
+                  <div className="ux-recommended-card">
+                    <span className="ux-badge">
+                      Consigliato
                     </span>
 
                     <strong>
-                      {margin === 0
-                        ? 'Nessuno'
-                        : `${margin} pt`}
+                      Impostazioni equilibrate
                     </strong>
-                  </span>
 
-                  <input
-                    type="range"
-                    min="0"
-                    max="60"
-                    step="6"
-                    value={margin}
-                    disabled={
-                      busy ||
-                      fit === 'cover'
-                    }
-                    onChange={(event) => {
-                      setMargin(
-                        Number(
-                          event.target.value,
-                        ),
-                      );
+                    <span>
+                      A4, orientamento automatico,
+                      immagini intere e margini comodi.
+                      Per la maggior parte dei casi
+                      non serve cambiare nulla.
+                    </span>
+                  </div>
+                ) : (
+                  <div className="ux-recommended-card is-custom">
+                    <span className="ux-badge is-neutral">
+                      Personalizzato
+                    </span>
 
-                      invalidateResult();
-                    }}
-                  />
-                </label>
+                    <strong>
+                      Hai modificato l’impaginazione
+                    </strong>
 
-                {fit === 'cover' && (
-                  <p className="images-pdf-setting-note">
-                    Con “Riempi” l’immagine
-                    raggiunge i bordi della pagina
-                    e i margini vengono ignorati.
-                  </p>
+                    <span>
+                      Il PDF verrà creato usando
+                      le impostazioni che hai scelto.
+                    </span>
+
+                    <button
+                      className="ux-inline-action"
+                      type="button"
+                      disabled={busy}
+                      onClick={() => {
+                        setPageSize('a4');
+                        setOrientation('auto');
+                        setFit('contain');
+                        setMargin(24);
+                        invalidateResult();
+                      }}
+                    >
+                      Ripristina consigliate
+                    </button>
+                  </div>
                 )}
+
+                <details className="ux-advanced">
+                  <summary>
+                    <span>
+                      <strong>
+                        Impostazioni avanzate
+                      </strong>
+
+                      <small>
+                        Formato, orientamento,
+                        adattamento e margini
+                      </small>
+                    </span>
+
+                    <span
+                      className="ux-advanced-chevron"
+                      aria-hidden="true"
+                    />
+                  </summary>
+
+                  <div className="ux-advanced-body">
+                    <label className="images-pdf-field">
+                      <span>
+                        Formato pagina
+                      </span>
+
+                      <select
+                        value={pageSize}
+                        disabled={busy}
+                        onChange={(event) => {
+                          setPageSize(
+                            event.target.value as ImagesPdfPageSize
+                          );
+
+                          invalidateResult();
+                        }}
+                      >
+                        <option value="a4">
+                          A4 — consigliato per documenti
+                        </option>
+
+                        <option value="letter">
+                          Letter
+                        </option>
+
+                        <option value="auto">
+                          Automatico — segue ogni immagine
+                        </option>
+                      </select>
+                    </label>
+
+                    <label className="images-pdf-field">
+                      <span>
+                        Orientamento
+                      </span>
+
+                      <select
+                        value={orientation}
+                        disabled={busy}
+                        onChange={(event) => {
+                          setOrientation(
+                            event.target.value as ImagesPdfOrientation
+                          );
+
+                          invalidateResult();
+                        }}
+                      >
+                        <option value="auto">
+                          Automatico — consigliato
+                        </option>
+
+                        <option value="portrait">
+                          Sempre verticale
+                        </option>
+
+                        <option value="landscape">
+                          Sempre orizzontale
+                        </option>
+                      </select>
+                    </label>
+
+                    <div className="images-pdf-field">
+                      <span>
+                        Come inserire l’immagine
+                      </span>
+
+                      <div className="images-pdf-segmented">
+                        <button
+                          type="button"
+                          className={
+                            fit === 'contain'
+                              ? 'is-active'
+                              : undefined
+                          }
+                          disabled={busy}
+                          onClick={() => {
+                            setFit('contain');
+                            invalidateResult();
+                          }}
+                        >
+                          Adatta intera
+                        </button>
+
+                        <button
+                          type="button"
+                          className={
+                            fit === 'cover'
+                              ? 'is-active'
+                              : undefined
+                          }
+                          disabled={busy}
+                          onClick={() => {
+                            setFit('cover');
+                            invalidateResult();
+                          }}
+                        >
+                          Riempi pagina
+                        </button>
+                      </div>
+
+                      <p className="images-pdf-setting-note">
+                        “Adatta intera” mantiene tutta
+                        l’immagine visibile. “Riempi pagina”
+                        può tagliare leggermente i bordi.
+                      </p>
+                    </div>
+
+                    <label className="images-pdf-field">
+                      <span className="images-pdf-field-line">
+                        <span>
+                          Margini
+                        </span>
+
+                        <strong>
+                          {margin === 0
+                            ? 'Nessuno'
+                            : `${margin} pt`}
+                        </strong>
+                      </span>
+
+                      <input
+                        type="range"
+                        min="0"
+                        max="60"
+                        step="6"
+                        value={margin}
+                        disabled={
+                          busy ||
+                          fit === 'cover'
+                        }
+                        onChange={(event) => {
+                          setMargin(
+                            Number(
+                              event.target.value,
+                            ),
+                          );
+
+                          invalidateResult();
+                        }}
+                      />
+                    </label>
+
+                    {fit === 'cover' && (
+                      <p className="images-pdf-setting-note">
+                        Con “Riempi pagina” l’immagine
+                        raggiunge i bordi e i margini
+                        vengono ignorati.
+                      </p>
+                    )}
+                  </div>
+                </details>
 
                 <div className="images-pdf-summary">
                   <span>
-                    Documento
+                    Il tuo PDF
                   </span>
 
                   <strong>
@@ -1211,9 +1291,24 @@ export function ImagesToPdfWorkspace({
                         ? 'Letter'
                         : 'Formato automatico'}
                     {' · '}
+                    {orientation === 'auto'
+                      ? 'Orientamento automatico'
+                      : orientation === 'portrait'
+                        ? 'Verticale'
+                        : 'Orizzontale'}
+                  </small>
+
+                  <small>
                     {fit === 'contain'
-                      ? 'Adatta'
-                      : 'Riempi'}
+                      ? 'Immagine intera'
+                      : 'Pagina riempita'}
+                    {fit === 'contain'
+                      ? ` · ${
+                          margin === 0
+                            ? 'senza margini'
+                            : `margini ${margin} pt`
+                        }`
+                      : ''}
                   </small>
                 </div>
 

@@ -21,6 +21,18 @@ type ActiveWorkspace =
   | 'pdf-to-images'
   | null;
 
+const AVAILABLE_TOOLS =
+  UNIVERSAL_TOOLS.filter(
+    (tool) =>
+      tool.status === 'available',
+  );
+
+const PLANNED_TOOLS =
+  UNIVERSAL_TOOLS.filter(
+    (tool) =>
+      tool.status === 'planned',
+  );
+
 export function App() {
   useAutoAdvanceScroll();
 
@@ -138,7 +150,7 @@ export function App() {
         <section className="hero">
           <div className="hero-label">
             <LockIcon className="inline-icon" />
-            Privacy integrata nell'architettura
+            Nessun upload dei tuoi PDF
           </div>
 
           <h1>
@@ -148,7 +160,8 @@ export function App() {
           </h1>
 
           <p className="lede">
-            Uno spazio di lavoro PDF veloce per web, desktop e mobile. I tuoi documenti restano sul tuo dispositivo.
+            Unisci, dividi, organizza, ritaglia e converti
+            i PDF direttamente sul tuo dispositivo.
           </p>
 
           <input
@@ -200,8 +213,16 @@ export function App() {
             </div>
 
             <div className="dropzone-copy">
-              <strong>{loading ? 'Apertura documento...' : 'Trascina qui un PDF'}</strong>
-              <span>oppure scegli un documento da questo dispositivo</span>
+              <strong>
+                {loading
+                  ? 'Apertura documento...'
+                  : 'Apri un PDF da organizzare'}
+              </strong>
+
+              <span>
+                Trascinalo qui oppure sceglilo dal dispositivo
+                per riordinare, ruotare, estrarre o rimuovere pagine.
+              </span>
             </div>
 
             <button
@@ -210,7 +231,7 @@ export function App() {
               disabled={loading}
               onClick={() => fileInputRef.current?.click()}
             >
-              {loading ? 'Apertura...' : 'Scegli PDF'}
+              {loading ? 'Apertura...' : 'Apri PDF'}
             </button>
           </div>
 
@@ -227,54 +248,66 @@ export function App() {
           )}
         </section>
 
-        <section aria-labelledby="tools-title" className="tools-section">
+        <section
+          aria-labelledby="tools-title"
+          className="tools-section"
+        >
           <div className="section-heading">
             <div>
-              <p className="section-kicker">Area di lavoro</p>
-              <h2 id="tools-title">Tutto in un unico posto.</h2>
+              <p className="section-kicker">
+                Strumenti pronti
+              </p>
+
+              <h2 id="tools-title">
+                Cosa vuoi fare?
+              </h2>
             </div>
 
             <p>
-              {UNIVERSAL_TOOLS.length} strumenti con elaborazione locale previsti nel piano di sviluppo.
+              {AVAILABLE_TOOLS.length} strumenti già disponibili,
+              tutti con elaborazione locale.
             </p>
           </div>
 
           <div className="tool-grid">
-            {UNIVERSAL_TOOLS.map((tool) => (
+            {AVAILABLE_TOOLS.map((tool) => (
               <button
                 className="tool-card"
                 key={tool.id}
                 type="button"
                 onClick={() => {
-                  if (tool.id === 'merge') {
-                    setActiveWorkspace('merge');
-                    return;
-                  }
+                  switch (tool.id) {
+                    case 'merge':
+                      setActiveWorkspace('merge');
+                      return;
 
-                  if (tool.id === 'split') {
-                    setActiveWorkspace('split');
-                    return;
-                  }
-                  if (tool.id === 'crop') {
-                    setActiveWorkspace('crop');
-                    return;
-                  }
+                    case 'split':
+                      setActiveWorkspace('split');
+                      return;
 
-                  if (tool.id === 'compress') {
-                    setActiveWorkspace('compress');
-                    return;
-                  }
-                  if (tool.id === 'images-to-pdf') {
-                    setActiveWorkspace('images-to-pdf');
-                    return;
-                  }
+                    case 'crop':
+                      setActiveWorkspace('crop');
+                      return;
 
-                  if (tool.id === 'pdf-to-images') {
-                    setActiveWorkspace('pdf-to-images');
-                    return;
-                  }
+                    case 'compress':
+                      setActiveWorkspace('compress');
+                      return;
 
-                  fileInputRef.current?.click();
+                    case 'images-to-pdf':
+                      setActiveWorkspace('images-to-pdf');
+                      return;
+
+                    case 'pdf-to-images':
+                      setActiveWorkspace('pdf-to-images');
+                      return;
+
+                    case 'organize':
+                      fileInputRef.current?.click();
+                      return;
+
+                    default:
+                      return;
+                  }
                 }}
               >
                 <span className="tool-icon">
@@ -282,14 +315,67 @@ export function App() {
                 </span>
 
                 <span className="tool-card-copy">
-                  <strong>{tool.name}</strong>
-                  <span>{tool.description}</span>
+                  <strong>
+                    {tool.name}
+                  </strong>
+
+                  <span>
+                    {tool.description}
+                  </span>
                 </span>
 
                 <ArrowUpRightIcon className="tool-arrow" />
               </button>
             ))}
           </div>
+
+          <details className="home-planned-tools">
+            <summary>
+              <span>
+                <strong>
+                  Altri strumenti in arrivo
+                </strong>
+
+                <small>
+                  {PLANNED_TOOLS.length} funzioni già previste
+                  nella roadmap
+                </small>
+              </span>
+
+              <span
+                className="ux-advanced-chevron"
+                aria-hidden="true"
+              />
+            </summary>
+
+            <div className="tool-grid home-planned-grid">
+              {PLANNED_TOOLS.map((tool) => (
+                <article
+                  className="tool-card tool-card-planned"
+                  key={tool.id}
+                  aria-label={`${tool.name}, in arrivo`}
+                >
+                  <span className="tool-icon">
+                    <ToolIcon id={tool.id} />
+                  </span>
+
+                  <span className="tool-status-badge">
+                    In arrivo
+                  </span>
+
+                  <span className="tool-card-copy">
+                    <strong>
+                      {tool.name}
+                    </strong>
+
+                    <span>
+                      {tool.description}
+                    </span>
+                  </span>
+                </article>
+              ))}
+            </div>
+          </details>
         </section>
       </main>
 

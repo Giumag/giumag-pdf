@@ -34,24 +34,24 @@ interface PresetOption {
 const PRESETS: PresetOption[] = [
   {
     id: 'light',
-    name: 'Leggera',
+    name: 'Qualità migliore',
     description:
-      'Ottimizza struttura e stream senza perdita di qualità.',
-    detail: 'Qualità massima',
+      'Mantiene al massimo la qualità e prova a ridurre il peso senza cambiamenti visivi evidenti.',
+    detail: 'Meno riduzione',
   },
   {
     id: 'recommended',
-    name: 'Consigliata',
+    name: 'Equilibrata',
     description:
-      'Riduce anche le immagini mantenendo un buon equilibrio visivo.',
-    detail: 'Equilibrata',
+      'Riduce il peso mantenendo una buona qualità per documenti, testo e immagini.',
+    detail: 'Qualità e peso',
   },
   {
     id: 'strong',
-    name: 'Forte',
+    name: 'File più piccolo',
     description:
-      'Riduce più decisamente le immagini per ottenere un file più piccolo.',
-    detail: 'File più piccolo',
+      'Riduce maggiormente le immagini quando la priorità è ottenere un PDF più leggero.',
+    detail: 'Più riduzione',
   },
 ];
 
@@ -612,16 +612,27 @@ export function CompressPdfWorkspace({
                 <div className="compress-section-heading">
                   <div>
                     <p className="compress-kicker">
-                      Livello
+                      Scegli il risultato
                     </p>
 
                     <h2 id="compress-preset-title">
-                      Confronta la compressione
+                      Quanto vuoi ridurre il PDF?
                     </h2>
+
+                    <p className="ux-panel-intro">
+                      Se non sai quale scegliere,
+                      usa “Equilibrata”.
+                    </p>
                   </div>
 
                   <span>
-                    {measuredPresetCount} di 3 livelli misurati
+                    {measuredPresetCount > 0
+                      ? `${measuredPresetCount} ${
+                          measuredPresetCount === 1
+                            ? 'risultato confrontato'
+                            : 'risultati confrontati'
+                        }`
+                      : 'Equilibrata è consigliata'}
                   </span>
                 </div>
 
@@ -659,9 +670,17 @@ export function CompressPdfWorkspace({
                         }}
                       >
                         <span className="compress-preset-topline">
-                          <strong>
-                            {option.name}
-                          </strong>
+                          <span className="ux-title-row">
+                            <strong>
+                              {option.name}
+                            </strong>
+
+                            {option.id === 'recommended' && (
+                              <em className="ux-badge">
+                                Consigliato
+                              </em>
+                            )}
+                          </span>
 
                           <small
                             className={
@@ -706,16 +725,16 @@ export function CompressPdfWorkspace({
 
                   <h2>
                     {busy
-                      ? `Compressione ${presetName(preset).toLowerCase()} in corso...`
+                      ? 'Sto comprimendo il PDF...'
                       : activeResult
-                        ? `Ripeti la compressione ${presetName(preset).toLowerCase()}`
-                        : `Prova la compressione ${presetName(preset).toLowerCase()}`}
+                        ? 'Vuoi provare di nuovo?'
+                        : `Comprimi con “${presetName(preset)}”`}
                   </h2>
 
                   <p>
-                    La percentuale mostrata viene
-                    misurata sul file generato, non
-                    stimata in anticipo.
+                    Il risultato reale viene mostrato
+                    prima del download, così puoi
+                    confrontare peso e qualità.
                   </p>
                 </div>
 
@@ -733,8 +752,8 @@ export function CompressPdfWorkspace({
                     {busy
                       ? 'Compressione...'
                       : activeResult
-                        ? 'Ricalcola questo livello'
-                        : 'Calcola risultato'}
+                        ? 'Ricalcola'
+                        : 'Comprimi PDF'}
                   </span>
                 </button>
               </section>

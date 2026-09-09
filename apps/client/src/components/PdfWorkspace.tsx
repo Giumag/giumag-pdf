@@ -400,7 +400,7 @@ export function PdfWorkspace({ pdf, onClose, onReplace }: PdfWorkspaceProps) {
           </button>
           <button className="primary-button compact-button" type="button" disabled={busyAction !== null} onClick={() => void exportDocument()}>
             <DownloadIcon />
-            <span>{busyAction === 'export' ? 'Esportazione...' : 'Esporta'}</span>
+            <span>{busyAction === 'export' ? 'Esportazione...' : 'Esporta PDF'}</span>
           </button>
         </div>
       </header>
@@ -411,6 +411,12 @@ export function PdfWorkspace({ pdf, onClose, onReplace }: PdfWorkspaceProps) {
             <span>{selectionCount > 1 ? `${selectionCount} selezionate` : 'Pagine'}</span>
             <span className="count-badge">{pages.length}</span>
           </div>
+
+          <p className="organizer-sidebar-helper">
+            Seleziona una o più pagine per
+            spostarle, ruotarle, estrarle o rimuoverle.
+          </p>
+
           <div className="thumbnail-list">
             {pages.map((page, index) => (
               <PdfThumbnail
@@ -491,28 +497,41 @@ export function PdfWorkspace({ pdf, onClose, onReplace }: PdfWorkspaceProps) {
           </div>
 
           <div className="organizer-toolbar glass-surface" role="toolbar" aria-label="Controlli organizzazione pagine">
-            <span className="selection-pill">{selectionCount === 1 ? '1 selezionata' : `${selectionCount || 0} selezionate`}</span>
+            <span
+              className={[
+                'selection-pill',
+                selectionCount === 0
+                  ? 'is-empty'
+                  : '',
+              ].filter(Boolean).join(' ')}
+            >
+              {selectionCount === 0
+                ? 'Seleziona'
+                : selectionCount === 1
+                  ? '1 selezionata'
+                  : `${selectionCount} selezionate`}
+            </span>
             <span className="toolbar-divider" aria-hidden="true" />
-            <button type="button" className="organizer-action" disabled={!canMoveEarlier} onClick={() => moveSelected(-1)} title="Sposta prima le pagine selezionate">
+            <button type="button" className="organizer-action" disabled={!canMoveEarlier} onClick={() => moveSelected(-1)} title="Sposta prima le pagine selezionate" aria-label="Sposta prima le pagine selezionate">
               <MoveEarlierIcon /><span>Prima</span>
             </button>
-            <button type="button" className="organizer-action" disabled={!canMoveLater} onClick={() => moveSelected(1)} title="Sposta dopo le pagine selezionate">
+            <button type="button" className="organizer-action" disabled={!canMoveLater} onClick={() => moveSelected(1)} title="Sposta dopo le pagine selezionate" aria-label="Sposta dopo le pagine selezionate">
               <MoveLaterIcon /><span>Dopo</span>
             </button>
-            <button type="button" className="organizer-action" disabled={selectionCount === 0} onClick={rotateSelected} title="Ruota le pagine selezionate in senso orario">
+            <button type="button" className="organizer-action" disabled={selectionCount === 0} onClick={rotateSelected} title="Ruota le pagine selezionate in senso orario" aria-label="Ruota le pagine selezionate">
               <RotateIcon /><span>Ruota</span>
             </button>
-            <button type="button" className="organizer-action" disabled={selectionCount === 0 || busyAction !== null} onClick={() => void extractSelected()} title="Estrai le pagine selezionate">
+            <button type="button" className="organizer-action" disabled={selectionCount === 0 || busyAction !== null} onClick={() => void extractSelected()} title="Estrai le pagine selezionate" aria-label="Estrai le pagine selezionate">
               <ExtractIcon /><span>{busyAction === 'extract' ? 'Estrazione...' : 'Estrai'}</span>
             </button>
-            <button type="button" className="organizer-action organizer-danger" disabled={!canRemove} onClick={removeSelected} title={canRemove ? 'Rimuovi le pagine selezionate' : 'Un PDF deve contenere almeno una pagina'}>
+            <button type="button" className="organizer-action organizer-danger" disabled={!canRemove} onClick={removeSelected} title={canRemove ? 'Rimuovi le pagine selezionate' : 'Un PDF deve contenere almeno una pagina'} aria-label="Rimuovi le pagine selezionate">
               <TrashIcon /><span>Rimuovi</span>
             </button>
             <span className="toolbar-divider" aria-hidden="true" />
-            <button type="button" className="organizer-action icon-only-action" disabled={past.length === 0} onClick={undo} title="Annulla">
+            <button type="button" className="organizer-action icon-only-action" disabled={past.length === 0} onClick={undo} title="Annulla" aria-label="Annulla ultima modifica">
               <UndoIcon /><span className="visually-hidden">Annulla</span>
             </button>
-            <button type="button" className="organizer-action icon-only-action" disabled={future.length === 0} onClick={redo} title="Ripeti">
+            <button type="button" className="organizer-action icon-only-action" disabled={future.length === 0} onClick={redo} title="Ripeti" aria-label="Ripeti ultima modifica">
               <RedoIcon /><span className="visually-hidden">Ripeti</span>
             </button>
           </div>

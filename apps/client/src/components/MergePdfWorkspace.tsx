@@ -318,7 +318,7 @@ export function MergePdfWorkspace({ onClose }: MergePdfWorkspaceProps) {
             onClick={() => void mergeAndExport()}
           >
             <DownloadIcon />
-            <span>{busy ? 'Unione...' : 'Unisci ed esporta'}</span>
+            <span>{busy ? 'Unione...' : 'Unisci PDF'}</span>
           </button>
         </div>
       </header>
@@ -389,7 +389,7 @@ export function MergePdfWorkspace({ onClose }: MergePdfWorkspaceProps) {
                 disabled={loading}
                 onClick={() => fileInputRef.current?.click()}
               >
-                {loading ? 'Opening...' : 'Scegli PDF'}
+                {loading ? 'Apertura...' : 'Scegli PDF'}
               </button>
             </section>
           ) : (
