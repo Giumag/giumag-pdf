@@ -50,6 +50,24 @@ export interface PageNumberOptions {
   margin?: number;
 }
 
+export type WatermarkPosition =
+  | 'center'
+  | 'top-left'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-right';
+
+export interface TextWatermarkOptions {
+  text: string;
+  position?: WatermarkPosition;
+  fontSize?: number;
+  opacity?: number;
+  rotation?: number;
+  margin?: number;
+  firstPage?: number;
+  lastPage?: number;
+}
+
 export interface PageTransform {
   sourceIndex: number;
   rotation: PageRotation;
@@ -73,6 +91,10 @@ export interface PdfEngine {
   compress(
     file: Bytes,
     preset?: CompressionPreset,
+  ): Promise<Bytes>;
+  addTextWatermark(
+    file: Bytes,
+    options: TextWatermarkOptions,
   ): Promise<Bytes>;
   addPageNumbers(
     file: Bytes,
@@ -127,6 +149,296 @@ function validateCrop(pageCount: number, crop: PageCrop) {
       'L?area di ritaglio deve avere larghezza e altezza maggiori di zero.',
     );
   }
+}
+
+interface ResolvedTextWatermarkOptions {
+  text: string;
+  position: WatermarkPosition;
+  fontSize: number;
+  opacity: number;
+  rotation: number;
+  margin: number;
+  firstPage: number;
+  lastPage: number;
+}
+
+function validateTextWatermarkOptions(
+  options: TextWatermarkOptions,
+  pageCount: number,
+): ResolvedTextWatermarkOptions {
+  const text =
+    options.text.trim();
+
+  const position =
+    options.position ?? 'center';
+
+  const fontSize =
+    options.fontSize ?? 48;
+
+  const opacity =
+    options.opacity ?? 0.18;
+
+  const rotation =
+    options.rotation ?? -35;
+
+  const margin =
+    options.margin ?? 32;
+
+  const firstPage =
+    options.firstPage ?? 1;
+
+  const lastPage =
+    options.lastPage ?? pageCount;
+
+  if (text.length === 0) {
+    throw new Error(
+      'Scrivi il testo della filigrana.',
+    );
+  }
+
+  if (text.length > 120) {
+    throw new Error(
+      'La filigrana può contenere al massimo 120 caratteri.',
+    );
+  }
+
+  if (
+    position !== 'center' &&
+    position !== 'top-left' &&
+    position !== 'top-right' &&
+    position !== 'bottom-left' &&
+    position !== 'bottom-right'
+  ) {
+    throw new Error(
+      'Posizione della filigrana non valida.',
+    );
+  }
+
+  if (
+    !Number.isFinite(fontSize) ||
+    fontSize < 12 ||
+    fontSize > 144
+  ) {
+    throw new Error(
+      'La dimensione della filigrana deve essere compresa tra 12 e 144.',
+    );
+  }
+
+  if (
+    !Number.isFinite(opacity) ||
+    opacity < 0.05 ||
+    opacity > 1
+  ) {
+    throw new Error(
+      'L’opacità della filigrana deve essere compresa tra 5% e 100%.',
+    );
+  }
+
+  if (
+    !Number.isFinite(rotation) ||
+    rotation < -180 ||
+    rotation > 180
+  ) {
+    throw new Error(
+      'La rotazione della filigrana deve essere compresa tra -180° e 180°.',
+    );
+  }
+
+  if (
+    !Number.isFinite(margin) ||
+    margin < 0 ||
+    margin > 144
+  ) {
+    throw new Error(
+      'Il margine della filigrana deve essere compreso tra 0 e 144 punti.',
+    );
+  }
+
+  if (
+    !Number.isInteger(firstPage) ||
+    firstPage < 1 ||
+    firstPage > pageCount
+  ) {
+    throw new Error(
+      'La prima pagina della filigrana non è valida.',
+    );
+  }
+
+  if (
+    !Number.isInteger(lastPage) ||
+    lastPage < 1 ||
+    lastPage > pageCount
+  ) {
+    throw new Error(
+      'L’ultima pagina della filigrana non è valida.',
+    );
+  }
+
+  if (firstPage > lastPage) {
+    throw new Error(
+      'La prima pagina non può venire dopo l’ultima.',
+    );
+  }
+
+  return {
+    text,
+    position,
+    fontSize,
+    opacity,
+    rotation,
+    margin,
+    firstPage,
+    lastPage,
+  };
+}
+
+function rotatedRectangleSize(
+  width: number,
+  height: number,
+  angleDegrees: number,
+) {
+  const radians =
+    angleDegrees *
+    Math.PI /
+    180;
+
+  const cosine =
+    Math.abs(
+      Math.cos(radians),
+    );
+
+  const sine =
+    Math.abs(
+      Math.sin(radians),
+    );
+
+  return {
+    width:
+      width * cosine +
+      height * sine,
+    height:
+      width * sine +
+      height * cosine,
+  };
+}
+
+function watermarkVisualCenter(
+  position: WatermarkPosition,
+  pageWidth: number,
+  pageHeight: number,
+  boxWidth: number,
+  boxHeight: number,
+  margin: number,
+) {
+  const halfWidth =
+    boxWidth / 2;
+
+  const halfHeight =
+    boxHeight / 2;
+
+  const left =
+    Math.min(
+      pageWidth - halfWidth,
+      Math.max(
+        halfWidth,
+        margin + halfWidth,
+      ),
+    );
+
+  const right =
+    Math.max(
+      halfWidth,
+      Math.min(
+        pageWidth - halfWidth,
+        pageWidth - margin - halfWidth,
+      ),
+    );
+
+  const bottom =
+    Math.min(
+      pageHeight - halfHeight,
+      Math.max(
+        halfHeight,
+        margin + halfHeight,
+      ),
+    );
+
+  const top =
+    Math.max(
+      halfHeight,
+      Math.min(
+        pageHeight - halfHeight,
+        pageHeight - margin - halfHeight,
+      ),
+    );
+
+  switch (position) {
+    case 'top-left':
+      return {
+        x: left,
+        y: top,
+      };
+
+    case 'top-right':
+      return {
+        x: right,
+        y: top,
+      };
+
+    case 'bottom-left':
+      return {
+        x: left,
+        y: bottom,
+      };
+
+    case 'bottom-right':
+      return {
+        x: right,
+        y: bottom,
+      };
+
+    default:
+      return {
+        x: pageWidth / 2,
+        y: pageHeight / 2,
+      };
+  }
+}
+
+function textOriginFromCenter(
+  centerX: number,
+  centerY: number,
+  textWidth: number,
+  textHeight: number,
+  rotationDegrees: number,
+) {
+  const radians =
+    rotationDegrees *
+    Math.PI /
+    180;
+
+  const halfWidth =
+    textWidth / 2;
+
+  const halfHeight =
+    textHeight / 2;
+
+  const offsetX =
+    halfWidth *
+      Math.cos(radians) -
+    halfHeight *
+      Math.sin(radians);
+
+  const offsetY =
+    halfWidth *
+      Math.sin(radians) +
+    halfHeight *
+      Math.cos(radians);
+
+  return {
+    x: centerX - offsetX,
+    y: centerY - offsetY,
+  };
 }
 
 interface ResolvedPageNumberOptions {
@@ -692,6 +1004,165 @@ export class BrowserPdfEngine implements PdfEngine {
       [imageOptimized],
       qpdfCompressionArgs(selectedPreset),
     );
+  }
+
+  async addTextWatermark(
+    file: Bytes,
+    options: TextWatermarkOptions,
+  ): Promise<Bytes> {
+    if (file.byteLength === 0) {
+      throw new Error(
+        'Il PDF da filigranare è vuoto.',
+      );
+    }
+
+    const doc =
+      await PDFDocument.load(file);
+
+    const pageCount =
+      doc.getPageCount();
+
+    if (pageCount === 0) {
+      throw new Error(
+        'Il PDF non contiene pagine.',
+      );
+    }
+
+    const {
+      text,
+      position,
+      fontSize,
+      opacity,
+      rotation,
+      margin,
+      firstPage,
+      lastPage,
+    } = validateTextWatermarkOptions(
+      options,
+      pageCount,
+    );
+
+    const font =
+      await doc.embedFont(
+        StandardFonts.HelveticaBold,
+      );
+
+    let textWidth: number;
+
+    try {
+      textWidth =
+        font.widthOfTextAtSize(
+          text,
+          fontSize,
+        );
+    }
+    catch {
+      throw new Error(
+        'Il testo della filigrana contiene caratteri non supportati.',
+      );
+    }
+
+    const textHeight =
+      fontSize;
+
+    const visualBox =
+      rotatedRectangleSize(
+        textWidth,
+        textHeight,
+        rotation,
+      );
+
+    const pages =
+      doc.getPages();
+
+    for (
+      let pageIndex = firstPage - 1;
+      pageIndex < lastPage;
+      pageIndex += 1
+    ) {
+      const page =
+        pages[pageIndex];
+
+      const pageWidth =
+        page.getWidth();
+
+      const pageHeight =
+        page.getHeight();
+
+      const pageRotation =
+        normalizeQuarterRotation(
+          page.getRotation().angle,
+        );
+
+      const visualSize =
+        visualPageSize(
+          pageWidth,
+          pageHeight,
+          pageRotation,
+        );
+
+      const visualCenter =
+        watermarkVisualCenter(
+          position,
+          visualSize.width,
+          visualSize.height,
+          visualBox.width,
+          visualBox.height,
+          margin,
+        );
+
+      const pageCenter =
+        visualToPagePoint(
+          visualCenter.x,
+          visualCenter.y,
+          pageWidth,
+          pageHeight,
+          pageRotation,
+        );
+
+      const contentRotation =
+        pageRotation +
+        rotation;
+
+      const origin =
+        textOriginFromCenter(
+          pageCenter.x,
+          pageCenter.y,
+          textWidth,
+          textHeight,
+          contentRotation,
+        );
+
+      try {
+        page.drawText(
+          text,
+          {
+            x: origin.x,
+            y: origin.y,
+            size: fontSize,
+            font,
+            color:
+              rgb(
+                0.24,
+                0.24,
+                0.27,
+              ),
+            opacity,
+            rotate:
+              degrees(
+                contentRotation,
+              ),
+          },
+        );
+      }
+      catch {
+        throw new Error(
+          'Impossibile disegnare il testo della filigrana.',
+        );
+      }
+    }
+
+    return doc.save();
   }
 
   async addPageNumbers(
