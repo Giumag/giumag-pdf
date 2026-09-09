@@ -145,9 +145,9 @@ export const UNIVERSAL_TOOLS: ToolDefinition[] = [
     id: 'metadata',
     name: 'Rimuovi metadati',
     description:
-      'Controlla e rimuovi le informazioni nascoste nel file.',
+      'Rimuovi proprietà, XMP e identificatori nascosti dal PDF.',
     platforms: allPlatforms,
-    status: 'planned',
+    status: 'available',
   },
   {
     id: 'compare',

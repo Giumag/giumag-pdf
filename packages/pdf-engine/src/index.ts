@@ -1,4 +1,15 @@
-import { PDFDocument, StandardFonts, degrees, rgb } from 'pdf-lib';
+import {
+  PDFDict,
+  PDFDocument,
+  PDFHexString,
+  PDFName,
+  PDFRef,
+  PDFStream,
+  PDFString,
+  StandardFonts,
+  degrees,
+  rgb,
+} from 'pdf-lib';
 
 export type Bytes = Uint8Array;
 export type PageRotation = 0 | 90 | 180 | 270;
@@ -35,6 +46,20 @@ export interface ImagesToPdfOptions {
   orientation?: ImagesPdfOrientation;
   margin?: number;
   fit?: ImagesPdfFit;
+}
+
+export interface PdfMetadataSummary {
+  title?: string;
+  author?: string;
+  subject?: string;
+  keywords?: string;
+  creator?: string;
+  producer?: string;
+  creationDate?: string;
+  modificationDate?: string;
+  infoFieldCount: number;
+  xmpMetadataCount: number;
+  hasDocumentId: boolean;
 }
 
 export type PageNumberPosition =
@@ -92,6 +117,12 @@ export interface PdfEngine {
     file: Bytes,
     preset?: CompressionPreset,
   ): Promise<Bytes>;
+  inspectMetadata(
+    file: Bytes,
+  ): Promise<PdfMetadataSummary>;
+  removeMetadata(
+    file: Bytes,
+  ): Promise<Bytes>;
   addTextWatermark(
     file: Bytes,
     options: TextWatermarkOptions,
@@ -148,6 +179,301 @@ function validateCrop(pageCount: number, crop: PageCrop) {
     throw new Error(
       'L?area di ritaglio deve avere larghezza e altezza maggiori di zero.',
     );
+  }
+}
+
+function metadataInfoDictionary(
+  doc: PDFDocument,
+): PDFDict | undefined {
+  const info =
+    doc.context.lookup(
+      doc.context.trailerInfo.Info,
+    );
+
+  return info instanceof PDFDict
+    ? info
+    : undefined;
+}
+
+function metadataTextValue(
+  info: PDFDict | undefined,
+  key: string,
+) {
+  if (!info) {
+    return undefined;
+  }
+
+  const value =
+    info.lookup(
+      PDFName.of(key),
+    );
+
+  if (
+    !(value instanceof PDFString) &&
+    !(value instanceof PDFHexString)
+  ) {
+    return undefined;
+  }
+
+  try {
+    const text =
+      value.decodeText().trim();
+
+    return text || undefined;
+  }
+  catch {
+    return undefined;
+  }
+}
+
+function metadataDateValue(
+  info: PDFDict | undefined,
+  key: string,
+) {
+  if (!info) {
+    return undefined;
+  }
+
+  const value =
+    info.lookup(
+      PDFName.of(key),
+    );
+
+  if (
+    !(value instanceof PDFString) &&
+    !(value instanceof PDFHexString)
+  ) {
+    return undefined;
+  }
+
+  try {
+    return value
+      .decodeDate()
+      .toISOString();
+  }
+  catch {
+    return undefined;
+  }
+}
+
+function metadataDictionaryForObject(
+  object: unknown,
+): PDFDict | undefined {
+  if (object instanceof PDFDict) {
+    return object;
+  }
+
+  if (object instanceof PDFStream) {
+    return object.dict;
+  }
+
+  return undefined;
+}
+
+function isMetadataStream(
+  object: unknown,
+) {
+  if (!(object instanceof PDFStream)) {
+    return false;
+  }
+
+  return (
+    object.dict
+      .get(PDFName.of('Type'))
+      ?.toString() ===
+    '/Metadata'
+  );
+}
+
+function xmpMetadataReferences(
+  doc: PDFDocument,
+) {
+  const references =
+    new Map<string, PDFRef>();
+
+  let directCount = 0;
+
+  const metadataKey =
+    PDFName.of('Metadata');
+
+  for (
+    const [ref, object]
+    of doc.context.enumerateIndirectObjects()
+  ) {
+    if (isMetadataStream(object)) {
+      references.set(
+        ref.toString(),
+        ref,
+      );
+    }
+
+    const dict =
+      metadataDictionaryForObject(
+        object,
+      );
+
+    if (!dict) {
+      continue;
+    }
+
+    const metadata =
+      dict.get(metadataKey);
+
+    if (metadata instanceof PDFRef) {
+      references.set(
+        metadata.toString(),
+        metadata,
+      );
+    }
+    else if (
+      metadata instanceof PDFStream
+    ) {
+      directCount += 1;
+    }
+  }
+
+  return {
+    references,
+    directCount,
+  };
+}
+
+function inspectPdfMetadataDocument(
+  doc: PDFDocument,
+): PdfMetadataSummary {
+  const info =
+    metadataInfoDictionary(doc);
+
+  const {
+    references,
+    directCount,
+  } = xmpMetadataReferences(doc);
+
+  return {
+    title:
+      metadataTextValue(
+        info,
+        'Title',
+      ),
+    author:
+      metadataTextValue(
+        info,
+        'Author',
+      ),
+    subject:
+      metadataTextValue(
+        info,
+        'Subject',
+      ),
+    keywords:
+      metadataTextValue(
+        info,
+        'Keywords',
+      ),
+    creator:
+      metadataTextValue(
+        info,
+        'Creator',
+      ),
+    producer:
+      metadataTextValue(
+        info,
+        'Producer',
+      ),
+    creationDate:
+      metadataDateValue(
+        info,
+        'CreationDate',
+      ),
+    modificationDate:
+      metadataDateValue(
+        info,
+        'ModDate',
+      ),
+    infoFieldCount:
+      info?.entries().length ?? 0,
+    xmpMetadataCount:
+      references.size +
+      directCount,
+    hasDocumentId:
+      doc.context.trailerInfo.ID !==
+      undefined,
+  };
+}
+
+function stripPdfMetadataDocument(
+  doc: PDFDocument,
+) {
+  const referencesToDelete =
+    new Map<string, PDFRef>();
+
+  const info =
+    doc.context.trailerInfo.Info;
+
+  if (info instanceof PDFRef) {
+    referencesToDelete.set(
+      info.toString(),
+      info,
+    );
+  }
+
+  const documentId =
+    doc.context.trailerInfo.ID;
+
+  if (documentId instanceof PDFRef) {
+    referencesToDelete.set(
+      documentId.toString(),
+      documentId,
+    );
+  }
+
+  doc.context.trailerInfo.Info =
+    undefined;
+
+  doc.context.trailerInfo.ID =
+    undefined;
+
+  const metadataKey =
+    PDFName.of('Metadata');
+
+  for (
+    const [ref, object]
+    of doc.context.enumerateIndirectObjects()
+  ) {
+    if (isMetadataStream(object)) {
+      referencesToDelete.set(
+        ref.toString(),
+        ref,
+      );
+    }
+
+    const dict =
+      metadataDictionaryForObject(
+        object,
+      );
+
+    if (!dict) {
+      continue;
+    }
+
+    const metadata =
+      dict.get(metadataKey);
+
+    if (metadata instanceof PDFRef) {
+      referencesToDelete.set(
+        metadata.toString(),
+        metadata,
+      );
+    }
+
+    dict.delete(metadataKey);
+  }
+
+  for (
+    const ref
+    of referencesToDelete.values()
+  ) {
+    doc.context.delete(ref);
   }
 }
 
@@ -1004,6 +1330,52 @@ export class BrowserPdfEngine implements PdfEngine {
       [imageOptimized],
       qpdfCompressionArgs(selectedPreset),
     );
+  }
+
+  async inspectMetadata(
+    file: Bytes,
+  ): Promise<PdfMetadataSummary> {
+    if (file.byteLength === 0) {
+      throw new Error(
+        'Il PDF da controllare è vuoto.',
+      );
+    }
+
+    const doc =
+      await PDFDocument.load(
+        file,
+        {
+          updateMetadata: false,
+        },
+      );
+
+    return inspectPdfMetadataDocument(
+      doc,
+    );
+  }
+
+  async removeMetadata(
+    file: Bytes,
+  ): Promise<Bytes> {
+    if (file.byteLength === 0) {
+      throw new Error(
+        'Il PDF da pulire è vuoto.',
+      );
+    }
+
+    const doc =
+      await PDFDocument.load(
+        file,
+        {
+          updateMetadata: false,
+        },
+      );
+
+    stripPdfMetadataDocument(
+      doc,
+    );
+
+    return doc.save();
   }
 
   async addTextWatermark(
