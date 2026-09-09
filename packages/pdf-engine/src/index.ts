@@ -1,4 +1,4 @@
-import { PDFDocument, degrees } from 'pdf-lib';
+import { PDFDocument, StandardFonts, degrees, rgb } from 'pdf-lib';
 
 export type Bytes = Uint8Array;
 export type PageRotation = 0 | 90 | 180 | 270;
@@ -37,6 +37,19 @@ export interface ImagesToPdfOptions {
   fit?: ImagesPdfFit;
 }
 
+export type PageNumberPosition =
+  | 'bottom-left'
+  | 'bottom-center'
+  | 'bottom-right';
+
+export interface PageNumberOptions {
+  position?: PageNumberPosition;
+  firstPage?: number;
+  startNumber?: number;
+  fontSize?: number;
+  margin?: number;
+}
+
 export interface PageTransform {
   sourceIndex: number;
   rotation: PageRotation;
@@ -60,6 +73,10 @@ export interface PdfEngine {
   compress(
     file: Bytes,
     preset?: CompressionPreset,
+  ): Promise<Bytes>;
+  addPageNumbers(
+    file: Bytes,
+    options?: PageNumberOptions,
   ): Promise<Bytes>;
   imagesToPdf(
     images: PdfImageSource[],
@@ -109,6 +126,207 @@ function validateCrop(pageCount: number, crop: PageCrop) {
     throw new Error(
       'L?area di ritaglio deve avere larghezza e altezza maggiori di zero.',
     );
+  }
+}
+
+interface ResolvedPageNumberOptions {
+  position: PageNumberPosition;
+  firstPage: number;
+  startNumber: number;
+  fontSize: number;
+  margin: number;
+}
+
+function validatePageNumberOptions(
+  options: PageNumberOptions,
+  pageCount: number,
+): ResolvedPageNumberOptions {
+  const position =
+    options.position ?? 'bottom-center';
+
+  const firstPage =
+    options.firstPage ?? 1;
+
+  const startNumber =
+    options.startNumber ?? 1;
+
+  const fontSize =
+    options.fontSize ?? 11;
+
+  const margin =
+    options.margin ?? 24;
+
+  if (
+    position !== 'bottom-left' &&
+    position !== 'bottom-center' &&
+    position !== 'bottom-right'
+  ) {
+    throw new Error(
+      'Posizione dei numeri di pagina non valida.',
+    );
+  }
+
+  if (
+    !Number.isInteger(firstPage) ||
+    firstPage < 1 ||
+    firstPage > pageCount
+  ) {
+    throw new Error(
+      'La prima pagina da numerare non è valida.',
+    );
+  }
+
+  if (
+    !Number.isInteger(startNumber) ||
+    startNumber < 1
+  ) {
+    throw new Error(
+      'Il numero iniziale deve essere almeno 1.',
+    );
+  }
+
+  if (
+    !Number.isFinite(fontSize) ||
+    fontSize < 6 ||
+    fontSize > 72
+  ) {
+    throw new Error(
+      'La dimensione del numero deve essere compresa tra 6 e 72.',
+    );
+  }
+
+  if (
+    !Number.isFinite(margin) ||
+    margin < 0 ||
+    margin > 144
+  ) {
+    throw new Error(
+      'Il margine deve essere compreso tra 0 e 144 punti.',
+    );
+  }
+
+  return {
+    position,
+    firstPage,
+    startNumber,
+    fontSize,
+    margin,
+  };
+}
+
+type QuarterRotation =
+  | 0
+  | 90
+  | 180
+  | 270;
+
+function normalizeQuarterRotation(
+  angle: number,
+): QuarterRotation {
+  const normalized =
+    ((angle % 360) + 360) % 360;
+
+  if (
+    normalized !== 0 &&
+    normalized !== 90 &&
+    normalized !== 180 &&
+    normalized !== 270
+  ) {
+    throw new Error(
+      'La rotazione della pagina non è supportata.',
+    );
+  }
+
+  return normalized;
+}
+
+function visualPageSize(
+  width: number,
+  height: number,
+  rotation: QuarterRotation,
+) {
+  if (
+    rotation === 90 ||
+    rotation === 270
+  ) {
+    return {
+      width: height,
+      height: width,
+    };
+  }
+
+  return {
+    width,
+    height,
+  };
+}
+
+function pageNumberVisualX(
+  position: PageNumberPosition,
+  pageWidth: number,
+  textWidth: number,
+  margin: number,
+) {
+  const maxX =
+    Math.max(0, pageWidth - textWidth);
+
+  if (position === 'bottom-left') {
+    return Math.min(
+      maxX,
+      Math.max(0, margin),
+    );
+  }
+
+  if (position === 'bottom-right') {
+    return Math.max(
+      0,
+      Math.min(
+        maxX,
+        pageWidth - margin - textWidth,
+      ),
+    );
+  }
+
+  return Math.max(
+    0,
+    Math.min(
+      maxX,
+      (pageWidth - textWidth) / 2,
+    ),
+  );
+}
+
+function visualToPagePoint(
+  visualX: number,
+  visualY: number,
+  pageWidth: number,
+  pageHeight: number,
+  rotation: QuarterRotation,
+) {
+  switch (rotation) {
+    case 90:
+      return {
+        x: pageWidth - visualY,
+        y: visualX,
+      };
+
+    case 180:
+      return {
+        x: pageWidth - visualX,
+        y: pageHeight - visualY,
+      };
+
+    case 270:
+      return {
+        x: visualY,
+        y: pageHeight - visualX,
+      };
+
+    default:
+      return {
+        x: visualX,
+        y: visualY,
+      };
   }
 }
 
@@ -474,6 +692,135 @@ export class BrowserPdfEngine implements PdfEngine {
       [imageOptimized],
       qpdfCompressionArgs(selectedPreset),
     );
+  }
+
+  async addPageNumbers(
+    file: Bytes,
+    options: PageNumberOptions = {},
+  ): Promise<Bytes> {
+    if (file.byteLength === 0) {
+      throw new Error(
+        'Il PDF da numerare è vuoto.',
+      );
+    }
+
+    const doc =
+      await PDFDocument.load(file);
+
+    const pageCount =
+      doc.getPageCount();
+
+    if (pageCount === 0) {
+      throw new Error(
+        'Il PDF non contiene pagine.',
+      );
+    }
+
+    const {
+      position,
+      firstPage,
+      startNumber,
+      fontSize,
+      margin,
+    } = validatePageNumberOptions(
+      options,
+      pageCount,
+    );
+
+    const font =
+      await doc.embedFont(
+        StandardFonts.Helvetica,
+      );
+
+    const color =
+      rgb(0.18, 0.18, 0.2);
+
+    const pages =
+      doc.getPages();
+
+    for (
+      let pageIndex = firstPage - 1;
+      pageIndex < pages.length;
+      pageIndex += 1
+    ) {
+      const page =
+        pages[pageIndex];
+
+      const pageNumber =
+        startNumber +
+        pageIndex -
+        (firstPage - 1);
+
+      const label =
+        String(pageNumber);
+
+      const textWidth =
+        font.widthOfTextAtSize(
+          label,
+          fontSize,
+        );
+
+      const pageWidth =
+        page.getWidth();
+
+      const pageHeight =
+        page.getHeight();
+
+      const rotation =
+        normalizeQuarterRotation(
+          page.getRotation().angle,
+        );
+
+      const visualSize =
+        visualPageSize(
+          pageWidth,
+          pageHeight,
+          rotation,
+        );
+
+      const visualX =
+        pageNumberVisualX(
+          position,
+          visualSize.width,
+          textWidth,
+          margin,
+        );
+
+      const maxBaseline =
+        Math.max(
+          0,
+          visualSize.height - fontSize,
+        );
+
+      const visualY =
+        Math.min(
+          maxBaseline,
+          Math.max(0, margin),
+        );
+
+      const point =
+        visualToPagePoint(
+          visualX,
+          visualY,
+          pageWidth,
+          pageHeight,
+          rotation,
+        );
+
+      page.drawText(
+        label,
+        {
+          x: point.x,
+          y: point.y,
+          size: fontSize,
+          font,
+          color,
+          rotate: degrees(rotation),
+        },
+      );
+    }
+
+    return doc.save();
   }
 
   async imagesToPdf(
