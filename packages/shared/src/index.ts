@@ -123,7 +123,7 @@ export const UNIVERSAL_TOOLS: ToolDefinition[] = [
     description:
       'Rimuovi una protezione quando conosci la password.',
     platforms: allPlatforms,
-    status: 'planned',
+    status: 'available',
   },
   {
     id: 'ocr',
