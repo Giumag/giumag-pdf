@@ -131,7 +131,7 @@ export const UNIVERSAL_TOOLS: ToolDefinition[] = [
     description:
       'Rendi ricercabile il testo presente nelle scansioni.',
     platforms: allPlatforms,
-    status: 'planned',
+    status: 'available',
   },
   {
     id: 'redact',

@@ -7,7 +7,9 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: [],
+      includeAssets: [
+  'tesseract/lang/*.traineddata.gz',
+],
       manifest: {
         name: 'Giumag PDF',
         short_name: 'Giumag PDF',
@@ -20,7 +22,7 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: '/index.html',
-        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
+        maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
         runtimeCaching: []
       }
     })
