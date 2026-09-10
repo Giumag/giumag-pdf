@@ -148,6 +148,10 @@ export interface PdfEngine {
     file: Bytes,
     options: ProtectPdfOptions,
   ): Promise<Bytes>;
+  unlock(
+    file: Bytes,
+    password?: string,
+  ): Promise<Bytes>;
   compress(
     file: Bytes,
     preset?: CompressionPreset,
@@ -1622,6 +1626,88 @@ export class BrowserPdfEngine implements PdfEngine {
     return output;
   }
 
+  async unlock(
+    file: Bytes,
+    password = '',
+  ): Promise<Bytes> {
+    if (file.byteLength === 0) {
+      throw new Error(
+        'Il PDF da sbloccare è vuoto.',
+      );
+    }
+
+    const toolkit =
+      await getProtectionToolkit();
+
+    const encrypted =
+      await toolkit.isEncrypted(
+        file,
+      );
+
+    if (!encrypted) {
+      throw new Error(
+        'Questo PDF non è protetto da password.',
+      );
+    }
+
+    const requiresPassword =
+      await toolkit.requiresPassword(
+        file,
+      );
+
+    if (
+      requiresPassword &&
+      password.length === 0
+    ) {
+      throw new Error(
+        'Inserisci la password del PDF.',
+      );
+    }
+
+    let output: Bytes;
+
+    try {
+      output =
+        await toolkit.unlock(
+          file,
+          {
+            password,
+          },
+        );
+    }
+    catch (caught) {
+      const message =
+        caught instanceof Error
+          ? caught.message
+          : String(caught);
+
+      if (
+        requiresPassword &&
+        /password|passphrase|credential/i
+          .test(message)
+      ) {
+        throw new Error(
+          'Password non corretta. Riprova.',
+        );
+      }
+
+      throw new Error(
+        'Impossibile sbloccare il PDF.',
+      );
+    }
+
+    if (
+      await toolkit.isEncrypted(
+        output,
+      )
+    ) {
+      throw new Error(
+        'La verifica finale del PDF sbloccato non è riuscita.',
+      );
+    }
+
+    return output;
+  }
   async compress(
     file: Bytes,
     preset: CompressionPreset = 'recommended',

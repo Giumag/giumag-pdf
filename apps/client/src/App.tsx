@@ -10,6 +10,7 @@ import { PageNumbersWorkspace } from './components/PageNumbersWorkspace';
 import { WatermarkWorkspace } from './components/WatermarkWorkspace';
 import { MetadataWorkspace } from './components/MetadataWorkspace';
 import { ProtectPdfWorkspace } from './components/ProtectPdfWorkspace';
+import { UnlockPdfWorkspace } from './components/UnlockPdfWorkspace';
 import { CropPdfWorkspace } from './components/CropPdfWorkspace';
 import { MergePdfWorkspace } from './components/MergePdfWorkspace';
 import { PdfWorkspace } from './components/PdfWorkspace';
@@ -27,6 +28,7 @@ type ActiveWorkspace =
   | 'watermark'
   | 'metadata'
   | 'protect'
+  | 'unlock'
   | null;
 
 const AVAILABLE_TOOLS =
@@ -135,6 +137,14 @@ export function App() {
   if (activeWorkspace === 'protect') {
     return (
       <ProtectPdfWorkspace
+        onClose={() => setActiveWorkspace(null)}
+      />
+    );
+  }
+
+  if (activeWorkspace === 'unlock') {
+    return (
+      <UnlockPdfWorkspace
         onClose={() => setActiveWorkspace(null)}
       />
     );
@@ -339,6 +349,10 @@ export function App() {
 
                     case 'protect':
                       setActiveWorkspace('protect');
+                      return;
+
+                    case 'unlock':
+                      setActiveWorkspace('unlock');
                       return;
 
                     case 'metadata':
