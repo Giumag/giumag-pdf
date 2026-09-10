@@ -48,6 +48,23 @@ export interface ImagesToPdfOptions {
   fit?: ImagesPdfFit;
 }
 
+export interface OcrPdfTextLine {
+  text: string;
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+  confidence?: number;
+}
+
+export interface OcrPdfPage {
+  image: PdfImageSource;
+  pixelWidth: number;
+  pixelHeight: number;
+  pageWidth: number;
+  pageHeight: number;
+  lines: OcrPdfTextLine[];
+}
 export interface ProtectPdfPermissions {
   print?: boolean;
   modify?: boolean;
@@ -169,6 +186,9 @@ export interface PdfEngine {
   addPageNumbers(
     file: Bytes,
     options?: PageNumberOptions,
+  ): Promise<Bytes>;
+  createSearchablePdf(
+    pages: OcrPdfPage[],
   ): Promise<Bytes>;
   imagesToPdf(
     images: PdfImageSource[],
@@ -2078,6 +2098,309 @@ export class BrowserPdfEngine implements PdfEngine {
     return doc.save();
   }
 
+  async createSearchablePdf(
+    pages: OcrPdfPage[],
+  ): Promise<Bytes> {
+    if (pages.length === 0) {
+      throw new Error(
+        'Nessuna pagina OCR da esportare.',
+      );
+    }
+
+    const output =
+      await PDFDocument.create();
+
+    const font =
+      await output.embedFont(
+        StandardFonts.Helvetica,
+      );
+
+    const supportedText = (
+      value: string,
+    ) => {
+      try {
+        font.encodeText(value);
+
+        return value;
+      } catch {
+        let safe = '';
+
+        for (const character of value) {
+          try {
+            font.encodeText(
+              character,
+            );
+
+            safe += character;
+          } catch {
+            /*
+             * Standard Helvetica usa WinAnsi.
+             * Gli eventuali glifi non supportati
+             * vengono ignorati senza invalidare
+             * l'intero OCR.
+             */
+          }
+        }
+
+        return safe;
+      }
+    };
+
+    const clamp = (
+      value: number,
+      minimum: number,
+      maximum: number,
+    ) =>
+      Math.min(
+        maximum,
+        Math.max(
+          minimum,
+          value,
+        ),
+      );
+
+    for (
+      let pageIndex = 0;
+      pageIndex < pages.length;
+      pageIndex += 1
+    ) {
+      const source =
+        pages[pageIndex];
+
+      if (
+        !Number.isFinite(
+          source.pixelWidth,
+        ) ||
+        !Number.isFinite(
+          source.pixelHeight,
+        ) ||
+        !Number.isFinite(
+          source.pageWidth,
+        ) ||
+        !Number.isFinite(
+          source.pageHeight,
+        ) ||
+        source.pixelWidth <= 0 ||
+        source.pixelHeight <= 0 ||
+        source.pageWidth <= 0 ||
+        source.pageHeight <= 0
+      ) {
+        throw new Error(
+          `Dimensioni OCR non valide per la pagina ${pageIndex + 1}.`,
+        );
+      }
+
+      if (
+        source.image.bytes.byteLength ===
+        0
+      ) {
+        throw new Error(
+          `Immagine OCR mancante per la pagina ${pageIndex + 1}.`,
+        );
+      }
+
+      const embedded =
+        source.image.format ===
+        'jpeg'
+          ? await output.embedJpg(
+              source.image.bytes,
+            )
+          : source.image.format ===
+              'png'
+            ? await output.embedPng(
+                source.image.bytes,
+              )
+            : null;
+
+      if (!embedded) {
+        throw new Error(
+          `Formato OCR non valido per la pagina ${pageIndex + 1}.`,
+        );
+      }
+
+      const page =
+        output.addPage([
+          source.pageWidth,
+          source.pageHeight,
+        ]);
+
+      page.drawImage(
+        embedded,
+        {
+          x: 0,
+          y: 0,
+          width:
+            source.pageWidth,
+          height:
+            source.pageHeight,
+        },
+      );
+
+      for (
+        const line of source.lines
+      ) {
+        const normalized =
+          line.text
+            .replace(
+              /\s+/g,
+              ' ',
+            )
+            .trim();
+
+        if (!normalized) {
+          continue;
+        }
+
+        const text =
+          supportedText(
+            normalized,
+          ).trim();
+
+        if (!text) {
+          continue;
+        }
+
+        const x0 =
+          clamp(
+            line.x0,
+            0,
+            source.pixelWidth,
+          );
+
+        const y0 =
+          clamp(
+            line.y0,
+            0,
+            source.pixelHeight,
+          );
+
+        const x1 =
+          clamp(
+            line.x1,
+            0,
+            source.pixelWidth,
+          );
+
+        const y1 =
+          clamp(
+            line.y1,
+            0,
+            source.pixelHeight,
+          );
+
+        if (
+          x1 <= x0 ||
+          y1 <= y0
+        ) {
+          continue;
+        }
+
+        const x =
+          (
+            x0 /
+            source.pixelWidth
+          ) *
+          source.pageWidth;
+
+        const y =
+          source.pageHeight -
+          (
+            y1 /
+            source.pixelHeight
+          ) *
+          source.pageHeight;
+
+        const boxWidth =
+          (
+            (x1 - x0) /
+            source.pixelWidth
+          ) *
+          source.pageWidth;
+
+        const boxHeight =
+          (
+            (y1 - y0) /
+            source.pixelHeight
+          ) *
+          source.pageHeight;
+
+        /*
+         * Prima stimiamo la dimensione dalla
+         * reale altezza della parola riconosciuta.
+         */
+        let fontSize =
+          Math.max(
+            1,
+            Math.min(
+              72,
+              boxHeight * 0.82,
+            ),
+          );
+
+        /*
+         * Helvetica non avrà quasi mai la stessa
+         * metrica del font presente nella scansione.
+         *
+         * Se il testo invisibile uscisse dal bbox
+         * OCR, riduciamo il font affinché resti
+         * dentro l'area della parola.
+         */
+        const measuredWidth =
+          font.widthOfTextAtSize(
+            text,
+            fontSize,
+          );
+
+        if (
+          measuredWidth >
+            boxWidth &&
+          measuredWidth > 0 &&
+          boxWidth > 0
+        ) {
+          fontSize =
+            Math.max(
+              1,
+              fontSize *
+                (
+                  boxWidth /
+                  measuredWidth
+                ),
+            );
+        }
+
+        /*
+         * Ogni parola possiede ora il proprio
+         * punto di origine e il proprio bbox.
+         * Il testo resta invisibile ma ricerca,
+         * evidenziazione e selezione seguono molto
+         * meglio la scansione originale.
+         */
+        page.drawText(
+          text,
+          {
+            x,
+            y:
+              Math.max(
+                0,
+                y,
+              ),
+            size:
+              fontSize,
+            font,
+            color:
+              rgb(
+                0,
+                0,
+                0,
+              ),
+            opacity: 0,
+          },
+        );
+      }
+    }
+
+    return output.save();
+  }
   async imagesToPdf(
     images: PdfImageSource[],
     options: ImagesToPdfOptions = {},

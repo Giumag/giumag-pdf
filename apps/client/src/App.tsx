@@ -11,6 +11,7 @@ import { WatermarkWorkspace } from './components/WatermarkWorkspace';
 import { MetadataWorkspace } from './components/MetadataWorkspace';
 import { ProtectPdfWorkspace } from './components/ProtectPdfWorkspace';
 import { UnlockPdfWorkspace } from './components/UnlockPdfWorkspace';
+import { OcrPdfWorkspace } from './components/OcrPdfWorkspace';
 import { CropPdfWorkspace } from './components/CropPdfWorkspace';
 import { MergePdfWorkspace } from './components/MergePdfWorkspace';
 import { PdfWorkspace } from './components/PdfWorkspace';
@@ -29,6 +30,7 @@ type ActiveWorkspace =
   | 'metadata'
   | 'protect'
   | 'unlock'
+  | 'ocr'
   | null;
 
 const AVAILABLE_TOOLS =
@@ -145,6 +147,14 @@ export function App() {
   if (activeWorkspace === 'unlock') {
     return (
       <UnlockPdfWorkspace
+        onClose={() => setActiveWorkspace(null)}
+      />
+    );
+  }
+
+  if (activeWorkspace === 'ocr') {
+    return (
+      <OcrPdfWorkspace
         onClose={() => setActiveWorkspace(null)}
       />
     );
@@ -353,6 +363,10 @@ export function App() {
 
                     case 'unlock':
                       setActiveWorkspace('unlock');
+                      return;
+
+                    case 'ocr':
+                      setActiveWorkspace('ocr');
                       return;
 
                     case 'metadata':

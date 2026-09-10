@@ -10884,3 +10884,945 @@ button.is-active small {
   }
 }
 /* GIUMAG PDF UNLOCK UI POLISH 0.15.0-dev END */
+
+/* GIUMAG PDF OCR UI 0.16.0-dev START */
+
+.ocr-shell {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.ocr-file-input {
+  display: none;
+}
+
+.ocr-topbar {
+  min-height: 64px;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--separator);
+  background: var(--bg-elevated);
+}
+
+.ocr-brand {
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ocr-brand .brand-mark {
+  flex: 0 0 auto;
+}
+
+.ocr-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ocr-topbar-actions .secondary-button {
+  white-space: nowrap;
+}
+
+.ocr-topbar-actions .secondary-button svg {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  flex: 0 0 16px;
+}
+
+.ocr-content {
+  width: min(860px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 54px 0 46px;
+}
+
+.ocr-heading {
+  max-width: 680px;
+  margin-bottom: 28px;
+}
+
+.ocr-kicker {
+  margin: 0;
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.ocr-heading h1 {
+  margin: 8px 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(38px, 5vw, 58px);
+  line-height: .98;
+  letter-spacing: -.044em;
+  text-wrap: balance;
+}
+
+.ocr-heading > p:last-child {
+  max-width: 650px;
+  margin: 17px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.ocr-dropzone {
+  min-height: 250px;
+  padding: 34px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  border: 1px dashed var(--separator-strong);
+  border-radius: 26px;
+  background: var(--bg-elevated);
+  text-align: center;
+  transition:
+    border-color .16s ease,
+    background .16s ease,
+    transform .16s ease;
+}
+
+.ocr-dropzone.is-dragging {
+  border-color: var(--accent);
+  background:
+    color-mix(
+      in srgb,
+      var(--accent) 5%,
+      var(--bg-elevated)
+    );
+  transform: translateY(-1px);
+}
+
+.ocr-empty-icon {
+  width: 68px;
+  height: 78px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--separator);
+  border-radius: 18px;
+  background: var(--control);
+  color: var(--accent);
+}
+
+.ocr-empty-icon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.ocr-dropzone-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.ocr-dropzone-copy strong {
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.ocr-dropzone-copy span {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.ocr-choose-button {
+  min-height: 42px;
+  padding: 0 17px;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.ocr-choose-button svg,
+.ocr-action-card > .primary-button svg,
+.ocr-result-card > .primary-button svg {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  flex: 0 0 16px;
+}
+
+.ocr-document-card,
+.ocr-language-card,
+.ocr-action-card,
+.ocr-progress-card,
+.ocr-result-card {
+  width: 100%;
+  border: 1px solid var(--separator);
+  border-radius: 22px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-sm);
+}
+
+.ocr-document-card {
+  min-height: 88px;
+  padding: 15px 17px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 15px;
+  align-items: center;
+}
+
+.ocr-document-icon {
+  width: 50px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--control);
+  color: var(--accent);
+}
+
+.ocr-document-icon svg {
+  width: 23px;
+  height: 23px;
+}
+
+.ocr-document-card > div {
+  min-width: 0;
+}
+
+.ocr-document-card strong {
+  display: block;
+  overflow: hidden;
+  font-size: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ocr-document-card span {
+  display: block;
+  margin-top: 5px;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.ocr-language-card {
+  margin-top: 14px;
+  padding: 21px;
+}
+
+.ocr-section-heading h2,
+.ocr-action-card h2,
+.ocr-result-card h2 {
+  margin: 5px 0 0;
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 1.15;
+  letter-spacing: -.024em;
+}
+
+.ocr-section-heading > span,
+.ocr-action-card > div > span,
+.ocr-result-card > div > span {
+  display: block;
+  margin-top: 6px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.ocr-language-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.ocr-language-option {
+  min-height: 82px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  border: 1px solid var(--separator);
+  border-radius: 16px;
+  background: var(--control);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color .15s ease,
+    background .15s ease,
+    transform .12s ease;
+}
+
+.ocr-language-option:hover:not(:disabled) {
+  background: var(--control-hover);
+}
+
+.ocr-language-option:active:not(:disabled) {
+  transform: scale(.985);
+}
+
+.ocr-language-option.is-active {
+  border-color:
+    color-mix(
+      in srgb,
+      var(--accent) 62%,
+      var(--separator)
+    );
+  background:
+    color-mix(
+      in srgb,
+      var(--accent) 7%,
+      var(--control)
+    );
+}
+
+.ocr-language-option strong {
+  font-size: 13px;
+}
+
+.ocr-language-option span {
+  color: var(--text-secondary);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.ocr-language-option:disabled {
+  cursor: default;
+  opacity: .6;
+}
+
+.ocr-action-card,
+.ocr-result-card {
+  margin-top: 14px;
+  padding: 20px 21px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 22px;
+}
+
+.ocr-action-card > .primary-button,
+.ocr-result-card > .primary-button {
+  min-height: 42px;
+  padding: 0 15px;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.ocr-progress-card {
+  margin-top: 14px;
+  padding: 17px 19px;
+}
+
+.ocr-progress-copy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ocr-progress-copy strong {
+  font-size: 12px;
+}
+
+.ocr-progress-copy span {
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ocr-progress-track {
+  height: 7px;
+  margin-top: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--control);
+}
+
+.ocr-progress-track > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: width .18s ease;
+}
+
+.ocr-error {
+  margin-top: 14px;
+  padding: 13px 15px;
+  border: 1px solid
+    color-mix(
+      in srgb,
+      #d84c4c 35%,
+      var(--separator)
+    );
+  border-radius: 14px;
+  background:
+    color-mix(
+      in srgb,
+      #d84c4c 6%,
+      var(--bg-elevated)
+    );
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ocr-result-card {
+  border-color:
+    color-mix(
+      in srgb,
+      var(--success) 26%,
+      var(--separator)
+    );
+  background:
+    color-mix(
+      in srgb,
+      var(--success) 3%,
+      var(--bg-elevated)
+    );
+}
+
+.ocr-privacy {
+  margin-top: 17px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--text-tertiary);
+  font-size: 9.5px;
+  line-height: 1.4;
+}
+
+.ocr-privacy svg {
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  min-height: 14px;
+  flex: 0 0 14px;
+}
+
+@media (max-width: 680px) {
+  .ocr-topbar {
+    padding: 9px 12px;
+  }
+
+  .ocr-content {
+    width: calc(100% - 24px);
+    padding-top: 32px;
+    padding-bottom: 36px;
+  }
+
+  .ocr-heading h1 {
+    font-size: clamp(34px, 10.5vw, 46px);
+  }
+
+  .ocr-language-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ocr-language-option {
+    min-height: 68px;
+  }
+
+  .ocr-action-card,
+  .ocr-result-card {
+    padding: 16px;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .ocr-action-card > .primary-button,
+  .ocr-result-card > .primary-button {
+    width: 100%;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 430px) {
+  .ocr-brand > span:last-child {
+    display: none;
+  }
+
+  .ocr-content {
+    width: calc(100% - 20px);
+    padding-top: 26px;
+  }
+
+  .ocr-heading h1 {
+    font-size: 36px;
+  }
+
+  .ocr-dropzone {
+    min-height: 225px;
+    padding: 28px 18px;
+    border-radius: 22px;
+  }
+
+  .ocr-language-card {
+    padding: 16px;
+  }
+
+  .ocr-document-card {
+    min-height: 78px;
+    padding: 11px;
+    gap: 11px;
+  }
+
+  .ocr-document-icon {
+    width: 44px;
+    height: 50px;
+  }
+}
+
+/* GIUMAG PDF OCR UI 0.16.0-dev END */
+
+/* GIUMAG PDF OCR UI FINAL POLISH 0.16.0-dev START */
+
+/*
+ * OCR ha contenuto verticale variabile.
+ * La workspace globale invece usa height:100vh + overflow:hidden.
+ */
+.ocr-shell {
+  height: 100vh;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  background:
+    radial-gradient(
+      circle at 50% -180px,
+      color-mix(in srgb, var(--accent) 8%, transparent),
+      transparent 440px
+    ),
+    var(--bg);
+}
+
+.ocr-topbar {
+  position: sticky;
+  z-index: 30;
+  top: 0;
+  width: 100%;
+  min-width: 0;
+  flex: 0 0 64px;
+  background:
+    color-mix(
+      in srgb,
+      var(--bg-elevated) 94%,
+      transparent
+    );
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+}
+
+.ocr-brand {
+  min-width: 0;
+  padding: 4px 6px 4px 4px;
+  border-radius: 12px;
+}
+
+.ocr-brand:hover {
+  background:
+    color-mix(
+      in srgb,
+      var(--control) 68%,
+      transparent
+    );
+}
+
+.ocr-topbar-actions {
+  min-width: 0;
+  flex: 0 0 auto;
+}
+
+.ocr-topbar-actions .secondary-button {
+  min-height: 40px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.ocr-topbar-actions .secondary-button:disabled {
+  cursor: not-allowed;
+  opacity: .45;
+}
+
+.ocr-content {
+  min-width: 0;
+  flex: 0 0 auto;
+}
+
+.ocr-dropzone {
+  width: 100%;
+  box-shadow: var(--shadow-sm);
+}
+
+.ocr-dropzone:hover {
+  border-color:
+    color-mix(
+      in srgb,
+      var(--accent) 24%,
+      var(--separator-strong)
+    );
+}
+
+.ocr-empty-icon {
+  background:
+    linear-gradient(
+      145deg,
+      var(--accent-soft),
+      color-mix(
+        in srgb,
+        var(--accent-soft) 42%,
+        transparent
+      )
+    );
+  border-color:
+    color-mix(
+      in srgb,
+      var(--accent) 18%,
+      var(--separator)
+    );
+}
+
+.ocr-dropzone-copy {
+  width: min(100%, 520px);
+}
+
+.ocr-choose-button {
+  justify-content: center;
+}
+
+.ocr-document-icon {
+  background:
+    color-mix(
+      in srgb,
+      var(--accent-soft) 72%,
+      var(--bg-elevated)
+    );
+  border:
+    1px solid
+    color-mix(
+      in srgb,
+      var(--accent) 14%,
+      var(--separator)
+    );
+}
+
+.ocr-document-card strong {
+  font-family: var(--font-display);
+  font-weight: 680;
+}
+
+.ocr-language-option:hover:not(:disabled) {
+  border-color: var(--separator-strong);
+}
+
+.ocr-language-option.is-active {
+  border-color:
+    color-mix(
+      in srgb,
+      var(--accent) 60%,
+      var(--separator)
+    );
+  background:
+    color-mix(
+      in srgb,
+      var(--accent-soft) 62%,
+      var(--bg-elevated)
+    );
+  box-shadow:
+    inset 0 0 0 1px
+    color-mix(
+      in srgb,
+      var(--accent) 9%,
+      transparent
+    );
+}
+
+.ocr-action-card > div,
+.ocr-result-card > div {
+  min-width: 0;
+}
+
+.ocr-action-card > .primary-button,
+.ocr-result-card > .primary-button {
+  min-width: 142px;
+  height: 42px;
+  min-height: 42px;
+}
+
+.ocr-progress-card {
+  border-color:
+    color-mix(
+      in srgb,
+      var(--accent) 17%,
+      var(--separator)
+    );
+  background:
+    color-mix(
+      in srgb,
+      var(--accent-soft) 22%,
+      var(--bg-elevated)
+    );
+}
+
+.ocr-progress-copy strong {
+  min-width: 0;
+  line-height: 1.4;
+}
+
+.ocr-progress-copy span {
+  flex: 0 0 auto;
+  color: var(--accent);
+  font-weight: 680;
+}
+
+.ocr-progress-track {
+  background:
+    color-mix(
+      in srgb,
+      var(--separator-strong) 68%,
+      transparent
+    );
+}
+
+.ocr-progress-track > span {
+  min-width: 3px;
+}
+
+.ocr-error {
+  color: var(--danger);
+  border-color:
+    color-mix(
+      in srgb,
+      var(--danger) 28%,
+      var(--separator)
+    );
+}
+
+.ocr-result-card {
+  border-color:
+    color-mix(
+      in srgb,
+      var(--success) 28%,
+      var(--separator)
+    );
+  background:
+    color-mix(
+      in srgb,
+      var(--success) 5%,
+      var(--bg-elevated)
+    );
+}
+
+.ocr-result-card .ocr-kicker {
+  color: var(--success);
+}
+
+.ocr-privacy {
+  justify-content: center;
+}
+
+.ocr-privacy svg {
+  color: var(--success);
+}
+
+@media (max-width: 680px) {
+  .ocr-topbar {
+    min-height: 60px;
+    flex-basis: 60px;
+    padding: 9px 12px;
+  }
+
+  .ocr-content {
+    width: calc(100% - 24px);
+    padding-top: 30px;
+    padding-bottom: 34px;
+  }
+
+  .ocr-heading {
+    margin-bottom: 23px;
+  }
+
+  .ocr-heading > p:last-child {
+    margin-top: 14px;
+    font-size: 13px;
+  }
+
+  .ocr-language-card {
+    padding: 17px;
+  }
+
+  .ocr-language-grid {
+    gap: 8px;
+    margin-top: 15px;
+  }
+
+  .ocr-language-option {
+    min-height: 64px;
+    padding: 12px 14px;
+  }
+
+  .ocr-action-card,
+  .ocr-result-card {
+    padding: 16px;
+    gap: 14px;
+  }
+
+  .ocr-action-card > .primary-button,
+  .ocr-result-card > .primary-button {
+    width: 100%;
+    min-width: 0;
+    height: 44px;
+    min-height: 44px;
+    border-radius: 13px;
+  }
+
+  .ocr-progress-copy {
+    align-items: flex-start;
+  }
+
+  .ocr-privacy {
+    align-items: flex-start;
+    padding: 0 8px;
+  }
+}
+
+@media (max-width: 430px) {
+  .ocr-topbar {
+    gap: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .ocr-brand > span:last-child {
+    display: none;
+  }
+
+  .ocr-topbar-actions {
+    gap: 6px;
+  }
+
+  .ocr-topbar-actions .secondary-button {
+    min-height: 40px;
+    padding: 0 12px;
+    font-size: 12px;
+  }
+
+  .ocr-content {
+    width: calc(100% - 20px);
+    padding-top: 26px;
+    padding-bottom: 28px;
+  }
+
+  .ocr-heading h1 {
+    font-size: 36px;
+  }
+
+  .ocr-heading > p:last-child {
+    font-size: 12.5px;
+  }
+
+  .ocr-document-card,
+  .ocr-language-card,
+  .ocr-action-card,
+  .ocr-progress-card,
+  .ocr-result-card {
+    border-radius: 18px;
+  }
+
+  .ocr-language-card,
+  .ocr-action-card,
+  .ocr-result-card {
+    padding: 15px;
+  }
+
+  .ocr-progress-card {
+    padding: 14px 15px;
+  }
+}
+
+@media (max-width: 370px) {
+  .ocr-topbar-actions
+  .secondary-button[aria-label="Sostituisci PDF"] {
+    width: 40px;
+    min-width: 40px;
+    padding: 0;
+    border-radius: 50%;
+  }
+
+  .ocr-topbar-actions
+  .secondary-button[aria-label="Sostituisci PDF"] span {
+    display: none;
+  }
+
+  .ocr-heading h1 {
+    font-size: 33px;
+  }
+
+  .ocr-content {
+    width: calc(100% - 16px);
+  }
+}
+
+/* GIUMAG PDF OCR UI FINAL POLISH 0.16.0-dev END */
+
+/* GIUMAG PDF OCR FILE ICON FIX START */
+.ocr-document-icon {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  min-height: 56px;
+  flex: 0 0 56px;
+  display: block;
+  padding: 0;
+  line-height: 0;
+}
+
+.ocr-document-icon svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  display: block;
+  transform: translate(-50%, -50%);
+  transform-origin: center;
+  pointer-events: none;
+}
+
+@media (max-width: 430px) {
+  .ocr-document-icon {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
+    flex-basis: 52px;
+  }
+
+  .ocr-document-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+/* GIUMAG PDF OCR FILE ICON FIX END */
