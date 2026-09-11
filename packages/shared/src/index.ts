@@ -139,7 +139,7 @@ export const UNIVERSAL_TOOLS: ToolDefinition[] = [
     description:
       'Rimuovi definitivamente informazioni sensibili dal documento.',
     platforms: allPlatforms,
-    status: 'planned',
+    status: 'available',
   },
   {
     id: 'metadata',
