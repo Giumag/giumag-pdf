@@ -2611,3 +2611,4 @@ export class BrowserPdfEngine implements PdfEngine {
 export * from './forms';
 
 export * from './compare';
+export * from './visual-signature';

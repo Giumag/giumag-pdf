@@ -163,6 +163,6 @@ export const UNIVERSAL_TOOLS: ToolDefinition[] = [
     description:
       'Inserisci una firma disegnata o importata nel documento.',
     platforms: allPlatforms,
-    status: 'planned',
+    status: 'available',
   },
 ];
