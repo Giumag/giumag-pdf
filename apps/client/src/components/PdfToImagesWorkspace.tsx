@@ -714,7 +714,9 @@ export function PdfToImagesWorkspace({
 
   return (
     <main className="workspace-shell pdf-images-shell">
-      <header className="workspace-topbar glass-surface">
+      <header
+        className={`workspace-topbar glass-surface coherence-topbar${!pdf ? ' is-empty' : ''}`}
+      >
         <button
           className="brand-button"
           type="button"
@@ -730,7 +732,8 @@ export function PdfToImagesWorkspace({
           </span>
         </button>
 
-        <div className="document-title">
+        {pdf && (
+<div className="document-title">
           <strong>
             PDF in immagini
           </strong>
@@ -747,9 +750,10 @@ export function PdfToImagesWorkspace({
               : 'Area di lavoro locale'}
           </span>
         </div>
+        )}
 
         <div className="topbar-actions">
-          <input
+<input
             ref={inputRef}
             className="visually-hidden"
             type="file"
@@ -770,7 +774,17 @@ export function PdfToImagesWorkspace({
             }}
           />
 
-          <button
+          {!pdf ? (
+            <button
+              type="button"
+              className="secondary-button coherence-close-button"
+              onClick={onClose}
+            >
+              Chiudi
+            </button>
+          ) : (
+            <>
+<button
             className="secondary-button compact-button"
             type="button"
             disabled={busy}
@@ -813,12 +827,17 @@ export function PdfToImagesWorkspace({
                 : 'Esporta'}
             </span>
           </button>
+            </>
+          )}
         </div>
       </header>
 
       <div
         className={[
           'pdf-images-workspace',
+          !pdf
+            ? 'ui-empty-workspace'
+            : '',
           dragging
             ? 'is-dragging'
             : '',
@@ -892,16 +911,13 @@ export function PdfToImagesWorkspace({
               </p>
 
               <h1>
-                Ogni pagina,
-                pronta da usare.
+                                Converti il PDF in immagini
               </h1>
             </div>
 
             <p>
-              Seleziona le pagine e trasformale
-              in PNG o JPEG alla risoluzione
-              che preferisci. Tutto avviene
-              sul dispositivo.
+                            Converti le pagine in PNG o JPEG e scegli
+              la risoluzione prima di esportarle.
             </p>
           </section>
 
@@ -1332,8 +1348,8 @@ export function PdfToImagesWorkspace({
                       {' DPI'}
 
                       {selectedCount > 1
-                        ? ' · download in ZIP'
-                        : ' · download diretto'}
+                        ? ' · file ZIP'
+                        : ' · file singolo'}
                     </small>
 
                     {estimate && (

@@ -477,6 +477,7 @@ export function App() {
             ))}
           </div>
 
+          {PLANNED_TOOLS.length > 0 && (
           <details className="home-planned-tools">
             <summary>
               <span>
@@ -524,6 +525,7 @@ export function App() {
               ))}
             </div>
           </details>
+          )}
         </section>
       </main>
 

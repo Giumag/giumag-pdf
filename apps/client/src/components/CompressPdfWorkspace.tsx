@@ -357,7 +357,9 @@ export function CompressPdfWorkspace({
 
   return (
     <main className="workspace-shell compress-shell">
-      <header className="workspace-topbar glass-surface">
+      <header
+        className={`workspace-topbar glass-surface coherence-topbar${!pdf ? ' is-empty' : ''}`}
+      >
         <button
           className="brand-button"
           type="button"
@@ -368,7 +370,8 @@ export function CompressPdfWorkspace({
           <span>Giumag PDF</span>
         </button>
 
-        <div className="document-title">
+        {pdf && (
+<div className="document-title">
           <strong>Comprimi PDF</strong>
 
           <span>
@@ -383,9 +386,10 @@ export function CompressPdfWorkspace({
               : 'Area di lavoro locale'}
           </span>
         </div>
+        )}
 
         <div className="topbar-actions">
-          <input
+<input
             ref={fileInputRef}
             className="visually-hidden"
             type="file"
@@ -402,7 +406,17 @@ export function CompressPdfWorkspace({
             }}
           />
 
-          <button
+          {!pdf ? (
+            <button
+              type="button"
+              className="secondary-button coherence-close-button"
+              onClick={onClose}
+            >
+              Chiudi
+            </button>
+          ) : (
+            <>
+<button
             className="secondary-button compact-button"
             type="button"
             disabled={controlsDisabled}
@@ -435,12 +449,17 @@ export function CompressPdfWorkspace({
                   : 'Comprimi'}
             </span>
           </button>
+            </>
+          )}
         </div>
       </header>
 
       <div
         className={[
           'compress-workspace',
+          !pdf
+            ? 'ui-empty-workspace'
+            : '',
           externalDragging
             ? 'compress-workspace-dragging'
             : '',
@@ -504,15 +523,13 @@ export function CompressPdfWorkspace({
               </p>
 
               <h1 className="compress-title">
-                Riduci il peso, mantieni il controllo.
+                Comprimi il tuo PDF
               </h1>
             </div>
 
             <p className="compress-description">
-              Prova i diversi livelli e confronta
-              la riduzione realmente ottenuta sul
-              tuo documento. Nessuna percentuale
-              viene stimata o inventata.
+                            Scegli il livello di compressione e confronta
+              la riduzione realmente ottenuta sul documento.
             </p>
           </section>
 

@@ -2,6 +2,7 @@
   "name": "@giumag/pdf-client",
   "private": true,
   "version": "0.21.0-dev",
+  "license": "Apache-2.0",
   "type": "module",
   "scripts": {
     "dev": "node ../../scripts/sync-pdfjs-assets.mjs && node ../../scripts/sync-tesseract-assets.mjs && vite",

@@ -264,7 +264,9 @@ export function MergePdfWorkspace({ onClose }: MergePdfWorkspaceProps) {
 
   return (
     <main className="workspace-shell merge-shell">
-      <header className="workspace-topbar glass-surface">
+      <header
+        className={`workspace-topbar glass-surface coherence-topbar${items.length === 0 ? ' is-empty' : ''}`}
+      >
         <button
           className="brand-button"
           type="button"
@@ -275,16 +277,18 @@ export function MergePdfWorkspace({ onClose }: MergePdfWorkspaceProps) {
           <span>Giumag PDF</span>
         </button>
 
-        <div className="document-title">
+        {items.length > 0 && (
+<div className="document-title">
           <strong>Unisci PDF</strong>
           <span>
             <ShieldIcon />
             Area di lavoro locale · {items.length} documenti · {totalPages} pagine
           </span>
         </div>
+        )}
 
         <div className="topbar-actions">
-          <input
+<input
             ref={fileInputRef}
             className="visually-hidden"
             type="file"
@@ -301,7 +305,17 @@ export function MergePdfWorkspace({ onClose }: MergePdfWorkspaceProps) {
             }}
           />
 
-          <button
+          {items.length === 0 ? (
+            <button
+              type="button"
+              className="secondary-button coherence-close-button"
+              onClick={onClose}
+            >
+              Chiudi
+            </button>
+          ) : (
+            <>
+<button
             className="secondary-button compact-button"
             type="button"
             disabled={controlsDisabled}
@@ -320,6 +334,8 @@ export function MergePdfWorkspace({ onClose }: MergePdfWorkspaceProps) {
             <DownloadIcon />
             <span>{busy ? 'Unione...' : 'Unisci PDF'}</span>
           </button>
+            </>
+          )}
         </div>
       </header>
 
@@ -358,11 +374,11 @@ export function MergePdfWorkspace({ onClose }: MergePdfWorkspaceProps) {
           <section className="merge-heading">
             <div>
               <p className="merge-kicker">Unisci PDF</p>
-              <h1 className="merge-title">Unisci i documenti nell'ordine che preferisci.</h1>
+              <h1 className="merge-title">Unisci i tuoi PDF</h1>
             </div>
 
             <p className="merge-description">
-              Aggiungi più PDF, ordinali visivamente e crea un unico documento. Tutto resta su questo dispositivo.
+              Ordina due o più documenti e crea un unico PDF direttamente sul dispositivo.
             </p>
           </section>
 
