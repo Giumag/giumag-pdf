@@ -155,7 +155,7 @@ export const UNIVERSAL_TOOLS: ToolDefinition[] = [
     description:
       'Individua le differenze tra due documenti PDF.',
     platforms: allPlatforms,
-    status: 'planned',
+    status: 'available',
   },
   {
     id: 'sign-visual',

@@ -12730,3 +12730,803 @@ button.is-active small {
 }
 
 /* GIUMAG PDF REDACT UI 0.18.0-dev END */
+
+/* GIUMAG PDF COMPARE UI 0.19.0-dev START */
+
+.compare-shell {
+  height: 100vh;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: var(--content-bg);
+}
+
+.compare-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.compare-content {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 42px 0 48px;
+}
+
+.compare-heading {
+  max-width: 760px;
+  margin-bottom: 24px;
+}
+
+.compare-kicker {
+  margin: 0;
+  color: var(--accent);
+  font-size: 9.5px;
+  font-weight: 760;
+  letter-spacing: .12em;
+}
+
+.compare-heading h1 {
+  margin: 7px 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(38px, 5vw, 58px);
+  line-height: .98;
+  letter-spacing: -.045em;
+}
+
+.compare-heading > p:last-child {
+  margin: 16px 0 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.compare-file-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.compare-file-slot {
+  min-width: 0;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 13px;
+  border: 1px solid var(--separator);
+  border-radius: 18px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-sm);
+}
+
+.compare-file-slot-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.compare-file-slot-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.compare-file-slot-copy {
+  min-width: 0;
+}
+
+.compare-file-slot-copy > span,
+.compare-file-slot-copy strong,
+.compare-file-slot-copy small {
+  display: block;
+}
+
+.compare-file-slot-copy > span {
+  margin-bottom: 4px;
+  color: var(--accent);
+  font-size: 8px;
+  font-weight: 760;
+  letter-spacing: .1em;
+}
+
+.compare-file-slot-copy strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.compare-file-slot-copy small {
+  margin-top: 4px;
+  color: var(--text-tertiary);
+  font-size: 9px;
+}
+
+.compare-file-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.compare-file-button svg,
+.compare-shell .primary-button svg {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 15px;
+}
+
+.compare-progress-card {
+  margin-top: 12px;
+  padding: 13px 15px;
+  border: 1px solid var(--separator);
+  border-radius: 15px;
+  background: var(--bg-elevated);
+}
+
+.compare-progress-card > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.compare-progress-card strong {
+  font-size: 10.5px;
+}
+
+.compare-progress-card span {
+  color: var(--text-secondary);
+  font-size: 9px;
+}
+
+.compare-progress-track {
+  height: 5px;
+  margin-top: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--control);
+}
+
+.compare-progress-track > span {
+  height: 100%;
+  display: block;
+  border-radius: inherit;
+  background: var(--accent);
+}
+
+.compare-message {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--separator);
+  border-radius: 14px;
+  font-size: 10.5px;
+}
+
+.compare-error {
+  color: var(--danger);
+}
+
+.compare-empty-state {
+  min-height: 260px;
+  margin-top: 14px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--separator-strong);
+  border-radius: 22px;
+  background: var(--bg-elevated);
+  text-align: center;
+}
+
+.compare-empty-icon {
+  width: 68px;
+  height: 68px;
+  margin-bottom: 15px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.compare-empty-icon svg {
+  width: 29px;
+  height: 29px;
+}
+
+.compare-empty-state strong {
+  font-size: 17px;
+}
+
+.compare-empty-state span {
+  max-width: 430px;
+  margin-top: 7px;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.compare-summary {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.compare-summary-item {
+  padding: 13px 14px;
+  border: 1px solid var(--separator);
+  border-radius: 15px;
+  background: var(--bg-elevated);
+}
+
+.compare-summary-item strong,
+.compare-summary-item span {
+  display: block;
+}
+
+.compare-summary-item strong {
+  font-family: var(--font-display);
+  font-size: 24px;
+}
+
+.compare-summary-item span {
+  margin-top: 5px;
+  color: var(--text-tertiary);
+  font-size: 8.5px;
+}
+
+.compare-workspace {
+  min-height: 660px;
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid var(--separator);
+  border-radius: 22px;
+  background: var(--bg-elevated);
+}
+
+.compare-page-list {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow-y: auto;
+  border-right: 1px solid var(--separator);
+}
+
+.compare-page-list-item {
+  width: 100%;
+  padding: 9px;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.compare-page-list-item:hover {
+  background: var(--control);
+}
+
+.compare-page-list-item.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.compare-page-list-item > span {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--control);
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.compare-page-list-item div {
+  min-width: 0;
+}
+
+.compare-page-list-item strong,
+.compare-page-list-item small {
+  display: block;
+}
+
+.compare-page-list-item strong {
+  font-size: 9.5px;
+}
+
+.compare-page-list-item small {
+  margin-top: 2px;
+  color: var(--text-tertiary);
+  font-size: 7.5px;
+}
+
+.compare-page-list-item em {
+  color: var(--text-secondary);
+  font-size: 7.5px;
+  font-style: normal;
+}
+
+.compare-page-list-item.is-changed > span {
+  color: var(--danger);
+}
+
+.compare-page-list-item.is-same > span {
+  color: var(--success);
+}
+
+.compare-main {
+  min-width: 0;
+  padding: 10px;
+  background: var(--content-bg);
+}
+
+.compare-navigation {
+  min-height: 46px;
+  padding: 7px 10px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--separator);
+  border-radius: 14px;
+}
+
+.compare-navigation > div {
+  text-align: center;
+}
+
+.compare-navigation strong,
+.compare-navigation span {
+  display: block;
+}
+
+.compare-navigation strong {
+  font-size: 10px;
+}
+
+.compare-navigation span {
+  margin-top: 2px;
+  color: var(--text-tertiary);
+  font-size: 8px;
+}
+
+.compare-panes {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.compare-page-pane {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--separator);
+  border-radius: 16px;
+  background: var(--bg-elevated);
+}
+
+.compare-pane-label {
+  padding: 8px 11px;
+  border-bottom: 1px solid var(--separator);
+  color: var(--text-secondary);
+  font-size: 8px;
+  font-weight: 760;
+  letter-spacing: .1em;
+}
+
+.compare-page-stage {
+  position: relative;
+  min-height: 330px;
+  padding: 13px;
+  display: flex;
+  justify-content: center;
+  overflow: auto;
+  background: var(--control);
+}
+
+.compare-page-canvas {
+  display: block;
+  max-width: 100%;
+  border-radius: 2px;
+  background: white;
+  box-shadow: 0 5px 20px rgba(0,0,0,.13);
+}
+
+.compare-page-loading,
+.compare-page-error {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--text-tertiary);
+  font-size: 9px;
+}
+
+.compare-page-error {
+  color: var(--danger);
+}
+
+.compare-missing-page {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.compare-missing-page span {
+  margin-top: 6px;
+  color: var(--text-tertiary);
+  font-size: 9px;
+}
+
+.compare-diff-card {
+  margin-top: 10px;
+  padding: 14px;
+  border: 1px solid var(--separator);
+  border-radius: 16px;
+  background: var(--bg-elevated);
+}
+
+.compare-diff-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.compare-diff-heading h2 {
+  margin: 4px 0 0;
+  font-family: var(--font-display);
+  font-size: 18px;
+}
+
+.compare-status-pill {
+  padding: 5px 8px;
+  border: 1px solid var(--separator);
+  border-radius: 999px;
+  background: var(--control);
+  font-size: 8px;
+}
+
+.compare-status-pill.is-same {
+  color: var(--success);
+}
+
+.compare-status-pill.is-changed,
+.compare-status-pill.is-only-left,
+.compare-status-pill.is-only-right {
+  color: var(--danger);
+}
+
+.compare-diff-stage {
+  margin-top: 12px;
+  min-height: 190px;
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+  overflow: auto;
+  border-radius: 12px;
+  background: var(--control);
+}
+
+.compare-diff-stage img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.compare-diff-empty {
+  min-height: 150px;
+  margin-top: 12px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--control);
+  text-align: center;
+}
+
+.compare-diff-empty strong {
+  font-size: 11px;
+}
+
+.compare-diff-empty span {
+  margin-top: 5px;
+  color: var(--text-tertiary);
+  font-size: 8.5px;
+}
+
+.compare-diff-empty.is-same strong {
+  color: var(--success);
+}
+
+.compare-privacy {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: var(--text-tertiary);
+  font-size: 9px;
+}
+
+.compare-privacy svg {
+  width: 14px;
+  height: 14px;
+  color: var(--success);
+}
+
+@media (max-width: 900px) {
+  .compare-workspace {
+    grid-template-columns: 150px minmax(0, 1fr);
+  }
+
+  .compare-file-slot {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .compare-file-button {
+    grid-column: 1 / -1;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 720px) {
+  .compare-content {
+    width: calc(100% - 20px);
+    padding-top: 28px;
+  }
+
+  .compare-file-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .compare-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .compare-workspace {
+    min-height: 0;
+    grid-template-columns: 1fr;
+  }
+
+  .compare-page-list {
+    height: 72px;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-right: 0;
+    border-bottom: 1px solid var(--separator);
+  }
+
+  .compare-page-list-item {
+    width: 152px;
+    min-width: 152px;
+  }
+}
+
+@media (max-width: 560px) {
+  .compare-topbar {
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+    gap: 6px;
+    padding-left: 9px;
+    padding-right: 9px;
+  }
+
+  .compare-topbar .brand-button {
+    width: 40px;
+    min-width: 40px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .compare-topbar .brand-button > span:last-child {
+    display: none;
+  }
+
+  .compare-topbar .topbar-actions .primary-button {
+    width: 40px;
+    min-width: 40px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .compare-topbar .topbar-actions .primary-button span {
+    display: none;
+  }
+
+  .compare-heading h1 {
+    font-size: 36px;
+  }
+
+  .compare-panes {
+    grid-template-columns: 1fr;
+  }
+
+  .compare-page-stage {
+    min-height: 260px;
+  }
+}
+
+/* GIUMAG PDF COMPARE UI 0.19.0-dev END */
+
+/* GIUMAG PDF COMPARE SEVERITY 0.19.0-dev START */
+
+.compare-page-list-item.severity-same {
+  --compare-severity: var(--success);
+}
+
+.compare-page-list-item.severity-trace {
+  --compare-severity: #8e8e93;
+}
+
+.compare-page-list-item.severity-low {
+  --compare-severity: #5ac8fa;
+}
+
+.compare-page-list-item.severity-medium {
+  --compare-severity: #ffd60a;
+}
+
+.compare-page-list-item.severity-high {
+  --compare-severity: #ff9f0a;
+}
+
+.compare-page-list-item.severity-critical {
+  --compare-severity: #ff453a;
+}
+
+.compare-page-list-item.severity-structural {
+  --compare-severity: #bf5af2;
+}
+
+.compare-page-list-item[class*="severity-"] {
+  position: relative;
+  overflow: hidden;
+  border-left:
+    3px solid
+    var(--compare-severity);
+}
+
+.compare-page-list-item[class*="severity-"] > span {
+  color:
+    var(--compare-severity);
+  background:
+    color-mix(
+      in srgb,
+      var(--compare-severity) 12%,
+      var(--control)
+    );
+}
+
+.compare-page-list-item[class*="severity-"] > em {
+  color:
+    var(--compare-severity);
+  font-weight: 720;
+}
+
+.compare-page-list-item[class*="severity-"].is-active {
+  border-color:
+    color-mix(
+      in srgb,
+      var(--compare-severity) 72%,
+      var(--separator)
+    );
+
+  background:
+    color-mix(
+      in srgb,
+      var(--compare-severity) 10%,
+      var(--bg-elevated)
+    );
+
+  box-shadow:
+    inset 3px 0 0
+    var(--compare-severity);
+}
+
+.compare-page-list-item.severity-critical.is-active {
+  background:
+    color-mix(
+      in srgb,
+      var(--compare-severity) 15%,
+      var(--bg-elevated)
+    );
+}
+
+.compare-page-list-item.severity-critical > em,
+.compare-page-list-item.severity-critical > span {
+  font-weight: 800;
+}
+
+.compare-severity-legend {
+  margin-top: 10px;
+  padding: 9px 11px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow-x: auto;
+  border: 1px solid var(--separator);
+  border-radius: 12px;
+  background:
+    color-mix(
+      in srgb,
+      var(--control) 35%,
+      var(--bg-elevated)
+    );
+  scrollbar-width: none;
+}
+
+.compare-severity-legend::-webkit-scrollbar {
+  display: none;
+}
+
+.compare-severity-legend > span {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-secondary);
+  font-size: 8px;
+  white-space: nowrap;
+}
+
+.compare-severity-legend i {
+  width: 7px;
+  height: 7px;
+  display: block;
+  border-radius: 999px;
+}
+
+.compare-severity-legend i.severity-trace {
+  background: #8e8e93;
+}
+
+.compare-severity-legend i.severity-low {
+  background: #5ac8fa;
+}
+
+.compare-severity-legend i.severity-medium {
+  background: #ffd60a;
+}
+
+.compare-severity-legend i.severity-high {
+  background: #ff9f0a;
+}
+
+.compare-severity-legend i.severity-critical {
+  background: #ff453a;
+}
+
+.compare-severity-legend i.severity-structural {
+  background: #bf5af2;
+}
+
+@media (max-width: 720px) {
+  .compare-severity-legend {
+    margin-left: -1px;
+    margin-right: -1px;
+  }
+}
+
+/* GIUMAG PDF COMPARE SEVERITY 0.19.0-dev END */
