@@ -1,5 +1,5 @@
 Giumag PDF
-Copyright © 2026 Giumag. All rights reserved.
+Copyright © 2026 Giumag. Giumag PDF is licensed under the Apache License 2.0.
 
-No open-source license for the Giumag PDF application code has been granted by this file.
+See ../LICENSE for the complete license text.
 Third-party components are governed by their respective licenses.
