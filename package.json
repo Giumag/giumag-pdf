@@ -2,6 +2,7 @@
   "name": "giumag-pdf",
   "private": true,
   "version": "0.21.0-dev",
+  "license": "Apache-2.0",
   "packageManager": "pnpm@10.34.5",
   "scripts": {
     "dev": "pnpm --dir apps/client dev",

@@ -27,5 +27,5 @@ jobs:
             pnpm install --no-frozen-lockfile
           fi
       - run: pnpm typecheck
+      - run: pnpm test
       - run: pnpm build:web
-

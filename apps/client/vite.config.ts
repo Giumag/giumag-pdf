@@ -8,17 +8,41 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: [
-  'tesseract/lang/*.traineddata.gz',
-],
+        'tesseract/lang/*.traineddata.gz',
+        'pwa-192x192.png',
+        'pwa-512x512.png',
+        'pwa-maskable-512x512.png',
+      ],
       manifest: {
         name: 'Giumag PDF',
         short_name: 'Giumag PDF',
-        description: 'Private PDF tools processed on-device.',
+        lang: 'it',
+        description: 'Strumenti PDF privati elaborati direttamente sul dispositivo.',
         theme_color: '#111318',
         background_color: '#111318',
         display: 'standalone',
         start_url: '/',
-        scope: '/'
+        scope: '/',
+        icons: [
+          {
+            src: '/pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: '/pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: '/pwa-maskable-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable'
+          }
+        ]
       },
       workbox: {
         navigateFallback: '/index.html',

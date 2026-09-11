@@ -580,8 +580,10 @@ export function CropPdfWorkspace({
     draftCrop.height;
 
   return (
-    <main className="workspace-shell crop-shell">
-      <header className="workspace-topbar glass-surface">
+    <main className={`workspace-shell crop-shell${!pdf ? ' ui-empty-shell' : ''}`}>
+      <header
+        className={`workspace-topbar glass-surface coherence-topbar${!pdf ? ' is-empty' : ''}`}
+      >
         <button
           className="brand-button"
           type="button"
@@ -597,7 +599,8 @@ export function CropPdfWorkspace({
           </span>
         </button>
 
-        <div className="document-title">
+        {pdf && (
+<div className="document-title">
           <strong>
             Ritaglia PDF
           </strong>
@@ -614,9 +617,10 @@ export function CropPdfWorkspace({
               : 'Area di lavoro locale'}
           </span>
         </div>
+        )}
 
         <div className="topbar-actions">
-          <input
+<input
             ref={fileInputRef}
             className="visually-hidden"
             type="file"
@@ -633,7 +637,17 @@ export function CropPdfWorkspace({
             }}
           />
 
-          <button
+          {!pdf ? (
+            <button
+              type="button"
+              className="secondary-button coherence-close-button"
+              onClick={onClose}
+            >
+              Chiudi
+            </button>
+          ) : (
+            <>
+<button
             className="secondary-button compact-button"
             type="button"
             disabled={controlsDisabled}
@@ -670,12 +684,17 @@ export function CropPdfWorkspace({
                 : 'Esporta PDF'}
             </span>
           </button>
+            </>
+          )}
         </div>
       </header>
 
       <div
         className={[
           'crop-workspace',
+          !pdf
+            ? 'ui-empty-workspace'
+            : '',
           externalDragging
             ? 'crop-workspace-dragging'
             : '',
@@ -744,14 +763,13 @@ export function CropPdfWorkspace({
                 </p>
 
                 <h1 className="crop-title">
-                  Regola visivamente l’area delle pagine.
+                  Ritaglia il tuo PDF
                 </h1>
               </div>
 
               <p className="crop-description">
                 Seleziona l’area da mantenere e applicala
-                a una pagina oppure all’intero documento.
-                Tutto avviene sul dispositivo.
+                alle pagine che preferisci.
               </p>
             </section>
 

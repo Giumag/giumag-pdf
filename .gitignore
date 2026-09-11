@@ -11,3 +11,14 @@ apps/mobile/ios/
 # Generated PDF.js runtime assets (created by scripts/sync-pdfjs-assets.mjs)
 apps/client/public/pdfjs/
 apps/client/public/tesseract/
+
+# Sensitive local credentials / signing material
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+keystore.properties
+signing.properties
+local.properties

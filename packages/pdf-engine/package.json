@@ -2,6 +2,7 @@
   "name": "@giumag/pdf-engine",
   "private": true,
   "version": "0.21.0-dev",
+  "license": "Apache-2.0",
   "type": "module",
   "exports": {
     ".": "./src/index.ts"

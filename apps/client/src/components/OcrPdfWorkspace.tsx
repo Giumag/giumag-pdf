@@ -615,10 +615,10 @@ export function OcrPdfWorkspace({
             Rendi il PDF ricercabile
           </h1>
 
-          <p>
+                    <p>
             Riconosce il testo nelle scansioni e crea
-            un nuovo PDF in cui puoi cercare,
-            selezionare e copiare le parole.
+            una copia ricercabile direttamente
+            sul dispositivo.
           </p>
         </section>
 

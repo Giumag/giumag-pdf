@@ -536,7 +536,9 @@ export function SplitPdfWorkspace({
 
   return (
     <main className="workspace-shell split-shell">
-      <header className="workspace-topbar glass-surface">
+      <header
+        className={`workspace-topbar glass-surface coherence-topbar${!pdf ? ' is-empty' : ''}`}
+      >
         <button
           className="brand-button"
           type="button"
@@ -547,7 +549,8 @@ export function SplitPdfWorkspace({
           <span>Giumag PDF</span>
         </button>
 
-        <div className="document-title">
+        {pdf && (
+<div className="document-title">
           <strong>Dividi PDF</strong>
 
           <span>
@@ -557,9 +560,10 @@ export function SplitPdfWorkspace({
               : 'Area di lavoro locale'}
           </span>
         </div>
+        )}
 
         <div className="topbar-actions">
-          <input
+<input
             ref={fileInputRef}
             className="visually-hidden"
             type="file"
@@ -575,7 +579,17 @@ export function SplitPdfWorkspace({
             }}
           />
 
-          <button
+          {!pdf ? (
+            <button
+              type="button"
+              className="secondary-button coherence-close-button"
+              onClick={onClose}
+            >
+              Chiudi
+            </button>
+          ) : (
+            <>
+<button
             className="secondary-button compact-button"
             type="button"
             disabled={controlsDisabled}
@@ -601,6 +615,8 @@ export function SplitPdfWorkspace({
               {busy ? 'Divisione...' : 'Dividi PDF'}
             </span>
           </button>
+            </>
+          )}
         </div>
       </header>
 
@@ -652,14 +668,13 @@ export function SplitPdfWorkspace({
               </p>
 
               <h1 className="split-title">
-                Separa le pagine come preferisci.
+                Dividi il tuo PDF
               </h1>
             </div>
 
             <p className="split-description">
-              Crea più PDF da intervalli personalizzati oppure genera
-              un documento separato per ogni pagina. Tutto resta su
-              questo dispositivo.
+                            Separa intervalli di pagine oppure crea un PDF
+              per ogni pagina direttamente sul dispositivo.
             </p>
           </section>
 
