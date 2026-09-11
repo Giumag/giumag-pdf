@@ -14,6 +14,7 @@ import { UnlockPdfWorkspace } from './components/UnlockPdfWorkspace';
 import { OcrPdfWorkspace } from './components/OcrPdfWorkspace';
 import { FormsPdfWorkspace } from './components/FormsPdfWorkspace';
 import { RedactPdfWorkspace } from './components/RedactPdfWorkspace';
+import { ComparePdfWorkspace } from './components/ComparePdfWorkspace';
 import { CropPdfWorkspace } from './components/CropPdfWorkspace';
 import { MergePdfWorkspace } from './components/MergePdfWorkspace';
 import { PdfWorkspace } from './components/PdfWorkspace';
@@ -35,6 +36,7 @@ type ActiveWorkspace =
   | 'ocr'
   | 'forms'
   | 'redact'
+  | 'compare'
   | null;
 
 const AVAILABLE_TOOLS =
@@ -174,6 +176,14 @@ export function App() {
   if (activeWorkspace === 'redact') {
     return (
       <RedactPdfWorkspace
+        onClose={() => setActiveWorkspace(null)}
+      />
+    );
+  }
+
+  if (activeWorkspace === 'compare') {
+    return (
+      <ComparePdfWorkspace
         onClose={() => setActiveWorkspace(null)}
       />
     );
@@ -393,6 +403,10 @@ export function App() {
                       return;
                     case 'redact':
                       setActiveWorkspace('redact');
+                      return;
+
+                    case 'compare':
+                      setActiveWorkspace('compare');
                       return;
 
                     case 'metadata':
