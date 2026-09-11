@@ -14,6 +14,7 @@ import { UnlockPdfWorkspace } from './components/UnlockPdfWorkspace';
 import { OcrPdfWorkspace } from './components/OcrPdfWorkspace';
 import { FormsPdfWorkspace } from './components/FormsPdfWorkspace';
 import { RedactPdfWorkspace } from './components/RedactPdfWorkspace';
+import { VisualSignatureWorkspace } from './components/VisualSignatureWorkspace';
 import { ComparePdfWorkspace } from './components/ComparePdfWorkspace';
 import { CropPdfWorkspace } from './components/CropPdfWorkspace';
 import { MergePdfWorkspace } from './components/MergePdfWorkspace';
@@ -36,6 +37,7 @@ type ActiveWorkspace =
   | 'ocr'
   | 'forms'
   | 'redact'
+  | 'sign-visual'
   | 'compare'
   | null;
 
@@ -181,6 +183,13 @@ export function App() {
     );
   }
 
+  if (activeWorkspace === 'sign-visual') {
+    return (
+      <VisualSignatureWorkspace
+        onClose={() => setActiveWorkspace(null)}
+      />
+    );
+  }
   if (activeWorkspace === 'compare') {
     return (
       <ComparePdfWorkspace
@@ -403,6 +412,9 @@ export function App() {
                       return;
                     case 'redact':
                       setActiveWorkspace('redact');
+                      return;
+                    case 'sign-visual':
+                      setActiveWorkspace('sign-visual');
                       return;
 
                     case 'compare':
