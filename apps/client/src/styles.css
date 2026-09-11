@@ -14673,3 +14673,487 @@ button.is-active small {
 }
 
 /* GIUMAG PDF VISUAL SIGNATURE COHERENCE 0.20.0-dev END */
+
+/* GIUMAG PDF REPAIR UI 0.21.0-dev START */
+
+.repair-shell {
+  min-height: 100vh;
+}
+
+.repair-topbar-placeholder {
+  display: block;
+  min-width: 180px;
+}
+
+.repair-main {
+  width: min(1080px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 44px 0 64px;
+}
+
+.repair-hero {
+  max-width: 880px;
+}
+
+.repair-eyebrow {
+  display: block;
+  margin-bottom: 12px;
+  color: #007aff;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.11em;
+}
+
+.repair-hero h1 {
+  margin: 0;
+  color: #1d1d1f;
+  font-size: clamp(40px, 6vw, 64px);
+  font-weight: 850;
+  letter-spacing: -0.05em;
+  line-height: 0.98;
+}
+
+.repair-hero p {
+  max-width: 800px;
+  margin: 20px 0 0;
+  color: #515154;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.repair-local-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 28px;
+  padding: 14px 16px;
+  border: 1px solid rgba(0, 122, 255, 0.18);
+  border-radius: 16px;
+  background: rgba(0, 122, 255, 0.07);
+}
+
+.repair-local-note > svg {
+  flex: 0 0 auto;
+  width: 19px;
+  height: 19px;
+  color: #007aff;
+}
+
+.repair-local-note > div {
+  display: grid;
+  gap: 3px;
+}
+
+.repair-local-note strong {
+  font-size: 13px;
+}
+
+.repair-local-note span {
+  color: #616166;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.repair-dropzone {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  margin-top: 24px;
+  padding: 24px;
+  border: 1.5px dashed rgba(0, 0, 0, 0.18);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.78);
+  cursor: pointer;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    transform 150ms ease;
+}
+
+.repair-dropzone:hover,
+.repair-dropzone.is-dragging {
+  border-color: rgba(0, 122, 255, 0.58);
+  background: rgba(0, 122, 255, 0.055);
+}
+
+.repair-dropzone.is-dragging {
+  transform: scale(1.005);
+}
+
+.repair-dropzone-icon,
+.repair-file-icon {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: rgba(0, 122, 255, 0.1);
+  color: #007aff;
+}
+
+.repair-dropzone-icon svg,
+.repair-file-icon svg {
+  width: 25px;
+  height: 25px;
+}
+
+.repair-dropzone-copy {
+  min-width: 0;
+}
+
+.repair-dropzone-label,
+.repair-file-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #007aff;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 0.09em;
+}
+
+.repair-dropzone h2 {
+  margin: 0;
+  color: #1d1d1f;
+  font-size: 17px;
+}
+
+.repair-dropzone p {
+  margin: 4px 0 0;
+  color: #6e6e73;
+  font-size: 12px;
+}
+
+.repair-file-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+  padding: 18px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.84);
+}
+
+.repair-file-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.repair-file-copy strong {
+  overflow: hidden;
+  color: #1d1d1f;
+  font-size: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.repair-file-copy small {
+  color: #6e6e73;
+}
+
+.repair-file-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.repair-progress-card {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid rgba(0, 122, 255, 0.16);
+  border-radius: 18px;
+  background: rgba(0, 122, 255, 0.055);
+}
+
+.repair-progress-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.repair-progress-heading > div {
+  display: grid;
+  gap: 3px;
+}
+
+.repair-progress-heading strong {
+  font-size: 13px;
+}
+
+.repair-progress-heading span {
+  color: #6e6e73;
+  font-size: 11px;
+}
+
+.repair-progress-track {
+  overflow: hidden;
+  height: 5px;
+  margin-top: 13px;
+  border-radius: 999px;
+  background: rgba(0, 122, 255, 0.12);
+}
+
+.repair-progress-bar {
+  width: 42%;
+  height: 100%;
+  border-radius: inherit;
+  background: #007aff;
+  animation: repair-progress-slide 1.15s ease-in-out infinite alternate;
+}
+
+@keyframes repair-progress-slide {
+  from {
+    transform: translateX(-15%);
+  }
+
+  to {
+    transform: translateX(155%);
+  }
+}
+
+.repair-message {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 16px;
+  padding: 15px 16px;
+  border-radius: 16px;
+}
+
+.repair-message > div,
+.repair-message:not(:has(> div)) {
+  min-width: 0;
+}
+
+.repair-message strong,
+.repair-message span {
+  display: block;
+}
+
+.repair-message strong {
+  font-size: 13px;
+}
+
+.repair-message span {
+  margin-top: 3px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.repair-message-error {
+  border: 1px solid rgba(215, 0, 21, 0.16);
+  background: rgba(215, 0, 21, 0.07);
+  color: #b42318;
+}
+
+.repair-message-success {
+  border: 1px solid rgba(32, 164, 100, 0.18);
+  background: rgba(32, 164, 100, 0.08);
+}
+
+.repair-message-success span {
+  color: #526057;
+}
+
+.repair-explanation {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.repair-explanation > div {
+  padding: 18px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.64);
+}
+
+.repair-explanation-number {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 13px;
+  border-radius: 50%;
+  background: #007aff;
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.repair-explanation strong {
+  display: block;
+  color: #1d1d1f;
+  font-size: 13px;
+}
+
+.repair-explanation p {
+  margin: 6px 0 0;
+  color: #6e6e73;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+@media (prefers-color-scheme: dark) {
+  .repair-eyebrow {
+    color: #0a84ff;
+  }
+
+  .repair-hero h1 {
+    color: #f5f5f7;
+  }
+
+  .repair-hero p {
+    color: #b0b0b5;
+  }
+
+  .repair-local-note {
+    border-color: rgba(10, 132, 255, 0.3);
+    background: rgba(10, 132, 255, 0.12);
+  }
+
+  .repair-local-note > svg {
+    color: #0a84ff;
+  }
+
+  .repair-local-note strong {
+    color: #f5f5f7;
+  }
+
+  .repair-local-note span {
+    color: #aeaeb2;
+  }
+
+  .repair-dropzone,
+  .repair-file-card,
+  .repair-explanation > div {
+    border-color: rgba(255, 255, 255, 0.11);
+    background: rgba(28, 28, 30, 0.82);
+  }
+
+  .repair-dropzone:hover,
+  .repair-dropzone.is-dragging {
+    border-color: rgba(10, 132, 255, 0.58);
+    background: rgba(10, 132, 255, 0.1);
+  }
+
+  .repair-dropzone-icon,
+  .repair-file-icon {
+    background: rgba(10, 132, 255, 0.14);
+    color: #0a84ff;
+  }
+
+  .repair-dropzone-label,
+  .repair-file-label {
+    color: #0a84ff;
+  }
+
+  .repair-dropzone h2,
+  .repair-file-copy strong,
+  .repair-explanation strong {
+    color: #f5f5f7;
+  }
+
+  .repair-dropzone p,
+  .repair-file-copy small,
+  .repair-explanation p {
+    color: #8e8e93;
+  }
+
+  .repair-progress-card {
+    border-color: rgba(10, 132, 255, 0.25);
+    background: rgba(10, 132, 255, 0.1);
+  }
+
+  .repair-progress-heading strong {
+    color: #f5f5f7;
+  }
+
+  .repair-progress-heading span {
+    color: #aeaeb2;
+  }
+
+  .repair-progress-track {
+    background: rgba(10, 132, 255, 0.17);
+  }
+
+  .repair-progress-bar {
+    background: #0a84ff;
+  }
+
+  .repair-message-error {
+    border-color: rgba(255, 69, 58, 0.24);
+    background: rgba(255, 69, 58, 0.1);
+    color: #ff6961;
+  }
+
+  .repair-message-success {
+    border-color: rgba(48, 209, 88, 0.22);
+    background: rgba(48, 209, 88, 0.1);
+    color: #f5f5f7;
+  }
+
+  .repair-message-success span {
+    color: #aeaeb2;
+  }
+}
+
+@media (max-width: 760px) {
+  .repair-main {
+    width: calc(100% - 28px);
+    padding-top: 30px;
+  }
+
+  .repair-hero h1 {
+    font-size: clamp(36px, 11vw, 50px);
+  }
+
+  .repair-topbar-placeholder {
+    display: none;
+  }
+
+  .repair-dropzone,
+  .repair-file-card {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .repair-dropzone > .primary-button,
+  .repair-file-actions {
+    grid-column: 1 / 3;
+    width: 100%;
+  }
+
+  .repair-dropzone > .primary-button {
+    margin-top: 4px;
+  }
+
+  .repair-file-actions > button {
+    flex: 1;
+  }
+
+  .repair-explanation {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .repair-file-actions {
+    flex-direction: column;
+  }
+
+  .repair-message {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .repair-message .secondary-button {
+    width: 100%;
+  }
+}
+
+/* GIUMAG PDF REPAIR UI 0.21.0-dev END */

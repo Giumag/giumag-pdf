@@ -165,4 +165,12 @@ export const UNIVERSAL_TOOLS: ToolDefinition[] = [
     platforms: allPlatforms,
     status: 'available',
   },
+  {
+    id: 'repair',
+    name: 'Ripara PDF',
+    description:
+      'Ricostruisci la struttura di PDF danneggiati o illeggibili.',
+    platforms: allPlatforms,
+    status: 'available',
+  },
 ];
