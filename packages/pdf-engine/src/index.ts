@@ -1203,6 +1203,36 @@ function getCompressionToolkit() {
   return compressionToolkitPromise;
 }
 
+export async function repairPdfDocument(
+  bytes: Uint8Array,
+): Promise<Uint8Array> {
+  if (bytes.byteLength === 0) {
+    throw new Error(
+      'Il PDF è vuoto.',
+    );
+  }
+
+  try {
+    const toolkit =
+      await getCompressionToolkit();
+
+    return await toolkit.repair(
+      bytes,
+    );
+  } catch (caught) {
+    const detail =
+      caught instanceof Error
+        ? caught.message
+        : String(caught);
+
+    throw new Error(
+      detail
+        ? `Impossibile riparare il PDF: ${detail}`
+        : 'Impossibile riparare il PDF.',
+    );
+  }
+}
+
 function qpdfCompressionArgs(
   preset: Exclude<CompressionPreset, 'light'>,
 ): string[] {
