@@ -107,7 +107,7 @@ export const UNIVERSAL_TOOLS: ToolDefinition[] = [
     description:
       'Compila i campi di un PDF e crea la copia finale.',
     platforms: allPlatforms,
-    status: 'planned',
+    status: 'available',
   },
   {
     id: 'protect',

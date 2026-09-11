@@ -2607,3 +2607,5 @@ export class BrowserPdfEngine implements PdfEngine {
     return output.save();
   }
 }
+
+export * from './forms';

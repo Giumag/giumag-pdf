@@ -1,7 +1,7 @@
 {
   "name": "@giumag/pdf-mobile",
   "private": true,
-  "version": "0.16.0-dev",
+  "version": "0.17.0-dev",
   "scripts": {
     "sync": "cap sync",
     "android": "cap open android",
