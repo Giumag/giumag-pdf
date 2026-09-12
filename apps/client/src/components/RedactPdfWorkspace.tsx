@@ -968,7 +968,7 @@ export function RedactPdfWorkspace({
 
               <button
                 type="button"
-                className="primary-button"
+                className="primary-button redact-empty-choose-button"
                 disabled={
                   loading
                 }
