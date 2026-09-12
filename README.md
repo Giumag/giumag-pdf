@@ -4,7 +4,9 @@ Privacy-first PDF tools that run locally on your device.
 
 Giumag PDF is an open-source PDF toolkit focused on simple workflows, local document processing and a consistent interface across its tools.
 
-> **Project status:** pre-release / public beta preparation.
+> **Project status:** public Web/PWA beta.
+>
+> **Try it:** https://giumag-pdf.pages.dev — PDF processing stays on your device.
 > The web application is the primary target currently being hardened for public distribution. Desktop and mobile shells are present in the repository but their public packaging is still being finalized.
 
 ## Why Giumag PDF?
@@ -143,7 +145,7 @@ using the scripts contained in `scripts/`.
 
 ## Release status
 
-The project is currently being prepared for its first public beta.
+The public Web/PWA beta is live at https://giumag-pdf.pages.dev.
 
 Current release-hardening work includes:
 
@@ -152,7 +154,7 @@ Current release-hardening work includes:
 - Android project generation and packaging
 - installation and first-run testing
 
-Do not treat the current development branch/version as a stable production release yet.
+The current Web/PWA release is a public beta, not a stable production release. Expect iterative fixes and improvements while the beta is evaluated.
 
 ## Contributing
 
