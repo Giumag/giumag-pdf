@@ -2,78 +2,79 @@
 
 ## Current task
 
-Phase 0 bootstrap: establish the repository-native AI continuity layer and a minimal reusable preflight helper. Do not modify production UI behavior or `packages/pdf-engine`.
+Phase 1 bounded homepage task: make the primary PDF-opening entry point generic and accurate while preserving the existing direct page-view/organization workspace.
+
+Do not introduce routing, registry refactors, CSS architecture changes or PDF-engine changes in this task.
 
 ## Current Git state
 
-- Expected branch after bootstrap: `chore/ai-continuity-bootstrap`
-- Bootstrap base remote `main`: `aad4a31a949285adfa28283c6042f332bba9b077`
-- Expected HEAD before commit: same as bootstrap base
-- Expected working tree: intentionally dirty only with the bootstrap files listed below
-- No commit, push, pull request, merge, deploy, tag or branch deletion is part of this bootstrap procedure.
+- Expected branch: `feat/home-open-flow`
+- Verified base `main`: `6a78003791218267ac539789a2835970623f9c5f`
+- That base is the Squash and merge commit for PR #30 (`chore: add AI continuity bootstrap`).
+- Expected HEAD before commit: same as the verified base.
+- Expected changed paths before commit:
+  - `apps/client/src/App.tsx`
+  - `docs/AI_PROJECT_STATE.md`
+  - `docs/AI_HANDOFF.md`
+- No commit, push, PR, merge, deploy, tag or branch deletion is part of the implementation procedure.
 
 Always re-run `pnpm preflight` and `git status` before continuing because this file can become stale.
 
-## Completed in this session
+## Completed in this task
 
-- Inspected current public repository structure and authoritative beta/development documentation.
-- Verified canonical root validation commands and CI sequence.
-- Verified the 18-tool shared metadata registry.
-- Confirmed the current home uses state-based workspace dispatch and no routing dependency.
-- Confirmed the global stylesheet is a significant maintainability hotspot.
-- Confirmed focused PDF-engine tests exist.
-- Added the AI continuity layer.
-- Added a small cross-platform project preflight helper.
+- Verified Phase 0 was merged into `main` through PR #30.
+- Synchronized local `main` to the verified merge commit.
+- Started the focused `feat/home-open-flow` branch.
+- Changed the homepage primary dropzone title from organizer-specific wording to `Apri un PDF`.
+- Clarified that the direct open flow is for viewing/organizing pages and that other operations are available in the tool catalog.
+- Preserved all existing opening behavior.
+- Preserved the local-first processing model.
+- Moved durable project state from Phase 0 to Phase 1.
+- Completed manual desktop/mobile, light/dark, and PDF-opening behavior verification successfully.
 
 ## Files materially changed
 
-- `AGENTS.md` — stable AI session rules and safety constraints.
-- `docs/AI_PROJECT_STATE.md` — current durable roadmap/state.
-- `docs/AI_DECISIONS.md` — durable decisions for future sessions.
+- `apps/client/src/App.tsx` — homepage opening copy only.
+- `docs/AI_PROJECT_STATE.md` — current phase and verified baseline.
 - `docs/AI_HANDOFF.md` — this rolling resume point.
-- `scripts/project-preflight.mjs` — read-only Git/project state summary.
-- `package.json` — adds the `pnpm preflight` script only.
-
-## Decisions
-
-- AI-001 — local-first document processing invariant.
-- AI-002 — preserve Web/PWA + Tauri + Capacitor architecture.
-- AI-003 — repository-native AI continuity.
-- AI-004 — shared metadata stays platform-neutral; client mappings stay client-side.
-- AI-005 — CSS maintainability changes are incremental.
 
 ## Validation
 
-Executed before bootstrap files were applied:
+Executed after the UI/state change:
 
 - `pnpm typecheck` — passed.
 - `pnpm test` — passed.
 - `pnpm build:web` — passed.
+- generated `apps/client/tsconfig.tsbuildinfo` metadata restored after build.
+- final `pnpm preflight` and `git diff --check` - passed.
+- manual homepage verification on desktop/mobile and light/dark mode - passed.
 
-Bootstrap validation status:
+## Product decision for this bounded task
 
-- `node --check scripts/project-preflight.mjs` — passed.
-- `pnpm preflight` — passed.
-- `git diff --check` — passed before the final handoff rewrite; the procedure re-runs it immediately after writing the final handoff.
+Do not add an intermediate tool-selection modal merely to make the homepage feel more generic.
 
-## Known issues / risks
+The primary dropzone remains a direct entry to the existing page-view/organization workspace. Its copy now states that role honestly and points users toward the full tool catalog for other operations.
 
-- Local uncommitted state cannot be inferred from GitHub; trust the local preflight over this handoff.
-- Current client dispatch duplicates tool knowledge in `App.tsx`.
-- `apps/client/src/styles.css` remains large and should only be decomposed incrementally.
+This resolves the misleading copy without changing navigation architecture.
+
+## Known issues / future work
+
+- Client workspace dispatch still duplicates tool knowledge in `App.tsx`.
 - Durable tool URLs are not implemented.
-- Known bundle/import warnings remain non-blocking unless they create a reproducible failure.
+- The large global stylesheet remains an incremental maintainability task.
+- Existing bundle/import warnings remain non-blocking unless they cause a reproducible user-visible failure.
+- Tool discoverability can be evaluated separately after this bounded change is reviewed.
 
 ## Exact next step
 
-After this bootstrap is reviewed and integrated, begin one bounded Phase 1 task: evaluate and improve the homepage primary PDF-opening flow so it represents the 18-tool suite rather than implying that opening a PDF is only for page organization.
+Manual UI verification has passed. Review this focused pull request and its CI. If review and CI are green, Squash and merge through GitHub. After merge, synchronize `main`; merged-branch cleanup remains a separate explicitly authorized operation.
 
-Do not touch the PDF engine for that task.
+Then select the next bounded Phase 1 homepage discoverability task without combining routing, registry consolidation or CSS architecture migration.
 
 ## Do not redo
 
-- Do not rebuild the AI continuity architecture into a larger framework.
-- Do not migrate CSS frameworks during the homepage task.
-- Do not introduce routing during the same homepage task.
-- Do not refactor `packages/pdf-engine` for frontend cleanliness.
-- Do not replace `docs/DECISION.md`; reference it as the authoritative distribution ADR.
+- Do not add a modal to this opening flow without new evidence.
+- Do not introduce routing in this task.
+- Do not refactor the client tool registry in this task.
+- Do not migrate the CSS architecture in this task.
+- Do not touch `packages/pdf-engine` for this task.
