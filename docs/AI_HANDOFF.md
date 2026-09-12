@@ -1,87 +1,75 @@
 # Giumag PDF — AI Handoff
 
-## Current task
+## Completed task
 
-Phase 3 bounded client-registry refactor: consolidate the Web workspace mapping that was duplicated inside `App.tsx`.
+Phase 3 client-registry consolidation is complete and merged through PR #35 (`refactor: consolidate client tool workspace registry`).
 
-This is an internal behavior-preserving refactor. Shared metadata must remain platform-neutral and React-free.
+Merged `main` baseline: `c0f92dc9e0ea4d7ef7269898e6bd43aade5ade16`.
 
-## Current Git state
+The merged feature branch was `refactor/client-tool-registry`.
 
-- Expected branch: `refactor/client-tool-registry`
-- Verified base `main`: `c80aaf49ec19213490a6a636b07a3cd382e84c8b`
-- That base is the Squash and merge commit for PR #34 (`feat: explain homepage privacy model`).
-- Expected HEAD before commit: same as the verified base.
-- Expected changed paths before commit:
-  - `apps/client/src/App.tsx`
-  - `apps/client/src/tool-workspace-registry.tsx`
-  - `docs/AI_PROJECT_STATE.md`
-  - `docs/AI_HANDOFF.md`
-- No commit, push, PR, merge, deploy, tag or branch deletion is part of the implementation procedure.
+## What was implemented
 
-Always re-run `pnpm preflight` and `git status` before continuing because this file can become stale.
-
-## Completed in this task
-
-- Verified PR #34 was Squash and merged into `main`.
-- Synchronized local `main` to the verified merge commit.
-- Closed Phase 2 for now: no remaining trust gap justifies more homepage polish before architectural work.
-- Started the focused `refactor/client-tool-registry` branch.
-- Added `apps/client/src/tool-workspace-registry.tsx`.
-- Moved the 17 Web workspace component imports and render mapping out of `App.tsx`.
-- Derived `WorkspaceToolId` from the keys of the client registry.
-- Replaced the duplicated `ActiveWorkspace` string union.
+- Added `apps/client/src/tool-workspace-registry.tsx` as the Web-client-only mapping for the 17 standalone tool workspaces.
+- Moved the workspace component imports and render mapping out of `App.tsx`.
+- Derived `WorkspaceToolId` from the registry keys.
+- Removed the duplicated manual active-workspace string union.
 - Replaced the 17 conditional workspace render branches with one `ToolWorkspace` render.
-- Replaced the large card-click tool-ID switch with `isWorkspaceToolId`.
-- Preserved `organize` as the explicit file-picker action.
-- Kept `packages/shared`, routing, CSS, lazy loading and the PDF engine unchanged.
-- Updated durable project state for Phase 3.
-- Completed manual smoke testing of all 17 standalone workspace cards, workspace close/return behavior, `Organizza pagine`, real-PDF opening, filtered search dispatch and homepage visual stability successfully.
+- Replaced the large tool-card dispatch switch with `isWorkspaceToolId`.
+- Preserved `organize` as the explicit file-picker path.
+- Kept `packages/shared`, routing, CSS, lazy loading and `packages/pdf-engine` unchanged.
 
-## Files materially changed
+Materially involved:
 
-- `apps/client/src/App.tsx` — consumes the client registry instead of duplicating workspace dispatch.
-- `apps/client/src/tool-workspace-registry.tsx` — client-only ID-to-workspace mapping and type guard.
-- `docs/AI_PROJECT_STATE.md` — Phase 3 state and verified baseline.
-- `docs/AI_HANDOFF.md` — this rolling resume point.
+- `apps/client/src/App.tsx`
+- `apps/client/src/tool-workspace-registry.tsx`
+- `docs/AI_PROJECT_STATE.md`
+- `docs/AI_HANDOFF.md`
 
-## Validation
+## Relevant decisions
 
-Executed after implementation:
+- **AI-004** — shared tool metadata stays platform-neutral; React/client mappings stay in the Web client.
+- **AI-001** — local-first document processing remains a product invariant.
+- **AI-003** — repository files, not chat history, carry development continuity.
 
-- static registry consistency checks — passed.
-- `pnpm typecheck` — passed.
-- `pnpm test` — passed.
-- `pnpm build:web` — passed.
-- generated `apps/client/tsconfig.tsbuildinfo` metadata restored after build.
-- final `pnpm preflight` and `git diff --check` - passed.
-- manual 18-path dispatch smoke test - passed.
+No new durable decision was introduced by PR #35, so `docs/AI_DECISIONS.md` does not require a new entry.
 
-## Architectural decision
+## Validation actually completed for PR #35
 
-This task follows AI-004: shared `UNIVERSAL_TOOLS` remains platform-neutral, while React component mappings live only in the Web client.
+Before merge:
 
-Do not move React components into `packages/shared` and do not introduce a generic plugin framework.
+- static registry consistency checks passed;
+- `pnpm typecheck` passed;
+- `pnpm test` passed: 13 test files, 63 tests;
+- `pnpm build:web` passed;
+- generated `apps/client/tsconfig.tsbuildinfo` was restored after build;
+- `pnpm preflight` passed;
+- `git diff --check` passed;
+- manual smoke test passed for all 17 standalone workspaces plus `Organizza pagine`, real-PDF opening, filtered search dispatch and homepage visual stability.
 
-## Known issues / future work
+Known non-blocking build warnings remained unchanged: PDFStudio browser externalization warnings, ineffective dynamic-import warning and large-chunk warning.
 
-- Shared `ToolDefinition.id` is still typed as `string`; stronger platform-neutral tool-ID typing can be evaluated separately.
-- `organize` remains a distinct client action because it opens the existing PDF file flow rather than a standalone workspace.
-- Durable tool URLs are not implemented.
-- The global stylesheet remains a later incremental maintainability task.
-- Existing bundle/import warnings remain non-blocking unless they cause a reproducible user-visible failure.
+The Squash merge itself was verified on GitHub as PR #35 -> `main` at `c0f92dc9e0ea4d7ef7269898e6bd43aade5ade16`.
 
-## Exact next step
+No commit status contexts were reported for the squash commit when checked after merge; do not infer additional post-merge CI from that check.
 
-Manual dispatch verification has passed. Review this focused pull request and its CI. If review and CI are green, Squash and merge through GitHub. After merge, synchronize `main`; merged-branch cleanup remains a separate explicitly authorized operation.
+## Open risks / not yet verified
 
-Then continue Phase 3 with a separate assessment of the remaining shared/client tool-ID typing duplication. Do not combine that follow-up with routing, lazy loading or CSS work.
+- Shared `ToolDefinition.id` is still typed as `string`.
+- The client registry keys and shared tool IDs are not yet linked by one platform-neutral type contract.
+- `organize` remains intentionally outside the standalone workspace registry because it enters the existing PDF file flow.
+- Durable tool URLs are still unimplemented.
+- Bundle/import warnings remain known technical debt.
+- No post-merge runtime regression test was rerun after PR #35; the recorded application validations are the pre-merge validations listed above.
+
+## Next step
+
+Perform a read-only audit of the tool-ID typing boundary across `packages/shared/src/index.ts`, `apps/client/src/tool-workspace-registry.tsx` and the `organize` dispatch path, then define the smallest type-safe consolidation that preserves AI-004.
 
 ## Do not redo
 
-- Do not modify `packages/shared` in this task.
-- Do not add routing or durable URLs.
-- Do not add lazy loading in this task.
-- Do not introduce a plugin framework.
-- Do not change CSS in this task.
-- Do not touch `packages/pdf-engine` in this task.
+- Do not rebuild the client workspace registry already merged in PR #35.
+- Do not move React components into `packages/shared`.
+- Do not introduce a generic plugin framework.
+- Do not combine the next typing audit with routing, lazy loading, CSS migration or PDF-engine changes.
+- Do not reopen Phase 1/2 homepage polish without new beta evidence.

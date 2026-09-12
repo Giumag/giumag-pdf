@@ -2,7 +2,7 @@
 
 Last bootstrap audit: 2026-09-12
 
-Current verified `main` baseline: `c80aaf49ec19213490a6a636b07a3cd382e84c8b` (homepage privacy explainer merged through PR #34)
+Current verified `main` baseline: `c0f92dc9e0ea4d7ef7269898e6bd43aade5ade16` (client tool workspace registry merged through PR #35)
 
 This file records current durable development state. It is not a chronological project log. Re-verify repository state at the start of every session.
 
@@ -46,43 +46,39 @@ Authoritative references:
 - Privacy/security and beta operations documentation published.
 - Contribution and pull-request workflow documented.
 - Public beta issue triage structure established.
+- Homepage IA/UX improvements integrated through PRs #31 and #32.
+- Public-beta trust/privacy polish integrated through PRs #33 and #34.
+- First client-only workspace registry consolidation integrated through PR #35.
 
 ## Current phase
 
 ### Phase 3 — Client registry consolidation
 
-Phase 1 homepage IA/UX and Phase 2 trust/public-beta polish are complete for now. The privacy explainer was integrated through PR #34.
+Phase 1 homepage IA/UX and Phase 2 trust/public-beta polish are complete for now.
 
-Current bounded task: consolidate Web-client tool workspace dispatch without changing shared platform-neutral metadata or user-visible behavior.
+The first Phase 3 task was integrated through PR #35:
 
-Scope:
+- `apps/client/src/tool-workspace-registry.tsx` now owns the 17 standalone Web workspace mappings;
+- `WorkspaceToolId` is derived from the client registry keys;
+- `App.tsx` no longer duplicates the manual active-workspace union, the 17 render branches or the large tool-card dispatch switch;
+- `organize` remains the explicit file-picker action;
+- shared `UNIVERSAL_TOOLS` metadata remains platform-neutral and React-free.
 
-- add a client-only workspace registry in `apps/client/src`;
-- move the 17 workspace-component imports and render mapping out of `App.tsx`;
-- derive the active-workspace ID type from that client registry;
-- replace the duplicated card-click switch with a registry type guard;
-- keep `organize` as the explicit file-picker action;
-- preserve all existing tool behavior.
+Phase 3 remains active. The remaining registry-related technical question is the typing boundary between shared `ToolDefinition.id`, the client registry keys and the special `organize` action.
 
-Out of scope:
-
-- changes to `packages/shared`;
-- routing or durable URLs;
-- lazy loading or bundle work;
-- generic plugin architecture;
-- CSS changes;
-- PDF-engine changes.
+Do not combine that assessment with routing, lazy loading, CSS architecture changes or PDF-engine work.
 
 ## Next planned step
 
-After this first registry consolidation is reviewed and integrated, evaluate the remaining client/shared ID duplication separately. Do not combine shared typing, routing or lazy loading into this task.
+Perform a read-only audit of the current tool-ID typing boundary across `packages/shared/src/index.ts`, `apps/client/src/tool-workspace-registry.tsx` and the `organize` dispatch path, then define the smallest type-safe consolidation that preserves AI-004.
+
 ## Known technical debt / future work
 
 ### Home / client dispatch
 
-The first client-only workspace registry is now being extracted from `App.tsx`.
+The first client-only registry consolidation is complete.
 
-Remaining duplication after this bounded task is expected to be limited to the relationship between string IDs in shared `UNIVERSAL_TOOLS`, the client registry, and the special `organize` file-picker action. Evaluate stronger shared ID typing separately without coupling React components to `packages/shared`.
+Remaining duplication is limited to the relationship between string IDs in shared `UNIVERSAL_TOOLS`, the client registry key type, and the special `organize` file-picker action. Evaluate stronger shared ID typing separately without coupling React components to `packages/shared`.
 
 ### Durable tool URLs
 
