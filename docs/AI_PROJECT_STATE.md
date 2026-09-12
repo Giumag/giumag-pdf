@@ -2,7 +2,7 @@
 
 Last bootstrap audit: 2026-09-12
 
-Remote baseline inspected: `main` at `aad4a31a949285adfa28283c6042f332bba9b077`
+Current verified `main` baseline: `6a78003791218267ac539789a2835970623f9c5f` (Phase 0 merged through PR #30)
 
 This file records current durable development state. It is not a chronological project log. Re-verify repository state at the start of every session.
 
@@ -49,35 +49,29 @@ Authoritative references:
 
 ## Current phase
 
-### Phase 0 — AI continuity bootstrap
-
-Establish repository-native continuity so independent AI sessions can resume from Git and a small set of durable files rather than relying on chat memory.
-
-Bootstrap scope:
-
-- `AGENTS.md`
-- `docs/AI_PROJECT_STATE.md`
-- `docs/AI_DECISIONS.md`
-- `docs/AI_HANDOFF.md`
-- minimal project preflight helper
-
-No production UI or PDF-engine behavior should change in this phase.
-
-## Next planned phase
-
 ### Phase 1 — Home information architecture and UX
 
-Start with one bounded homepage task.
+Phase 0 AI continuity bootstrap was integrated into `main` through PR #30.
 
-The first issue to evaluate is the mismatch between:
+Current bounded task: make the homepage primary PDF-opening entry point describe what it actually does without presenting Giumag PDF as only a page organizer.
 
-- Giumag PDF as an 18-tool suite; and
-- the primary home dropzone copy/flow, which currently opens directly into the organizer and says "Apri un PDF da organizzare".
+Scope:
 
-Determine whether the home should present a more general "Open PDF" entry point with an intentional next action, without adding unnecessary modal complexity.
+- use generic "Apri un PDF" wording;
+- explain that this entry opens the page-view/organization workspace;
+- point users to the tool catalog for other operations;
+- preserve existing behavior and local processing.
 
-Do not touch `packages/pdf-engine` for this task.
+Out of scope:
 
+- routing;
+- tool-registry refactors;
+- CSS architecture changes;
+- PDF-engine changes.
+
+## Next planned step
+
+After this bounded copy/IA change is reviewed and integrated, evaluate the next homepage discoverability improvement using the current 18-tool catalog and beta evidence. Keep it separate from routing and registry consolidation.
 ## Known technical debt / future work
 
 ### Home / client dispatch
@@ -113,7 +107,7 @@ Existing build notes mention large chunks and PDF-engine import warnings that ar
 
 ## Unresolved product questions
 
-- What is the simplest coherent generic PDF-opening flow for the homepage?
+- Does beta usage show that the generic PDF-opening flow needs more than the current direct page-view/organization workspace?
 - Which tools, if any, should be featured above the full catalog?
 - Are categories/search justified by actual catalog density and beta feedback?
 - When durable tool URLs are introduced, is a small native solution sufficient or is a router dependency justified?

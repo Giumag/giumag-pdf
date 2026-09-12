@@ -323,12 +323,13 @@ export function App() {
               <strong>
                 {loading
                   ? 'Apertura documento...'
-                  : 'Apri un PDF da organizzare'}
+                  : 'Apri un PDF'}
               </strong>
 
               <span>
                 Trascinalo qui oppure sceglilo dal dispositivo
-                per riordinare, ruotare, estrarre o rimuovere pagine.
+                per visualizzare e organizzare le pagine. Per le altre
+                operazioni, scegli uno strumento qui sotto.
               </span>
             </div>
 
