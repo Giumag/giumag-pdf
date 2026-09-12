@@ -2,7 +2,7 @@
 
 Last bootstrap audit: 2026-09-12
 
-Current verified `main` baseline: `a2f549e1e29c8ecbd67fc64149281114b48efa59` (homepage trust and tools access merged through PR #33)
+Current verified `main` baseline: `c80aaf49ec19213490a6a636b07a3cd382e84c8b` (homepage privacy explainer merged through PR #34)
 
 This file records current durable development state. It is not a chronological project log. Re-verify repository state at the start of every session.
 
@@ -49,45 +49,40 @@ Authoritative references:
 
 ## Current phase
 
-### Phase 2 — Trust and public-beta polish
+### Phase 3 — Client registry consolidation
 
-Phase 0 continuity was integrated through PR #30. Phase 1 homepage IA/UX delivered the generic PDF-opening flow through PR #31 and lightweight tool search through PR #32. The first Phase 2 trust/footer and tools-access improvement was integrated through PR #33.
+Phase 1 homepage IA/UX and Phase 2 trust/public-beta polish are complete for now. The privacy explainer was integrated through PR #34.
 
-Current bounded task: explain the local-first privacy model directly on the homepage without turning the hero into a long policy document.
+Current bounded task: consolidate Web-client tool workspace dispatch without changing shared platform-neutral metadata or user-visible behavior.
 
 Scope:
 
-- add a native expandable privacy explainer below the existing privacy row;
-- keep it closed by default;
-- explain local PDF processing using the authoritative security/privacy baseline;
-- disclose that analytics are off by default and offline caching is for application assets, not documents;
-- disclose that the hosting provider can still observe normal web request metadata when the app loads;
-- link to the authoritative privacy/security document.
+- add a client-only workspace registry in `apps/client/src`;
+- move the 17 workspace-component imports and render mapping out of `App.tsx`;
+- derive the active-workspace ID type from that client registry;
+- replace the duplicated card-click switch with a registry type guard;
+- keep `organize` as the explicit file-picker action;
+- preserve all existing tool behavior.
 
 Out of scope:
 
-- new privacy/legal routing;
-- analytics or telemetry;
-- consent banners;
-- dependency changes;
-- large homepage redesign;
+- changes to `packages/shared`;
+- routing or durable URLs;
+- lazy loading or bundle work;
+- generic plugin architecture;
+- CSS changes;
 - PDF-engine changes.
 
 ## Next planned step
 
-After this privacy explainer is reviewed and integrated, evaluate whether Phase 2 has any remaining high-value trust/public-beta gaps before moving to Phase 3 registry consolidation.
+After this first registry consolidation is reviewed and integrated, evaluate the remaining client/shared ID duplication separately. Do not combine shared typing, routing or lazy loading into this task.
 ## Known technical debt / future work
 
 ### Home / client dispatch
 
-`apps/client/src/App.tsx` currently duplicates tool knowledge across:
+The first client-only workspace registry is now being extracted from `App.tsx`.
 
-- `ActiveWorkspace`;
-- workspace component imports;
-- a large tool-ID switch;
-- shared `UNIVERSAL_TOOLS` metadata.
-
-This is a valid later registry-consolidation target, not part of the bootstrap.
+Remaining duplication after this bounded task is expected to be limited to the relationship between string IDs in shared `UNIVERSAL_TOOLS`, the client registry, and the special `organize` file-picker action. Evaluate stronger shared ID typing separately without coupling React components to `packages/shared`.
 
 ### Durable tool URLs
 
