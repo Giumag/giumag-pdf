@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/Giumag/giumag-pdf/security/policy
+    about: Report security vulnerabilities privately by following the repository security policy.
+  - name: Try the public Web/PWA beta
+    url: https://giumag-pdf.pages.dev
+    about: Open the current public Giumag PDF Web/PWA beta.

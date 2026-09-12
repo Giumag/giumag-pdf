@@ -1,0 +1,79 @@
+name: Feedback or feature request
+description: Suggest an improvement or share structured feedback about the Giumag PDF Web/PWA beta.
+title: "[Feedback] "
+labels:
+  - enhancement
+  - beta
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Giumag PDF.
+
+        During the public beta, reliability, privacy, accessibility and regressions have priority over feature expansion.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - PDF tool behavior
+        - User interface
+        - Accessibility
+        - Performance
+        - PWA or offline experience
+        - Privacy or local-first experience
+        - Documentation
+        - New capability
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or opportunity
+      description: What is difficult, missing or worth improving?
+    validations:
+      required: true
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Describe the result you would like.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Suggested approach
+      description: Optional. Explain an implementation or interaction if you have one in mind.
+
+  - type: textarea
+    id: privacy
+    attributes:
+      label: Privacy and local-first considerations
+      description: If relevant, explain whether the proposal affects local processing, permissions, external requests or user data.
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Optional. Describe other approaches or workarounds.
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Screenshots, examples or other useful context. Do not include sensitive documents.
+
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Confirmation
+      options:
+        - label: I understand that beta work prioritizes bugs, privacy, regressions and release readiness before feature expansion.
+          required: true

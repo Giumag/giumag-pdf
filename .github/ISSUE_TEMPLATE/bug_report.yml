@@ -1,0 +1,137 @@
+name: Bug report - Web beta
+description: Report a reproducible problem in the Giumag PDF public Web/PWA beta.
+title: "[Bug] "
+labels:
+  - bug
+  - beta
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for testing Giumag PDF.
+
+        Do not upload confidential, personal or sensitive PDFs.
+        If a sample file is necessary, use a synthetic or sanitized document.
+
+        Security vulnerabilities must not be reported through a public issue.
+        Follow SECURITY.md instead.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected tool or area
+      description: Where did the problem occur?
+      options:
+        - Merge PDF
+        - Split PDF
+        - Organize PDF
+        - Crop PDF
+        - Compress PDF
+        - Images to PDF
+        - PDF to images
+        - Watermark
+        - Page numbers
+        - Fill PDF forms
+        - Protect PDF
+        - Unlock PDF
+        - OCR PDF
+        - Redact PDF
+        - Remove metadata
+        - Compare PDF
+        - Visual signature
+        - Repair PDF
+        - PWA installation or offline behavior
+        - General interface
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Problem summary
+      description: Describe what went wrong.
+      placeholder: What happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Give the smallest reliable sequence that reproduces the problem.
+      placeholder: |
+        1. Open ...
+        2. Select ...
+        3. Click ...
+        4. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happened instead?
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      placeholder: "Example: Edge 140"
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: "Example: Windows 11 24H2"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: mode
+    attributes:
+      label: How are you using Giumag PDF?
+      options:
+        - Browser tab
+        - Installed PWA
+        - Both
+    validations:
+      required: true
+
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Console or Network details
+      description: Optional. Include only relevant technical details. Do not include sensitive document contents.
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Screenshots, synthetic sample details, frequency, regression information or other useful context.
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmation
+      options:
+        - label: I reproduced this on the current public Web/PWA beta.
+          required: true
+        - label: I have not attached confidential, personal or sensitive documents.
+          required: true
+        - label: This is not a security vulnerability that should be reported privately.
+          required: true
