@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  xcode@3.0.1>uuid: 11.1.1
+
 importers:
 
   .: {}
@@ -2531,9 +2534,8 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  uuid@7.0.3:
-    resolution: {integrity: sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==}
-    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+  uuid@11.1.1:
+    resolution: {integrity: sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ==}
     hasBin: true
 
   vite-plugin-pwa@1.3.0:
@@ -5261,7 +5263,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  uuid@7.0.3: {}
+  uuid@11.1.1: {}
 
   vite-plugin-pwa@1.3.0(vite@8.2.2(@types/node@26.4.1)(terser@5.51.2))(workbox-build@7.4.1)(workbox-window@7.4.1):
     dependencies:
@@ -5488,7 +5490,7 @@ snapshots:
   xcode@3.0.1:
     dependencies:
       simple-plist: 1.3.1
-      uuid: 7.0.3
+      uuid: 11.1.1
 
   xml2js@0.6.2:
     dependencies:
