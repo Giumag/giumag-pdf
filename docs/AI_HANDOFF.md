@@ -2,61 +2,53 @@
 
 ## Completed task
 
-The read-only audit of the tool-ID typing boundary is complete.
+The tool-ID typing boundary audit and its minimal type-safe consolidation are complete on PR #37.
 
-Verified `main` baseline at audit start: `3c79bc72271dc653991117fca73bdcbe6b88248f` (`docs: sync AI continuity after registry merge`, PR #36).
+Verified `main` baseline at task start: `3c79bc72271dc653991117fca73bdcbe6b88248f` (`docs: sync AI continuity after registry merge`, PR #36).
 
-Latest application-code baseline remains `c0f92dc9e0ea4d7ef7269898e6bd43aade5ade16` from PR #35 (`refactor: consolidate client tool workspace registry`).
+Current work branch: `docs/tool-id-typing-audit`.
 
-The audit documentation branch is `docs/tool-id-typing-audit`.
+PR #37 now includes both the audit documentation and the bounded implementation.
 
-No application code was changed by this task.
-
-## What was verified
-
-- `packages/shared/src/index.ts` contains 18 tool definitions and all are currently `available`.
-- `ToolDefinition.id` is typed as `string` and `UNIVERSAL_TOOLS` is explicitly annotated `ToolDefinition[]`, so shared tool IDs are widened instead of preserved as a literal union.
-- `apps/client/src/tool-workspace-registry.tsx` contains exactly 17 standalone workspace renderer keys and derives `WorkspaceToolId` from those keys.
-- `organize` is the only shared available tool ID intentionally outside the standalone workspace registry.
-- `App.tsx` handles `organize` first by opening the existing PDF file input, then uses `isWorkspaceToolId(tool.id)` for standalone workspace dispatch.
-- `isWorkspaceToolId` currently accepts arbitrary `string` because the shared metadata does not expose a precise tool-ID contract.
-- Repository search found no other runtime consumer of the exported `ToolDefinition` type and only `App.tsx` directly consumes `UNIVERSAL_TOOLS`.
-- `ToolIcon` accepts `id: string`, but this is rendering-only and does not need to be included in the next bounded typing change.
-- No dedicated registry/type-boundary test currently exists; the next implementation should rely primarily on strict TypeScript checks plus focused dispatch smoke testing.
-
-## Smallest type-safe consolidation defined by the audit
-
-Preserve AI-004 and keep the change limited to shared metadata typing plus the client registry.
+## What was implemented
 
 ### Shared package
 
-In `packages/shared/src/index.ts`:
+`packages/shared/src/index.ts` now:
 
-1. preserve literal metadata IDs while validating the metadata shape instead of widening the array to `ToolDefinition[]`;
-2. export `ToolId` from `typeof UNIVERSAL_TOOLS[number]['id']`;
-3. export `AvailableToolId` from the subset whose `status` is `available`;
-4. keep the exported `ToolDefinition` contract constrained to `ToolId` without introducing a second manually maintained list of IDs.
-
-A suitable implementation shape is a generic internal metadata shape such as `ToolDefinitionShape<Id extends string>`, `UNIVERSAL_TOOLS` declared with `as const satisfies readonly ToolDefinitionShape<string>[]`, then derived `ToolId` / `AvailableToolId` and an exported `ToolDefinition = ToolDefinitionShape<ToolId>` alias.
+- preserves literal tool IDs in the metadata source while validating the metadata shape;
+- derives and exports `ToolId` from the shared metadata;
+- derives and exports `AvailableToolId` from entries whose status is `available`;
+- constrains exported `ToolDefinition.id` to `ToolId`;
+- avoids introducing a second hand-maintained list of tool IDs.
 
 ### Client registry
 
-In `apps/client/src/tool-workspace-registry.tsx`:
+`apps/client/src/tool-workspace-registry.tsx` now:
 
-1. import the shared ID types only; do not import or move React components into `packages/shared`;
-2. define `WorkspaceToolId = Exclude<AvailableToolId, 'organize'>`;
-3. give the renderer function a named type and validate `TOOL_WORKSPACE_RENDERERS` with `satisfies Record<WorkspaceToolId, WorkspaceRenderer>`;
-4. keep `isWorkspaceToolId` as the runtime ownership check, but accept shared `ToolId` rather than arbitrary `string`.
+- imports only the shared tool-ID types from `@giumag/shared`;
+- defines `WorkspaceToolId = Exclude<AvailableToolId, 'organize'>`;
+- validates `TOOL_WORKSPACE_RENDERERS` with `satisfies Record<WorkspaceToolId, WorkspaceRenderer>`;
+- keeps the renderer components entirely in the Web client;
+- narrows `isWorkspaceToolId` input from arbitrary `string` to shared `ToolId`.
 
-### App dispatch
+### Runtime behavior
 
-Keep the existing `App.tsx` behavior:
+`App.tsx` was intentionally not changed.
 
-- `organize` remains the explicit file-picker/document-flow action;
-- all other available IDs continue through `isWorkspaceToolId` before `setActiveWorkspace`;
-- no routing, loading, CSS or PDF behavior changes are part of this work.
+- `organize` still opens the existing PDF file-picker/document flow;
+- standalone tools still dispatch through `isWorkspaceToolId` and `ToolWorkspace`;
+- no routing, CSS, lazy loading, dependencies, PDF-engine behavior, release configuration or versioning changed.
 
-This gives compile-time coverage between the platform-neutral available tool IDs and the client workspace registry while preserving the intentional `organize` exception.
+AI-004 remains preserved: shared metadata/types are platform-neutral and React-free, while React mappings stay client-specific.
+
+## Validation performed so far
+
+- verified `main` and PR #37 had not moved before implementation;
+- verified the proposed type shape in an isolated strict TypeScript compile before committing;
+- inspected the exact runtime diff after commit;
+- GitHub Actions CI was triggered automatically for the implementation head;
+- no local repository clone is available in this environment, so `pnpm preflight`, `pnpm typecheck`, `pnpm test`, `pnpm build:web`, `git diff --check` and browser smoke cannot be claimed from this session unless CI or a user-side run provides them.
 
 ## Relevant decisions
 
@@ -64,43 +56,30 @@ This gives compile-time coverage between the platform-neutral available tool IDs
 - **AI-001** — local-first document processing remains a product invariant.
 - **AI-003** — repository files, not chat history, carry development continuity.
 
-No new durable architectural decision is required by this audit.
-
-## Validation actually performed for this audit
-
-- verified repository metadata and remote `main` HEAD;
-- verified PR #35 and PR #36 merge history;
-- confirmed there were no open pull requests at audit start;
-- read `AGENTS.md`, `CONTRIBUTING.md`, `docs/BETA_OPERATIONS.md`, `docs/AI_PROJECT_STATE.md`, `docs/AI_DECISIONS.md` and `docs/AI_HANDOFF.md`;
-- inspected `packages/shared/src/index.ts`, `apps/client/src/tool-workspace-registry.tsx`, the relevant `App.tsx` dispatch, `ToolIcon` typing and TypeScript configuration;
-- searched the repository for `ToolDefinition`, `UNIVERSAL_TOOLS`, `isWorkspaceToolId` and `organize` usage to verify scope;
-- found no contradiction between the handoff and current application code/history, apart from the handoff's previous merged baseline referring to PR #35 while current `main` is the later docs-only PR #36 commit.
-
-No `pnpm` checks were run because this environment does not have a repository clone/working tree and the task did not modify application code.
-
-No post-merge CI status contexts are reported for the current `main` commit; do not infer CI from that absence.
+No new durable architectural decision was introduced, so `docs/AI_DECISIONS.md` does not require a new entry.
 
 ## Next step
 
-Implement the audited type-only consolidation in `packages/shared/src/index.ts` and `apps/client/src/tool-workspace-registry.tsx` on a focused branch.
+Finish validation and review of PR #37.
 
-Required validation after implementation:
+Required before merge:
 
-- `pnpm typecheck`;
-- `pnpm test`;
-- `pnpm build:web`;
-- `pnpm preflight`;
-- `git diff --check`;
-- focused smoke test that `Organizza pagine` still opens the file flow and at least one standalone tool still opens its workspace.
+- confirm CI is green;
+- run or otherwise verify `pnpm preflight`;
+- verify `pnpm typecheck`;
+- verify `pnpm test`;
+- verify `pnpm build:web`;
+- verify `git diff --check`;
+- focused smoke: `Organizza pagine` still opens the PDF file flow and at least one standalone tool still opens its workspace.
 
-Update `docs/AI_PROJECT_STATE.md` and `docs/AI_HANDOFF.md` in the same implementation branch/PR.
+If validation is clean, Squash and merge PR #37, verify the resulting `main` SHA, then clean up the branch only after merge verification.
 
 ## Do not redo
 
 - Do not rebuild the client workspace registry already merged in PR #35.
-- Do not repeat this audit unless the relevant files or `main` have changed materially.
+- Do not repeat the tool-ID audit unless relevant code changes materially.
 - Do not move React components into `packages/shared`.
 - Do not add a second hand-maintained tool-ID list.
-- Do not include `ToolIcon` tightening unless the implementation proves it is required for compilation.
+- Do not tighten `ToolIcon` in PR #37 unless validation proves it necessary.
 - Do not introduce a generic plugin framework.
-- Do not combine the next typing implementation with routing, lazy loading, CSS migration or PDF-engine changes.
+- Do not combine this work with routing, lazy loading, CSS migration or PDF-engine changes.
