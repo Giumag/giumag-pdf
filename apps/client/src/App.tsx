@@ -64,7 +64,20 @@ export function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [toolQuery, setToolQuery] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const normalizedToolQuery = toolQuery
+    .trim()
+    .toLocaleLowerCase('it');
+
+  const filteredAvailableTools = normalizedToolQuery
+    ? AVAILABLE_TOOLS.filter((tool) =>
+        `${tool.name} ${tool.description}`
+          .toLocaleLowerCase('it')
+          .includes(normalizedToolQuery),
+      )
+    : AVAILABLE_TOOLS;
 
   async function openFile(file: File) {
     setLoading(true);
@@ -377,8 +390,42 @@ export function App() {
             </p>
           </div>
 
-          <div className="tool-grid">
-            {AVAILABLE_TOOLS.map((tool) => (
+          <div className="tools-search">
+            <label
+              className="visually-hidden"
+              htmlFor="tool-search"
+            >
+              Cerca uno strumento
+            </label>
+
+            <input
+              id="tool-search"
+              type="search"
+              value={toolQuery}
+              placeholder="Cerca uno strumento"
+              autoComplete="off"
+              onChange={(event) => setToolQuery(event.currentTarget.value)}
+              aria-describedby="tool-search-status"
+            />
+
+            <span
+              id="tool-search-status"
+              className="tools-search-status"
+              aria-live="polite"
+            >
+              {normalizedToolQuery
+                ? `${filteredAvailableTools.length} ${
+                    filteredAvailableTools.length === 1
+                      ? 'strumento trovato'
+                      : 'strumenti trovati'
+                  }`
+                : 'Cerca per nome o funzione'}
+            </span>
+          </div>
+
+          {filteredAvailableTools.length > 0 ? (
+            <div className="tool-grid">
+            {filteredAvailableTools.map((tool) => (
               <button
                 className="tool-card"
                 key={tool.id}
@@ -476,7 +523,16 @@ export function App() {
                 <ArrowUpRightIcon className="tool-arrow" />
               </button>
             ))}
-          </div>
+            </div>
+          ) : (
+            <div
+              className="tools-empty"
+              role="status"
+            >
+              <strong>Nessuno strumento trovato</strong>
+              <span>Prova con un termine diverso.</span>
+            </div>
+          )}
 
           {PLANNED_TOOLS.length > 0 && (
           <details className="home-planned-tools">

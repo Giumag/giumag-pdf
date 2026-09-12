@@ -2,7 +2,7 @@
 
 Last bootstrap audit: 2026-09-12
 
-Current verified `main` baseline: `6a78003791218267ac539789a2835970623f9c5f` (Phase 0 merged through PR #30)
+Current verified `main` baseline: `87021ab6184011e2940f16632d19b68aa5b07a72` (homepage open-flow improvement merged through PR #31)
 
 This file records current durable development state. It is not a chronological project log. Re-verify repository state at the start of every session.
 
@@ -51,27 +51,30 @@ Authoritative references:
 
 ### Phase 1 — Home information architecture and UX
 
-Phase 0 AI continuity bootstrap was integrated into `main` through PR #30.
+Phase 0 AI continuity bootstrap was integrated through PR #30. The first Phase 1 homepage opening-flow improvement was integrated through PR #31.
 
-Current bounded task: make the homepage primary PDF-opening entry point describe what it actually does without presenting Giumag PDF as only a page organizer.
+Current bounded task: improve discovery across the existing 18-tool catalog with a small local search control.
 
 Scope:
 
-- use generic "Apri un PDF" wording;
-- explain that this entry opens the page-view/organization workspace;
-- point users to the tool catalog for other operations;
-- preserve existing behavior and local processing.
+- search only the existing available tools;
+- match tool name and description locally in the browser;
+- preserve the existing tool order;
+- provide an accessible result count and no-results state;
+- keep shared `UNIVERSAL_TOOLS` metadata unchanged.
 
 Out of scope:
 
+- categories or featured-tool ranking;
 - routing;
-- tool-registry refactors;
-- CSS architecture changes;
+- shared registry schema changes;
+- client dispatch refactors;
+- CSS architecture migration;
 - PDF-engine changes.
 
 ## Next planned step
 
-After this bounded copy/IA change is reviewed and integrated, evaluate the next homepage discoverability improvement using the current 18-tool catalog and beta evidence. Keep it separate from routing and registry consolidation.
+After this search improvement is reviewed and integrated, evaluate whether any further homepage catalog structure is justified by beta evidence. Do not add categories merely for symmetry; 18 tools plus search may already be sufficient.
 ## Known technical debt / future work
 
 ### Home / client dispatch
@@ -109,7 +112,7 @@ Existing build notes mention large chunks and PDF-engine import warnings that ar
 
 - Does beta usage show that the generic PDF-opening flow needs more than the current direct page-view/organization workspace?
 - Which tools, if any, should be featured above the full catalog?
-- Are categories/search justified by actual catalog density and beta feedback?
+- After adding lightweight search, is any category structure still justified by beta evidence?
 - When durable tool URLs are introduced, is a small native solution sufficient or is a router dependency justified?
 - What are the safest first boundaries for incremental `styles.css` extraction?
 
