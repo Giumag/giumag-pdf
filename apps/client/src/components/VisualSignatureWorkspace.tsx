@@ -63,36 +63,92 @@ function dataUrlToBytes(
   return bytes;
 }
 
-async function loadImageSize(
-  url: string,
-): Promise<{
-  width: number;
-  height: number;
-}> {
-  return new Promise(
-    (resolve, reject) => {
-      const image = new Image();
+interface NormalizedSignatureImage {
+  bytes: Uint8Array;
+  previewUrl: string;
+  aspectRatio: number;
+}
 
-      image.onload = () => {
-        resolve({
-          width:
-            image.naturalWidth,
-          height:
-            image.naturalHeight,
-        });
-      };
+async function normalizeSignatureImage(
+  file: File,
+): Promise<NormalizedSignatureImage> {
+  let bitmap: ImageBitmap;
 
-      image.onerror = () => {
-        reject(
-          new Error(
-            'Impossibile leggere l’immagine della firma.',
-          ),
-        );
-      };
+  try {
+    bitmap =
+      await createImageBitmap(
+        file,
+      );
+  } catch {
+    throw new Error(
+      "Impossibile leggere l'immagine della firma.",
+    );
+  }
 
-      image.src = url;
-    },
-  );
+  try {
+    if (
+      bitmap.width <= 0 ||
+      bitmap.height <= 0
+    ) {
+      throw new Error(
+        'Immagine della firma non valida.',
+      );
+    }
+
+    const canvas =
+      document.createElement(
+        'canvas',
+      );
+
+    canvas.width =
+      bitmap.width;
+
+    canvas.height =
+      bitmap.height;
+
+    const context =
+      canvas.getContext('2d');
+
+    if (!context) {
+      throw new Error(
+        "Impossibile normalizzare l'immagine della firma.",
+      );
+    }
+
+    context.drawImage(
+      bitmap,
+      0,
+      0,
+    );
+
+    const previewUrl =
+      canvas.toDataURL(
+        'image/png',
+      );
+
+    if (
+      !previewUrl.startsWith(
+        'data:image/png;base64,',
+      )
+    ) {
+      throw new Error(
+        "Impossibile normalizzare l'immagine della firma.",
+      );
+    }
+
+    return {
+      bytes:
+        dataUrlToBytes(
+          previewUrl,
+        ),
+      previewUrl,
+      aspectRatio:
+        bitmap.width /
+        bitmap.height,
+    };
+  } finally {
+    bitmap.close();
+  }
 }
 
 function outputFileName(
@@ -425,51 +481,34 @@ export function VisualSignatureWorkspace({
   const importSignature = async (
     file: File,
   ) => {
-    const mimeType:
-      | VisualSignatureMimeType
-      | null =
-      file.type === 'image/png'
-        ? 'image/png'
-        : file.type ===
-            'image/jpeg'
-          ? 'image/jpeg'
-          : null;
+    const isSupportedMimeType =
+      file.type === 'image/png' ||
+      file.type === 'image/jpeg';
 
-    if (!mimeType) {
+    if (!isSupportedMimeType) {
       setError(
         'La firma deve essere PNG oppure JPG/JPEG.',
       );
       return;
     }
 
-    const previewUrl =
-      URL.createObjectURL(file);
-
     try {
-      const size =
-        await loadImageSize(
-          previewUrl,
-        );
-
-      const bytes =
-        new Uint8Array(
-          await file.arrayBuffer(),
+      const normalized =
+        await normalizeSignatureImage(
+          file,
         );
 
       setSignatureAsset({
-        bytes,
-        mimeType,
-        previewUrl,
+        bytes:
+          normalized.bytes,
+        mimeType: 'image/png',
+        previewUrl:
+          normalized.previewUrl,
         aspectRatio:
-          size.width /
-          size.height,
+          normalized.aspectRatio,
         name: file.name,
       });
     } catch (importError) {
-      URL.revokeObjectURL(
-        previewUrl,
-      );
-
       setError(
         importError instanceof Error
           ? importError.message
