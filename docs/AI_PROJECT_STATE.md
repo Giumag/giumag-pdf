@@ -2,7 +2,7 @@
 
 Last bootstrap audit: 2026-09-12
 
-Current verified `main` baseline: `6463fcda663c89e0eff4cb090560b36e8d1fac6e` (homepage tool search merged through PR #32)
+Current verified `main` baseline: `a2f549e1e29c8ecbd67fc64149281114b48efa59` (homepage trust and tools access merged through PR #33)
 
 This file records current durable development state. It is not a chronological project log. Re-verify repository state at the start of every session.
 
@@ -51,34 +51,31 @@ Authoritative references:
 
 ### Phase 2 — Trust and public-beta polish
 
-Phase 0 continuity was integrated through PR #30. Phase 1 homepage IA/UX delivered the generic PDF-opening flow through PR #31 and lightweight tool search through PR #32.
+Phase 0 continuity was integrated through PR #30. Phase 1 homepage IA/UX delivered the generic PDF-opening flow through PR #31 and lightweight tool search through PR #32. The first Phase 2 trust/footer and tools-access improvement was integrated through PR #33.
 
-Phase 1 is considered sufficient for now: do not add categories or featured-tool ranking without beta evidence.
-
-Current bounded task: make the public homepage expose the project's beta/open-source/privacy support surfaces through a compact footer.
+Current bounded task: explain the local-first privacy model directly on the homepage without turning the hero into a long policy document.
 
 Scope:
 
-- identify the product as a public beta;
-- reinforce local processing;
-- link to the public source repository;
-- link to issue reporting;
-- link to the repository privacy/security baseline;
-- preserve the restrained existing visual language.
-- add a secondary `Vai agli strumenti` CTA that scrolls directly to the tool catalog.
+- add a native expandable privacy explainer below the existing privacy row;
+- keep it closed by default;
+- explain local PDF processing using the authoritative security/privacy baseline;
+- disclose that analytics are off by default and offline caching is for application assets, not documents;
+- disclose that the hosting provider can still observe normal web request metadata when the app loads;
+- link to the authoritative privacy/security document.
 
 Out of scope:
 
+- new privacy/legal routing;
 - analytics or telemetry;
-- new legal/privacy pages;
-- routing;
+- consent banners;
 - dependency changes;
-- large footer/navigation redesign;
+- large homepage redesign;
 - PDF-engine changes.
 
 ## Next planned step
 
-After this footer/trust improvement is reviewed and integrated, continue Phase 2 with evidence-driven public polish. Prefer small trust, contribution and beta-context gaps over decorative redesign.
+After this privacy explainer is reviewed and integrated, evaluate whether Phase 2 has any remaining high-value trust/public-beta gaps before moving to Phase 3 registry consolidation.
 ## Known technical debt / future work
 
 ### Home / client dispatch
