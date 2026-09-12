@@ -3,45 +3,13 @@ import { UNIVERSAL_TOOLS } from '@giumag/shared';
 import type { LoadedPdf } from './lib/pdf';
 import { loadPdfFile } from './lib/pdf';
 import { useAutoAdvanceScroll } from './lib/use-auto-advance-scroll';
-import { CompressPdfWorkspace } from './components/CompressPdfWorkspace';
-import { ImagesToPdfWorkspace } from './components/ImagesToPdfWorkspace';
-import { PdfToImagesWorkspace } from './components/PdfToImagesWorkspace';
-import { PageNumbersWorkspace } from './components/PageNumbersWorkspace';
-import { WatermarkWorkspace } from './components/WatermarkWorkspace';
-import { MetadataWorkspace } from './components/MetadataWorkspace';
-import { ProtectPdfWorkspace } from './components/ProtectPdfWorkspace';
-import { UnlockPdfWorkspace } from './components/UnlockPdfWorkspace';
-import { OcrPdfWorkspace } from './components/OcrPdfWorkspace';
-import { FormsPdfWorkspace } from './components/FormsPdfWorkspace';
-import { RedactPdfWorkspace } from './components/RedactPdfWorkspace';
-import { VisualSignatureWorkspace } from './components/VisualSignatureWorkspace';
-import { RepairPdfWorkspace } from './components/RepairPdfWorkspace';
-import { ComparePdfWorkspace } from './components/ComparePdfWorkspace';
-import { CropPdfWorkspace } from './components/CropPdfWorkspace';
-import { MergePdfWorkspace } from './components/MergePdfWorkspace';
 import { PdfWorkspace } from './components/PdfWorkspace';
-import { SplitPdfWorkspace } from './components/SplitPdfWorkspace';
+import {
+  isWorkspaceToolId,
+  ToolWorkspace,
+  type WorkspaceToolId,
+} from './tool-workspace-registry';
 import { ArrowUpRightIcon, DocumentIcon, LockIcon, ShieldIcon, ToolIcon } from './components/Icons';
-
-type ActiveWorkspace =
-  | 'merge'
-  | 'split'
-  | 'crop'
-  | 'compress'
-  | 'images-to-pdf'
-  | 'pdf-to-images'
-  | 'page-numbers'
-  | 'watermark'
-  | 'metadata'
-  | 'protect'
-  | 'unlock'
-  | 'ocr'
-  | 'forms'
-  | 'redact'
-  | 'sign-visual'
-  | 'repair'
-  | 'compare'
-  | null;
 
 const AVAILABLE_TOOLS =
   UNIVERSAL_TOOLS.filter(
@@ -60,7 +28,7 @@ export function App() {
 
   const [pdf, setPdf] = useState<LoadedPdf | null>(null);
   const [activeWorkspace, setActiveWorkspace] =
-    useState<ActiveWorkspace>(null);
+    useState<WorkspaceToolId | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -138,132 +106,10 @@ export function App() {
     );
   }
 
-  if (activeWorkspace === 'merge') {
+  if (activeWorkspace) {
     return (
-      <MergePdfWorkspace
-        onClose={() => setActiveWorkspace(null)}
-      />
-    );
-  }
-
-  if (activeWorkspace === 'split') {
-    return (
-      <SplitPdfWorkspace
-        onClose={() => setActiveWorkspace(null)}
-      />
-    );
-  }
-  if (activeWorkspace === 'crop') {
-    return (
-      <CropPdfWorkspace
-        onClose={() => setActiveWorkspace(null)}
-      />
-    );
-  }
-
-  if (activeWorkspace === 'compress') {
-    return (
-      <CompressPdfWorkspace
-        onClose={() => setActiveWorkspace(null)}
-      />
-    );
-  }
-  if (activeWorkspace === 'images-to-pdf') {
-    return (
-      <ImagesToPdfWorkspace
-        onClose={() => setActiveWorkspace(null)}
-      />
-    );
-  }
-
-  if (activeWorkspace === 'protect') {
-    return (
-      <ProtectPdfWorkspace
-        onClose={() => setActiveWorkspace(null)}
-      />
-    );
-  }
-
-  if (activeWorkspace === 'unlock') {
-    return (
-      <UnlockPdfWorkspace
-        onClose={() => setActiveWorkspace(null)}
-      />
-    );
-  }
-
-  if (activeWorkspace === 'ocr') {
-    return (
-      <OcrPdfWorkspace
-        onClose={() => setActiveWorkspace(null)}
-      />
-    );
-  }
-
-  if (activeWorkspace === 'forms') {
-    return (
-      <FormsPdfWorkspace
-        onClose={() => setActiveWorkspace(null)}
-      />
-    );
-  }
-  if (activeWorkspace === 'redact') {
-    return (
-      <RedactPdfWorkspace
-        onClose={() => setActiveWorkspace(null)}
-      />
-    );
-  }
-
-  if (activeWorkspace === 'sign-visual') {
-    return (
-      <VisualSignatureWorkspace
-        onClose={() => setActiveWorkspace(null)}
-      />
-    );
-  }
-  if (activeWorkspace === 'repair') {
-    return (
-      <RepairPdfWorkspace
-        onClose={() => setActiveWorkspace(null)}
-      />
-    );
-  }
-  if (activeWorkspace === 'compare') {
-    return (
-      <ComparePdfWorkspace
-        onClose={() => setActiveWorkspace(null)}
-      />
-    );
-  }
-
-  if (activeWorkspace === 'metadata') {
-    return (
-      <MetadataWorkspace
-        onClose={() => setActiveWorkspace(null)}
-      />
-    );
-  }
-
-  if (activeWorkspace === 'watermark') {
-    return (
-      <WatermarkWorkspace
-        onClose={() => setActiveWorkspace(null)}
-      />
-    );
-  }
-
-  if (activeWorkspace === 'page-numbers') {
-    return (
-      <PageNumbersWorkspace
-        onClose={() => setActiveWorkspace(null)}
-      />
-    );
-  }
-
-  if (activeWorkspace === 'pdf-to-images') {
-    return (
-      <PdfToImagesWorkspace
+      <ToolWorkspace
+        toolId={activeWorkspace}
         onClose={() => setActiveWorkspace(null)}
       />
     );
@@ -491,78 +337,13 @@ export function App() {
                 key={tool.id}
                 type="button"
                 onClick={() => {
-                  switch (tool.id) {
-                    case 'merge':
-                      setActiveWorkspace('merge');
-                      return;
+                  if (tool.id === 'organize') {
+                    fileInputRef.current?.click();
+                    return;
+                  }
 
-                    case 'split':
-                      setActiveWorkspace('split');
-                      return;
-
-                    case 'crop':
-                      setActiveWorkspace('crop');
-                      return;
-
-                    case 'compress':
-                      setActiveWorkspace('compress');
-                      return;
-
-                    case 'images-to-pdf':
-                      setActiveWorkspace('images-to-pdf');
-                      return;
-
-                    case 'protect':
-                      setActiveWorkspace('protect');
-                      return;
-
-                    case 'unlock':
-                      setActiveWorkspace('unlock');
-                      return;
-
-                    case 'ocr':
-                      setActiveWorkspace('ocr');
-                      return;
-
-                    case 'forms':
-                      setActiveWorkspace('forms');
-                      return;
-                    case 'redact':
-                      setActiveWorkspace('redact');
-                      return;
-                    case 'sign-visual':
-                      setActiveWorkspace('sign-visual');
-                      return;
-                    case 'repair':
-                      setActiveWorkspace('repair');
-                      return;
-
-                    case 'compare':
-                      setActiveWorkspace('compare');
-                      return;
-
-                    case 'metadata':
-                      setActiveWorkspace('metadata');
-                      return;
-
-                    case 'watermark':
-                      setActiveWorkspace('watermark');
-                      return;
-
-                    case 'page-numbers':
-                      setActiveWorkspace('page-numbers');
-                      return;
-
-                    case 'pdf-to-images':
-                      setActiveWorkspace('pdf-to-images');
-                      return;
-
-                    case 'organize':
-                      fileInputRef.current?.click();
-                      return;
-
-                    default:
-                      return;
+                  if (isWorkspaceToolId(tool.id)) {
+                    setActiveWorkspace(tool.id);
                   }
                 }}
               >

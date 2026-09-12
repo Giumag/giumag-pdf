@@ -2,19 +2,19 @@
 
 ## Current task
 
-Phase 2 bounded privacy/trust task: add a concise expandable homepage explanation of what local-first processing means.
+Phase 3 bounded client-registry refactor: consolidate the Web workspace mapping that was duplicated inside `App.tsx`.
 
-The copy must stay aligned with `docs/SECURITY_PRIVACY.md`. Do not introduce stronger privacy promises than the repository baseline supports.
+This is an internal behavior-preserving refactor. Shared metadata must remain platform-neutral and React-free.
 
 ## Current Git state
 
-- Expected branch: `feat/home-privacy-explainer`
-- Verified base `main`: `a2f549e1e29c8ecbd67fc64149281114b48efa59`
-- That base is the Squash and merge commit for PR #33 (`feat: improve homepage trust and tools access`).
+- Expected branch: `refactor/client-tool-registry`
+- Verified base `main`: `c80aaf49ec19213490a6a636b07a3cd382e84c8b`
+- That base is the Squash and merge commit for PR #34 (`feat: explain homepage privacy model`).
 - Expected HEAD before commit: same as the verified base.
 - Expected changed paths before commit:
   - `apps/client/src/App.tsx`
-  - `apps/client/src/styles.css`
+  - `apps/client/src/tool-workspace-registry.tsx`
   - `docs/AI_PROJECT_STATE.md`
   - `docs/AI_HANDOFF.md`
 - No commit, push, PR, merge, deploy, tag or branch deletion is part of the implementation procedure.
@@ -23,65 +23,65 @@ Always re-run `pnpm preflight` and `git status` before continuing because this f
 
 ## Completed in this task
 
-- Verified PR #33 was Squash and merged into `main`.
+- Verified PR #34 was Squash and merged into `main`.
 - Synchronized local `main` to the verified merge commit.
-- Started the focused `feat/home-privacy-explainer` branch.
-- Added a native `<details>` privacy explainer below the homepage privacy row.
-- Kept the explainer closed by default.
-- Explained that supported PDF operations are processed on-device rather than sent to a document-processing backend.
-- Explained that analytics are disabled by default.
-- Explained that offline caching covers application assets rather than documents.
-- Included the hosting-provider network-metadata caveat from the security/privacy baseline.
-- Linked the explainer to `docs/SECURITY_PRIVACY.md`.
-- Added only focused styles for the disclosure.
-- Kept routing, dependencies, analytics, telemetry and the PDF engine unchanged.
-- Updated durable project state for this bounded task.
-- Completed manual desktop/mobile, light/dark, disclosure open/close, keyboard-focus and privacy-link verification successfully.
+- Closed Phase 2 for now: no remaining trust gap justifies more homepage polish before architectural work.
+- Started the focused `refactor/client-tool-registry` branch.
+- Added `apps/client/src/tool-workspace-registry.tsx`.
+- Moved the 17 Web workspace component imports and render mapping out of `App.tsx`.
+- Derived `WorkspaceToolId` from the keys of the client registry.
+- Replaced the duplicated `ActiveWorkspace` string union.
+- Replaced the 17 conditional workspace render branches with one `ToolWorkspace` render.
+- Replaced the large card-click tool-ID switch with `isWorkspaceToolId`.
+- Preserved `organize` as the explicit file-picker action.
+- Kept `packages/shared`, routing, CSS, lazy loading and the PDF engine unchanged.
+- Updated durable project state for Phase 3.
+- Completed manual smoke testing of all 17 standalone workspace cards, workspace close/return behavior, `Organizza pagine`, real-PDF opening, filtered search dispatch and homepage visual stability successfully.
 
 ## Files materially changed
 
-- `apps/client/src/App.tsx` — privacy explainer markup and authoritative copy.
-- `apps/client/src/styles.css` — focused disclosure styles only.
-- `docs/AI_PROJECT_STATE.md` — current Phase 2 task and verified baseline.
+- `apps/client/src/App.tsx` — consumes the client registry instead of duplicating workspace dispatch.
+- `apps/client/src/tool-workspace-registry.tsx` — client-only ID-to-workspace mapping and type guard.
+- `docs/AI_PROJECT_STATE.md` — Phase 3 state and verified baseline.
 - `docs/AI_HANDOFF.md` — this rolling resume point.
 
 ## Validation
 
 Executed after implementation:
 
+- static registry consistency checks — passed.
 - `pnpm typecheck` — passed.
 - `pnpm test` — passed.
 - `pnpm build:web` — passed.
 - generated `apps/client/tsconfig.tsbuildinfo` metadata restored after build.
 - final `pnpm preflight` and `git diff --check` - passed.
-- manual privacy explainer verification on desktop/mobile and light/dark mode - passed.
+- manual 18-path dispatch smoke test - passed.
 
-## Product decision for this bounded task
+## Architectural decision
 
-Trust copy should be transparent, not merely promotional.
+This task follows AI-004: shared `UNIVERSAL_TOOLS` remains platform-neutral, while React component mappings live only in the Web client.
 
-The explainer therefore states both the local-processing guarantees documented by the project and the normal hosting-network metadata caveat. It remains optional/expandable so the homepage stays visually restrained.
+Do not move React components into `packages/shared` and do not introduce a generic plugin framework.
 
 ## Known issues / future work
 
-- Client workspace dispatch still duplicates tool knowledge in `App.tsx`.
+- Shared `ToolDefinition.id` is still typed as `string`; stronger platform-neutral tool-ID typing can be evaluated separately.
+- `organize` remains a distinct client action because it opens the existing PDF file flow rather than a standalone workspace.
 - Durable tool URLs are not implemented.
-- The global stylesheet remains a large incremental maintainability task.
+- The global stylesheet remains a later incremental maintainability task.
 - Existing bundle/import warnings remain non-blocking unless they cause a reproducible user-visible failure.
-- A dedicated in-app privacy page remains a future decision; the homepage currently links to the authoritative repository document.
 
 ## Exact next step
 
-Manual privacy verification has passed. Review this focused pull request and its CI. If review and CI are green, Squash and merge through GitHub. After merge, synchronize `main`; merged-branch cleanup remains a separate explicitly authorized operation.
+Manual dispatch verification has passed. Review this focused pull request and its CI. If review and CI are green, Squash and merge through GitHub. After merge, synchronize `main`; merged-branch cleanup remains a separate explicitly authorized operation.
 
-Then evaluate whether Phase 2 has any remaining high-value trust/public-beta gaps. If not, move to Phase 3 registry consolidation as a separate bounded task.
+Then continue Phase 3 with a separate assessment of the remaining shared/client tool-ID typing duplication. Do not combine that follow-up with routing, lazy loading or CSS work.
 
 ## Do not redo
 
-- Do not add stronger privacy claims than `docs/SECURITY_PRIVACY.md` supports.
-- Do not add analytics or telemetry.
-- Do not add a consent banner without a separate product/legal requirement.
-- Do not add routing in this task.
-- Do not add dependencies in this task.
-- Do not migrate CSS architecture in this task.
-- Do not touch `packages/pdf-engine` for this task.
+- Do not modify `packages/shared` in this task.
+- Do not add routing or durable URLs.
+- Do not add lazy loading in this task.
+- Do not introduce a plugin framework.
+- Do not change CSS in this task.
+- Do not touch `packages/pdf-engine` in this task.
