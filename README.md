@@ -150,15 +150,13 @@ Current release-hardening work includes:
 - Web/PWA production validation
 - Desktop packaging
 - Android project generation and packaging
-- CI/release verification
-- third-party license documentation
 - installation and first-run testing
 
 Do not treat the current development branch/version as a stable production release yet.
 
 ## Contributing
 
-Issues and pull requests are welcome once the repository is public.
+Issues and pull requests are welcome.
 
 Before submitting a change:
 
