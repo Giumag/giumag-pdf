@@ -2,15 +2,15 @@
 
 ## Current task
 
-Phase 2 bounded trust/public-beta task: replace the minimal homepage footer with a compact product-status and project-support footer.
+Phase 2 bounded privacy/trust task: add a concise expandable homepage explanation of what local-first processing means.
 
-Keep this focused. Do not add analytics, telemetry, routing, new dependencies, a large navigation system or PDF-engine changes.
+The copy must stay aligned with `docs/SECURITY_PRIVACY.md`. Do not introduce stronger privacy promises than the repository baseline supports.
 
 ## Current Git state
 
-- Expected branch: `feat/home-trust-footer`
-- Verified base `main`: `6463fcda663c89e0eff4cb090560b36e8d1fac6e`
-- That base is the Squash and merge commit for PR #32 (`feat: add homepage tool search`).
+- Expected branch: `feat/home-privacy-explainer`
+- Verified base `main`: `a2f549e1e29c8ecbd67fc64149281114b48efa59`
+- That base is the Squash and merge commit for PR #33 (`feat: improve homepage trust and tools access`).
 - Expected HEAD before commit: same as the verified base.
 - Expected changed paths before commit:
   - `apps/client/src/App.tsx`
@@ -23,24 +23,26 @@ Always re-run `pnpm preflight` and `git status` before continuing because this f
 
 ## Completed in this task
 
-- Verified PR #32 was Squash and merged into `main`.
+- Verified PR #33 was Squash and merged into `main`.
 - Synchronized local `main` to the verified merge commit.
-- Started the focused `feat/home-trust-footer` branch.
-- Closed Phase 1 for now instead of adding unsupported categories.
-- Moved durable project state to Phase 2 trust/public-beta polish.
-- Replaced the two-label homepage footer with a compact trust footer.
-- Added explicit `Beta pubblica` and local-processing context.
-- Added links to the public source repository, issue reporting, and privacy/security baseline.
-- Added only focused footer styles with keyboard focus treatment and wrapping.
-- Kept document processing, dependencies, routing and shared tool metadata unchanged.
-- Added a secondary `Vai agli strumenti` CTA below the PDF dropzone with smooth scrolling and reduced-motion support.
-- Completed manual verification of the trust footer, external links, responsive wrapping, keyboard focus, tools-jump CTA, accent glow and scroll behavior successfully.
+- Started the focused `feat/home-privacy-explainer` branch.
+- Added a native `<details>` privacy explainer below the homepage privacy row.
+- Kept the explainer closed by default.
+- Explained that supported PDF operations are processed on-device rather than sent to a document-processing backend.
+- Explained that analytics are disabled by default.
+- Explained that offline caching covers application assets rather than documents.
+- Included the hosting-provider network-metadata caveat from the security/privacy baseline.
+- Linked the explainer to `docs/SECURITY_PRIVACY.md`.
+- Added only focused styles for the disclosure.
+- Kept routing, dependencies, analytics, telemetry and the PDF engine unchanged.
+- Updated durable project state for this bounded task.
+- Completed manual desktop/mobile, light/dark, disclosure open/close, keyboard-focus and privacy-link verification successfully.
 
 ## Files materially changed
 
-- `apps/client/src/App.tsx` — homepage footer content and external project links.
-- `apps/client/src/styles.css` — focused footer layout/link styles only.
-- `docs/AI_PROJECT_STATE.md` — verified baseline and transition to Phase 2.
+- `apps/client/src/App.tsx` — privacy explainer markup and authoritative copy.
+- `apps/client/src/styles.css` — focused disclosure styles only.
+- `docs/AI_PROJECT_STATE.md` — current Phase 2 task and verified baseline.
 - `docs/AI_HANDOFF.md` — this rolling resume point.
 
 ## Validation
@@ -52,15 +54,13 @@ Executed after implementation:
 - `pnpm build:web` — passed.
 - generated `apps/client/tsconfig.tsbuildinfo` metadata restored after build.
 - final `pnpm preflight` and `git diff --check` - passed.
-- manual footer + tools-jump verification on desktop/mobile and light/dark mode - passed.
+- manual privacy explainer verification on desktop/mobile and light/dark mode - passed.
 
 ## Product decision for this bounded task
 
-Do not add homepage categories merely because the catalog has grown to 18 tools. The existing direct catalog plus local search is sufficient until beta evidence says otherwise.
+Trust copy should be transparent, not merely promotional.
 
-Move to trust/public-beta polish instead.
-
-The footer remains compact and uses existing authoritative public resources rather than adding new in-app legal/navigation architecture.
+The explainer therefore states both the local-processing guarantees documented by the project and the normal hosting-network metadata caveat. It remains optional/expandable so the homepage stays visually restrained.
 
 ## Known issues / future work
 
@@ -68,19 +68,19 @@ The footer remains compact and uses existing authoritative public resources rath
 - Durable tool URLs are not implemented.
 - The global stylesheet remains a large incremental maintainability task.
 - Existing bundle/import warnings remain non-blocking unless they cause a reproducible user-visible failure.
-- A dedicated in-app privacy page remains a future decision; the current footer links to the repository privacy/security baseline.
+- A dedicated in-app privacy page remains a future decision; the homepage currently links to the authoritative repository document.
 
 ## Exact next step
 
-Manual verification has passed. Review this focused pull request and its CI. If review and CI are green, Squash and merge through GitHub. After merge, synchronize `main`; merged-branch cleanup remains a separate explicitly authorized operation.
+Manual privacy verification has passed. Review this focused pull request and its CI. If review and CI are green, Squash and merge through GitHub. After merge, synchronize `main`; merged-branch cleanup remains a separate explicitly authorized operation.
 
-Then continue Phase 2 with another small evidence-driven public-beta/trust improvement rather than a decorative redesign.
+Then evaluate whether Phase 2 has any remaining high-value trust/public-beta gaps. If not, move to Phase 3 registry consolidation as a separate bounded task.
 
 ## Do not redo
 
-- Do not add homepage categories without beta evidence.
-- Do not turn the footer into a large sitemap in this task.
+- Do not add stronger privacy claims than `docs/SECURITY_PRIVACY.md` supports.
 - Do not add analytics or telemetry.
+- Do not add a consent banner without a separate product/legal requirement.
 - Do not add routing in this task.
 - Do not add dependencies in this task.
 - Do not migrate CSS architecture in this task.

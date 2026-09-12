@@ -389,6 +389,38 @@ export function App() {
             <span><i />Web, desktop e mobile</span>
           </div>
 
+          <details className="home-privacy-details">
+            <summary>
+              Come funziona la privacy?
+            </summary>
+
+            <div className="home-privacy-details-content">
+              <p>
+                Per le operazioni supportate, i PDF vengono elaborati
+                sul tuo dispositivo e non vengono inviati a un backend
+                di elaborazione.
+              </p>
+
+              <p>
+                Giumag PDF non usa analytics di default e la cache offline
+                conserva gli asset dell'app, non i documenti.
+              </p>
+
+              <p>
+                Quando carichi l'app, il provider di hosting può
+                comunque vedere i normali metadati di rete, come l'indirizzo IP.
+              </p>
+
+              <a
+                href="https://github.com/Giumag/giumag-pdf/blob/main/docs/SECURITY_PRIVACY.md"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Approfondisci privacy e sicurezza
+              </a>
+            </div>
+          </details>
+
           {error && (
             <div className="error-banner" role="alert">
               {error}
