@@ -15417,3 +15417,12 @@ button.is-active small {
 .crop-workspace.ui-empty-workspace:not(.crop-workspace-dragging) {
   background: var(--bg);
 }
+
+/* GIUMAG PDF WEB BETA POLISH - REDACT EMPTY CTA START */
+.redact-empty-choose-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+/* GIUMAG PDF WEB BETA POLISH - REDACT EMPTY CTA END */
