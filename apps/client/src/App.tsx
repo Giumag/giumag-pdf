@@ -79,6 +79,23 @@ export function App() {
       )
     : AVAILABLE_TOOLS;
 
+  function scrollToTools() {
+    const toolsSection = document.getElementById('tools');
+
+    if (!toolsSection) {
+      return;
+    }
+
+    const reduceMotion = window
+      .matchMedia('(prefers-reduced-motion: reduce)')
+      .matches;
+
+    toolsSection.scrollIntoView({
+      behavior: reduceMotion ? 'auto' : 'smooth',
+      block: 'start',
+    });
+  }
+
   async function openFile(file: File) {
     setLoading(true);
     setError(null);
@@ -356,6 +373,16 @@ export function App() {
             </button>
           </div>
 
+          <div className="home-tools-jump">
+            <button
+              className="secondary-button"
+              type="button"
+              onClick={scrollToTools}
+            >
+              Vai agli strumenti
+            </button>
+          </div>
+
           <div className="privacy-row" aria-label="Privacy e funzionalità della piattaforma">
             <span><i />Nessun caricamento di file</span>
             <span><i />Disponibile anche offline</span>
@@ -370,6 +397,7 @@ export function App() {
         </section>
 
         <section
+          id="tools"
           aria-labelledby="tools-title"
           className="tools-section"
         >
@@ -587,8 +615,39 @@ export function App() {
       </main>
 
       <footer className="home-footer">
-        <span>Giumag PDF</span>
-        <span>Strumenti PDF con elaborazione locale</span>
+        <div className="home-footer-brand">
+          <strong>Giumag PDF</strong>
+          <span>Beta pubblica · Elaborazione locale</span>
+        </div>
+
+        <nav
+          className="home-footer-links"
+          aria-label="Progetto e supporto"
+        >
+          <a
+            href="https://github.com/Giumag/giumag-pdf"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Codice sorgente
+          </a>
+
+          <a
+            href="https://github.com/Giumag/giumag-pdf/issues"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Segnala un problema
+          </a>
+
+          <a
+            href="https://github.com/Giumag/giumag-pdf/blob/main/docs/SECURITY_PRIVACY.md"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Privacy e sicurezza
+          </a>
+        </nav>
       </footer>
     </div>
   );

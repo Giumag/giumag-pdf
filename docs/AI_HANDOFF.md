@@ -2,15 +2,15 @@
 
 ## Current task
 
-Phase 1 bounded homepage discoverability task: add lightweight local search across the existing 18-tool catalog.
+Phase 2 bounded trust/public-beta task: replace the minimal homepage footer with a compact product-status and project-support footer.
 
-The search must remain a client-only convenience over existing tool metadata. Do not introduce categories, routing, registry schema changes, dispatch refactors or PDF-engine changes in this task.
+Keep this focused. Do not add analytics, telemetry, routing, new dependencies, a large navigation system or PDF-engine changes.
 
 ## Current Git state
 
-- Expected branch: `feat/home-tool-search`
-- Verified base `main`: `87021ab6184011e2940f16632d19b68aa5b07a72`
-- That base is the Squash and merge commit for PR #31 (`feat: clarify homepage PDF opening flow`).
+- Expected branch: `feat/home-trust-footer`
+- Verified base `main`: `6463fcda663c89e0eff4cb090560b36e8d1fac6e`
+- That base is the Squash and merge commit for PR #32 (`feat: add homepage tool search`).
 - Expected HEAD before commit: same as the verified base.
 - Expected changed paths before commit:
   - `apps/client/src/App.tsx`
@@ -23,23 +23,24 @@ Always re-run `pnpm preflight` and `git status` before continuing because this f
 
 ## Completed in this task
 
-- Verified PR #31 was Squash and merged into `main`.
+- Verified PR #32 was Squash and merged into `main`.
 - Synchronized local `main` to the verified merge commit.
-- Started the focused `feat/home-tool-search` branch.
-- Added a homepage search field for available tools.
-- Search matches existing tool names and descriptions locally.
-- Preserved the original tool order.
-- Added accessible result feedback and a no-results state.
-- Added only focused styles adjacent to the existing tools-section rules.
-- Kept `UNIVERSAL_TOOLS`, routing, client dispatch and the PDF engine unchanged.
-- Updated durable project state for this bounded task.
-- Completed manual desktop/mobile, light/dark, search filtering, empty-state, and filtered-tool navigation verification successfully.
+- Started the focused `feat/home-trust-footer` branch.
+- Closed Phase 1 for now instead of adding unsupported categories.
+- Moved durable project state to Phase 2 trust/public-beta polish.
+- Replaced the two-label homepage footer with a compact trust footer.
+- Added explicit `Beta pubblica` and local-processing context.
+- Added links to the public source repository, issue reporting, and privacy/security baseline.
+- Added only focused footer styles with keyboard focus treatment and wrapping.
+- Kept document processing, dependencies, routing and shared tool metadata unchanged.
+- Added a secondary `Vai agli strumenti` CTA below the PDF dropzone with smooth scrolling and reduced-motion support.
+- Completed manual verification of the trust footer, external links, responsive wrapping, keyboard focus, tools-jump CTA, accent glow and scroll behavior successfully.
 
 ## Files materially changed
 
-- `apps/client/src/App.tsx` — local search state, filtering and search UI.
-- `apps/client/src/styles.css` — focused search/empty-state styles only.
-- `docs/AI_PROJECT_STATE.md` — current Phase 1 task and verified baseline.
+- `apps/client/src/App.tsx` — homepage footer content and external project links.
+- `apps/client/src/styles.css` — focused footer layout/link styles only.
+- `docs/AI_PROJECT_STATE.md` — verified baseline and transition to Phase 2.
 - `docs/AI_HANDOFF.md` — this rolling resume point.
 
 ## Validation
@@ -51,35 +52,36 @@ Executed after implementation:
 - `pnpm build:web` — passed.
 - generated `apps/client/tsconfig.tsbuildinfo` metadata restored after build.
 - final `pnpm preflight` and `git diff --check` - passed.
-- manual tool-search verification on desktop/mobile and light/dark mode - passed.
+- manual footer + tools-jump verification on desktop/mobile and light/dark mode - passed.
 
 ## Product decision for this bounded task
 
-Add search before categories.
+Do not add homepage categories merely because the catalog has grown to 18 tools. The existing direct catalog plus local search is sufficient until beta evidence says otherwise.
 
-With 18 available tools, a direct text search provides useful discovery for users who already know the task they want, while avoiding a new taxonomy that the current shared metadata does not support.
+Move to trust/public-beta polish instead.
 
-The filter uses only existing tool name and description data. Shared metadata remains platform-neutral and unchanged.
+The footer remains compact and uses existing authoritative public resources rather than adding new in-app legal/navigation architecture.
 
 ## Known issues / future work
 
 - Client workspace dispatch still duplicates tool knowledge in `App.tsx`.
 - Durable tool URLs are not implemented.
-- The large global stylesheet remains an incremental maintainability task.
+- The global stylesheet remains a large incremental maintainability task.
 - Existing bundle/import warnings remain non-blocking unless they cause a reproducible user-visible failure.
-- Categories or featured-tool ordering should require actual beta evidence after search is available.
+- A dedicated in-app privacy page remains a future decision; the current footer links to the repository privacy/security baseline.
 
 ## Exact next step
 
-Manual tool-search verification has passed. Review this focused pull request and its CI. If review and CI are green, Squash and merge through GitHub. After merge, synchronize `main`; merged-branch cleanup remains a separate explicitly authorized operation.
+Manual verification has passed. Review this focused pull request and its CI. If review and CI are green, Squash and merge through GitHub. After merge, synchronize `main`; merged-branch cleanup remains a separate explicitly authorized operation.
 
-Then evaluate the next bounded Phase 1 homepage improvement. Do not add categories unless beta evidence shows search alone is insufficient.
+Then continue Phase 2 with another small evidence-driven public-beta/trust improvement rather than a decorative redesign.
 
 ## Do not redo
 
-- Do not add categories in the same task.
-- Do not alter `packages/shared` for search.
-- Do not introduce routing in this task.
-- Do not refactor client tool dispatch in this task.
+- Do not add homepage categories without beta evidence.
+- Do not turn the footer into a large sitemap in this task.
+- Do not add analytics or telemetry.
+- Do not add routing in this task.
+- Do not add dependencies in this task.
 - Do not migrate CSS architecture in this task.
 - Do not touch `packages/pdf-engine` for this task.

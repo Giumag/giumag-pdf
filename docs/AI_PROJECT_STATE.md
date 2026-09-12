@@ -2,7 +2,7 @@
 
 Last bootstrap audit: 2026-09-12
 
-Current verified `main` baseline: `87021ab6184011e2940f16632d19b68aa5b07a72` (homepage open-flow improvement merged through PR #31)
+Current verified `main` baseline: `6463fcda663c89e0eff4cb090560b36e8d1fac6e` (homepage tool search merged through PR #32)
 
 This file records current durable development state. It is not a chronological project log. Re-verify repository state at the start of every session.
 
@@ -49,32 +49,36 @@ Authoritative references:
 
 ## Current phase
 
-### Phase 1 — Home information architecture and UX
+### Phase 2 — Trust and public-beta polish
 
-Phase 0 AI continuity bootstrap was integrated through PR #30. The first Phase 1 homepage opening-flow improvement was integrated through PR #31.
+Phase 0 continuity was integrated through PR #30. Phase 1 homepage IA/UX delivered the generic PDF-opening flow through PR #31 and lightweight tool search through PR #32.
 
-Current bounded task: improve discovery across the existing 18-tool catalog with a small local search control.
+Phase 1 is considered sufficient for now: do not add categories or featured-tool ranking without beta evidence.
+
+Current bounded task: make the public homepage expose the project's beta/open-source/privacy support surfaces through a compact footer.
 
 Scope:
 
-- search only the existing available tools;
-- match tool name and description locally in the browser;
-- preserve the existing tool order;
-- provide an accessible result count and no-results state;
-- keep shared `UNIVERSAL_TOOLS` metadata unchanged.
+- identify the product as a public beta;
+- reinforce local processing;
+- link to the public source repository;
+- link to issue reporting;
+- link to the repository privacy/security baseline;
+- preserve the restrained existing visual language.
+- add a secondary `Vai agli strumenti` CTA that scrolls directly to the tool catalog.
 
 Out of scope:
 
-- categories or featured-tool ranking;
+- analytics or telemetry;
+- new legal/privacy pages;
 - routing;
-- shared registry schema changes;
-- client dispatch refactors;
-- CSS architecture migration;
+- dependency changes;
+- large footer/navigation redesign;
 - PDF-engine changes.
 
 ## Next planned step
 
-After this search improvement is reviewed and integrated, evaluate whether any further homepage catalog structure is justified by beta evidence. Do not add categories merely for symmetry; 18 tools plus search may already be sufficient.
+After this footer/trust improvement is reviewed and integrated, continue Phase 2 with evidence-driven public polish. Prefer small trust, contribution and beta-context gaps over decorative redesign.
 ## Known technical debt / future work
 
 ### Home / client dispatch
@@ -112,7 +116,7 @@ Existing build notes mention large chunks and PDF-engine import warnings that ar
 
 - Does beta usage show that the generic PDF-opening flow needs more than the current direct page-view/organization workspace?
 - Which tools, if any, should be featured above the full catalog?
-- After adding lightweight search, is any category structure still justified by beta evidence?
+- Does beta feedback show any need for categories or featured-tool ordering beyond the current search?
 - When durable tool URLs are introduced, is a small native solution sufficient or is a router dependency justified?
 - What are the safest first boundaries for incremental `styles.css` extraction?
 
