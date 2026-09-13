@@ -27,7 +27,7 @@ Authoritative decision: `docs/DECISION.md`.
 ## AI-003 — Repository files, not chat memory, carry AI continuity
 
 - **Date:** 2026-09-12
-- **Status:** Accepted
+- **Status:** Superseded by AI-006
 - **Decision:** Maintain `AGENTS.md`, `docs/AI_PROJECT_STATE.md`, `docs/AI_DECISIONS.md` and `docs/AI_HANDOFF.md` as a small repository-native continuity layer.
 - **Rationale:** Development intentionally spans independent AI conversations. Git and current files are auditable and less error-prone than conversational memory.
 - **Alternatives rejected:** Reconstructing state from prior chats; one ever-growing project log.
@@ -50,3 +50,12 @@ Authoritative decision: `docs/DECISION.md`.
 - **Rationale:** The stylesheet is large enough to be technical debt, but a one-shot framework migration would combine high visual risk with architectural churn.
 - **Alternatives rejected:** Immediate Tailwind, CSS Modules, CSS-in-JS or other repository-wide styling rewrites without a separate explicit decision.
 - **Consequences:** Do not combine a major redesign and a major CSS architecture migration in one task.
+
+## AI-006 — Retire rolling AI continuity files
+
+- **Date:** 2026-09-13
+- **Status:** Accepted
+- **Decision:** Retire `docs/AI_PROJECT_STATE.md` and `docs/AI_HANDOFF.md`. Keep `AGENTS.md` for operating rules and `docs/AI_DECISIONS.md` for durable architectural and product decisions.
+- **Rationale:** Rolling state and handoff files duplicate information recoverable from current source, tests, authoritative documentation and Git history, while creating avoidable synchronization friction between sessions.
+- **Alternatives rejected:** Continue requiring rolling state and handoff files as mandatory session inputs.
+- **Consequences:** Current project state is reconstructed from the repository and Git history. `pnpm preflight` no longer requires the retired files. Durable decisions remain recorded in `docs/AI_DECISIONS.md`.
