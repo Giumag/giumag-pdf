@@ -14,9 +14,7 @@ When information conflicts, prefer:
 2. automated tests and verified build results;
 3. authoritative project documentation, especially `CONTRIBUTING.md`, `SECURITY.md` and `docs/BETA_OPERATIONS.md`;
 4. accepted entries in `docs/AI_DECISIONS.md`;
-5. `docs/AI_PROJECT_STATE.md`;
-6. `docs/AI_HANDOFF.md`;
-7. prior conversations or copied summaries.
+5. prior conversations or copied summaries.
 
 Never claim a check passed unless it was actually executed.
 
@@ -39,7 +37,7 @@ Before modifying code:
 2. inspect current branch, HEAD and `git status`;
 3. preserve unrelated user changes;
 4. read `CONTRIBUTING.md` and `docs/BETA_OPERATIONS.md`;
-5. read `docs/AI_PROJECT_STATE.md`, `docs/AI_DECISIONS.md` and `docs/AI_HANDOFF.md`;
+5. read `docs/AI_DECISIONS.md`;
 6. inspect task-relevant source, tests and nearby abstractions;
 7. inspect existing scripts before adding automation.
 
@@ -91,12 +89,10 @@ If user-side execution is required, prefer one guarded, deterministic and idempo
 
 Reusable repeated automation belongs in repository-native tooling when it materially reduces errors and remains small.
 
-## Continuity files
+## AI continuity
 
-- `docs/AI_PROJECT_STATE.md`: current durable development state; not a diary.
 - `docs/AI_DECISIONS.md`: durable architectural/product decisions.
-- `docs/AI_HANDOFF.md`: short rolling resume point for the next session.
-
-Update only the files whose truth changed. Keep `AI_HANDOFF.md` concise and rewrite stale content instead of appending history.
+- Reconstruct current project state from current code, tests, authoritative documentation and Git history at the start of every session.
+- Do not maintain mandatory rolling AI state or handoff files.
 
 Git remains the authoritative history.

@@ -66,9 +66,7 @@ const requiredFiles = [
   'SECURITY.md',
   'docs/BETA_OPERATIONS.md',
   'AGENTS.md',
-  'docs/AI_PROJECT_STATE.md',
   'docs/AI_DECISIONS.md',
-  'docs/AI_HANDOFF.md',
 ];
 
 let missing = false;
