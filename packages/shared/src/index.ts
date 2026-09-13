@@ -10,13 +10,13 @@ export type ToolStatus =
   | 'available'
   | 'planned';
 
-export interface ToolDefinition {
-  id: string;
+type ToolDefinitionShape<Id extends string> = {
+  id: Id;
   name: string;
   description: string;
   platforms: Platform[];
   status: ToolStatus;
-}
+};
 
 const allPlatforms: Platform[] = [
   'web',
@@ -27,7 +27,7 @@ const allPlatforms: Platform[] = [
   'android',
 ];
 
-export const UNIVERSAL_TOOLS: ToolDefinition[] = [
+const UNIVERSAL_TOOL_DEFINITIONS = [
   {
     id: 'merge',
     name: 'Unisci PDF',
@@ -173,4 +173,18 @@ export const UNIVERSAL_TOOLS: ToolDefinition[] = [
     platforms: allPlatforms,
     status: 'available',
   },
-];
+] as const satisfies readonly ToolDefinitionShape<string>[];
+
+export type ToolId =
+  (typeof UNIVERSAL_TOOL_DEFINITIONS)[number]['id'];
+
+export type AvailableToolId =
+  Extract<
+    (typeof UNIVERSAL_TOOL_DEFINITIONS)[number],
+    { status: 'available' }
+  >['id'];
+
+export type ToolDefinition = ToolDefinitionShape<ToolId>;
+
+export const UNIVERSAL_TOOLS: readonly ToolDefinition[] =
+  UNIVERSAL_TOOL_DEFINITIONS;

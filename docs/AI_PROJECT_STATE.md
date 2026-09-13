@@ -2,7 +2,7 @@
 
 Last bootstrap audit: 2026-09-12
 
-Current verified `main` baseline: `c0f92dc9e0ea4d7ef7269898e6bd43aade5ade16` (client tool workspace registry merged through PR #35)
+Current verified `main` baseline: `3c79bc72271dc653991117fca73bdcbe6b88248f` (AI continuity synchronization after the client registry merge; latest application-code baseline on `main` remains `c0f92dc9e0ea4d7ef7269898e6bd43aade5ade16` from PR #35)
 
 This file records current durable development state. It is not a chronological project log. Re-verify repository state at the start of every session.
 
@@ -49,6 +49,8 @@ Authoritative references:
 - Homepage IA/UX improvements integrated through PRs #31 and #32.
 - Public-beta trust/privacy polish integrated through PRs #33 and #34.
 - First client-only workspace registry consolidation integrated through PR #35.
+- Read-only audit of the shared/client tool-ID typing boundary completed.
+- Minimal tool-ID type consolidation implemented on PR #37 branch.
 
 ## Current phase
 
@@ -56,29 +58,40 @@ Authoritative references:
 
 Phase 1 homepage IA/UX and Phase 2 trust/public-beta polish are complete for now.
 
-The first Phase 3 task was integrated through PR #35:
+The first Phase 3 implementation was integrated through PR #35:
 
-- `apps/client/src/tool-workspace-registry.tsx` now owns the 17 standalone Web workspace mappings;
-- `WorkspaceToolId` is derived from the client registry keys;
+- `apps/client/src/tool-workspace-registry.tsx` owns the 17 standalone Web workspace mappings;
 - `App.tsx` no longer duplicates the manual active-workspace union, the 17 render branches or the large tool-card dispatch switch;
 - `organize` remains the explicit file-picker action;
 - shared `UNIVERSAL_TOOLS` metadata remains platform-neutral and React-free.
 
-Phase 3 remains active. The remaining registry-related technical question is the typing boundary between shared `ToolDefinition.id`, the client registry keys and the special `organize` action.
+PR #37 now contains the bounded typing consolidation defined by the subsequent audit:
 
-Do not combine that assessment with routing, lazy loading, CSS architecture changes or PDF-engine work.
+- shared metadata literals are preserved internally instead of widening IDs to arbitrary `string`;
+- `ToolId` is derived from the shared metadata source;
+- `AvailableToolId` is derived from shared entries whose status is `available`;
+- exported `ToolDefinition.id` is constrained to `ToolId`;
+- `WorkspaceToolId` is `Exclude<AvailableToolId, 'organize'>`;
+- the 17 renderer entries are checked with `satisfies Record<WorkspaceToolId, WorkspaceRenderer>`;
+- `isWorkspaceToolId` now accepts shared `ToolId` rather than arbitrary `string`;
+- `App.tsx` and the `organize` runtime dispatch remain unchanged;
+- no React component moved into `packages/shared` and AI-004 remains preserved.
+
+This makes additions/removals of available shared tools fail client type checking unless the standalone workspace registry is kept in sync or the explicit `organize` exception is deliberately revisited.
 
 ## Next planned step
 
-Perform a read-only audit of the current tool-ID typing boundary across `packages/shared/src/index.ts`, `apps/client/src/tool-workspace-registry.tsx` and the `organize` dispatch path, then define the smallest type-safe consolidation that preserves AI-004.
+Finish validation and review of PR #37. Do not expand its scope unless validation exposes a concrete compile-time or runtime issue.
+
+After PR #37 is merged and verified on `main`, choose the next Phase 3/technical-debt task from current beta evidence rather than reopening completed registry work.
 
 ## Known technical debt / future work
 
 ### Home / client dispatch
 
-The first client-only registry consolidation is complete.
+The workspace registry extraction and its shared-ID type boundary are complete on the PR #37 branch.
 
-Remaining duplication is limited to the relationship between string IDs in shared `UNIVERSAL_TOOLS`, the client registry key type, and the special `organize` file-picker action. Evaluate stronger shared ID typing separately without coupling React components to `packages/shared`.
+`ToolIcon` still accepts `id: string`. This is a rendering-only loose boundary and was intentionally excluded from PR #37 because it is not required for dispatch type safety.
 
 ### Durable tool URLs
 

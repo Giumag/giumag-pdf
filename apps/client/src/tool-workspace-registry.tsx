@@ -1,3 +1,5 @@
+import type { AvailableToolId, ToolId } from '@giumag/shared';
+import type { ReactNode } from 'react';
 import { ComparePdfWorkspace } from './components/ComparePdfWorkspace';
 import { CompressPdfWorkspace } from './components/CompressPdfWorkspace';
 import { CropPdfWorkspace } from './components/CropPdfWorkspace';
@@ -17,6 +19,11 @@ import { VisualSignatureWorkspace } from './components/VisualSignatureWorkspace'
 import { WatermarkWorkspace } from './components/WatermarkWorkspace';
 
 type WorkspaceCloseHandler = () => void;
+type WorkspaceRenderer =
+  (onClose: WorkspaceCloseHandler) => ReactNode;
+
+export type WorkspaceToolId =
+  Exclude<AvailableToolId, 'organize'>;
 
 const TOOL_WORKSPACE_RENDERERS = {
   merge: (onClose: WorkspaceCloseHandler) => (
@@ -70,13 +77,10 @@ const TOOL_WORKSPACE_RENDERERS = {
   'pdf-to-images': (onClose: WorkspaceCloseHandler) => (
     <PdfToImagesWorkspace onClose={onClose} />
   ),
-} as const;
-
-export type WorkspaceToolId =
-  keyof typeof TOOL_WORKSPACE_RENDERERS;
+} satisfies Record<WorkspaceToolId, WorkspaceRenderer>;
 
 export function isWorkspaceToolId(
-  toolId: string,
+  toolId: ToolId,
 ): toolId is WorkspaceToolId {
   return Object.prototype.hasOwnProperty.call(
     TOOL_WORKSPACE_RENDERERS,
