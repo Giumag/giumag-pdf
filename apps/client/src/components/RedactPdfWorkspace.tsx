@@ -39,6 +39,11 @@ import {
   RedactPdfCanvas,
 } from './RedactPdfCanvas';
 
+import {
+  WorkspaceHeader,
+  WorkspaceIntro,
+} from './ui/WorkspaceChrome';
+
 interface RedactPdfWorkspaceProps {
   onClose: () => void;
 }
@@ -728,7 +733,7 @@ export function RedactPdfWorkspace({
         busy
       }
     >
-      <header className="workspace-topbar glass-surface">
+      <WorkspaceHeader empty={!pdf}>
         <button
           className="brand-button"
           type="button"
@@ -746,23 +751,23 @@ export function RedactPdfWorkspace({
           </span>
         </button>
 
-        <div className="document-title">
-          <strong>
-            Oscura PDF
-          </strong>
+        {pdf && (
+          <div className="document-title redact-document-title">
+            <strong>
+              Oscura PDF
+            </strong>
 
-          <span>
-            <ShieldIcon />
+            <span>
+              <ShieldIcon />
 
-            {pdf
-              ? `Rimozione sicura · ${pageCount} ${
-                  pageCount === 1
-                    ? 'pagina'
-                    : 'pagine'
-                }`
-              : 'Rimozione definitiva dei dati'}
-          </span>
-        </div>
+              {`Rimozione sicura · ${pageCount} ${
+                pageCount === 1
+                  ? 'pagina'
+                  : 'pagine'
+              }`}
+            </span>
+          </div>
+        )}
 
         <div className="topbar-actions">
           <input
@@ -793,6 +798,7 @@ export function RedactPdfWorkspace({
           <button
             className="secondary-button compact-button"
             type="button"
+            hidden={!pdf}
             disabled={
               controlsDisabled
             }
@@ -814,6 +820,7 @@ export function RedactPdfWorkspace({
           <button
             className="primary-button compact-button redact-export-topbar"
             type="button"
+            hidden={!pdf}
             disabled={
               controlsDisabled ||
               !pdf ||
@@ -832,8 +839,17 @@ export function RedactPdfWorkspace({
                 : 'Crea PDF sicuro'}
             </span>
           </button>
+
+          <button
+            className="secondary-button coherence-close-button"
+            type="button"
+            hidden={Boolean(pdf)}
+            onClick={closeWorkspace}
+          >
+            Chiudi
+          </button>
         </div>
-      </header>
+      </WorkspaceHeader>
 
       <div
         className={[
@@ -916,23 +932,11 @@ export function RedactPdfWorkspace({
       >
         {!pdf ? (
           <div className="crop-empty-content">
-            <section className="crop-heading">
-              <div>
-                <p className="crop-kicker">
-                  Oscura PDF
-                </p>
-
-                <h1 className="crop-title">
-                  Elimina davvero le informazioni sensibili.
-                </h1>
-              </div>
-
-              <p className="crop-description">
-                Disegna le aree da nascondere direttamente
-                sulle pagine. La copia finale viene ricostruita
-                senza conservare il contenuto originale sottostante.
-              </p>
-            </section>
+            <WorkspaceIntro
+              eyebrow="Oscura PDF"
+              title="Elimina davvero le informazioni sensibili"
+              description="Disegna le aree da nascondere direttamente sulle pagine. La copia finale viene ricostruita senza conservare il contenuto originale sottostante."
+            />
 
             <section
               className={[

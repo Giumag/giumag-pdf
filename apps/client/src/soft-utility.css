@@ -9227,3 +9227,653 @@
 .forms-shell .forms-privacy svg {
   flex: 0 0 auto;
 }
+
+/* Redact PDF Soft Utility migration */
+
+/*
+ * Redact condivide molte classi crop-* con Crop PDF.
+ * Questa sezione e intenzionalmente limitata a .redact-shell.
+ */
+
+.redact-shell {
+  background: var(--content-bg);
+  color: var(--text);
+}
+
+.redact-shell .soft-workspace-topbar {
+  border-bottom-color: color-mix(
+    in srgb,
+    var(--separator) 84%,
+    transparent
+  );
+  background: color-mix(
+    in srgb,
+    var(--content-bg) 94%,
+    transparent
+  );
+}
+
+.redact-shell .redact-document-title span svg {
+  color: #68a77b;
+}
+
+.redact-shell .coherence-close-button {
+  border-color: var(--separator);
+  background: transparent;
+  color: var(--text-secondary);
+  box-shadow: none;
+}
+
+.redact-shell .coherence-close-button:hover:not(:disabled) {
+  border-color: color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 34%,
+    var(--separator)
+  );
+  background: color-mix(
+    in srgb,
+    var(--soft-accent-soft, rgba(201, 74, 74, 0.13)) 36%,
+    transparent
+  );
+  color: var(--text);
+  box-shadow: none;
+}
+
+.redact-shell .crop-workspace {
+  background: var(--content-bg);
+  color: var(--text);
+}
+
+/* Empty state */
+
+.redact-shell .crop-empty-content {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  padding:
+    clamp(38px, 6vh, 70px)
+    clamp(22px, 5vw, 64px)
+    clamp(44px, 7vh, 82px);
+  gap: clamp(28px, 4vw, 40px);
+}
+
+.redact-shell .crop-empty-content .soft-workspace-intro {
+  width: 100%;
+  margin: 0;
+}
+
+.redact-shell .crop-empty-dropzone {
+  width: 100%;
+  min-height: 280px;
+  padding: clamp(30px, 5vw, 48px);
+  border: 1px dashed color-mix(
+    in srgb,
+    var(--separator) 88%,
+    var(--text-secondary)
+  );
+  border-radius: 24px;
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 76%,
+    var(--content-bg)
+  );
+  box-shadow: none;
+}
+
+.redact-shell .crop-empty-dropzone.is-dragging {
+  border-color: var(--soft-accent, #c94a4a);
+  background: color-mix(
+    in srgb,
+    var(--soft-accent-soft, rgba(201, 74, 74, 0.13)) 50%,
+    var(--surface-strong)
+  );
+  box-shadow:
+    inset 0 0 0 1px
+    color-mix(
+      in srgb,
+      var(--soft-accent, #c94a4a) 26%,
+      transparent
+    );
+}
+
+.redact-shell .crop-empty-icon {
+  border-color: color-mix(
+    in srgb,
+    var(--separator) 82%,
+    transparent
+  );
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 90%,
+    var(--content-bg)
+  );
+  color: var(--text-secondary);
+  box-shadow: none;
+}
+
+.redact-shell .crop-empty-badge {
+  border-color: var(--content-bg);
+  background: var(--soft-accent, #c94a4a);
+  color: #fff;
+  box-shadow: none;
+}
+
+.redact-shell .crop-empty-copy strong {
+  color: var(--text);
+  font-family: inherit;
+  font-weight: 710;
+  letter-spacing: -0.015em;
+}
+
+.redact-shell .crop-empty-copy span {
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.redact-shell .redact-empty-choose-button {
+  min-height: 44px;
+  border-radius: 12px;
+  box-shadow: none;
+}
+
+/* Loaded workspace */
+
+.redact-shell .crop-layout {
+  gap: 14px;
+  padding: 14px;
+  background: var(--content-bg);
+}
+
+.redact-shell .crop-thumbnail-sidebar,
+.redact-shell .crop-editor,
+.redact-shell .crop-controls-panel {
+  border: 1px solid color-mix(
+    in srgb,
+    var(--separator) 90%,
+    transparent
+  );
+  border-radius: 18px;
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 88%,
+    var(--content-bg)
+  );
+  box-shadow: none;
+}
+
+.redact-shell .crop-thumbnail-sidebar {
+  overflow: hidden;
+}
+
+.redact-shell .crop-thumbnail-item .thumbnail-active {
+  background: transparent;
+  box-shadow: none;
+}
+
+.redact-shell
+  .crop-thumbnail-item
+  .thumbnail-active
+  .thumbnail-canvas-wrap {
+  border-color: var(--soft-accent, #c94a4a);
+  box-shadow:
+    0 0 0 1px
+    color-mix(
+      in srgb,
+      var(--soft-accent, #c94a4a) 34%,
+      transparent
+    );
+}
+
+.redact-shell
+  .crop-thumbnail-item
+  .thumbnail-active
+  .thumbnail-number {
+  color: var(--soft-accent, #c94a4a);
+}
+
+.redact-shell .crop-thumbnail-badge {
+  border-color: var(--surface-strong);
+  background: var(--soft-accent, #c94a4a);
+  color: #fff;
+  box-shadow: none;
+}
+
+/* Editor / page preview */
+
+.redact-shell .crop-editor {
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 76%,
+    var(--content-bg)
+  );
+}
+
+.redact-shell .crop-editor-toolbar {
+  border-bottom: 1px solid color-mix(
+    in srgb,
+    var(--separator) 84%,
+    transparent
+  );
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 92%,
+    var(--content-bg)
+  );
+  box-shadow: none;
+}
+
+.redact-shell .crop-editor-toolbar .toolbar-button {
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  box-shadow: none;
+}
+
+.redact-shell
+  .crop-editor-toolbar
+  .toolbar-button:hover:not(:disabled) {
+  border-color: var(--separator);
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 72%,
+    var(--content-bg)
+  );
+  color: var(--text);
+  box-shadow: none;
+}
+
+.redact-shell .crop-editor-toolbar > span {
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.redact-shell .crop-editor-toolbar > span strong {
+  color: var(--text);
+  font-family: inherit;
+  font-weight: 680;
+}
+
+.redact-shell .crop-editor-scroll {
+  background: color-mix(
+    in srgb,
+    var(--content-bg) 76%,
+    var(--surface-strong)
+  );
+}
+
+.redact-shell .redact-canvas-frame {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #fff;
+  box-shadow:
+    0 18px 46px rgba(0, 0, 0, 0.16);
+}
+
+.redact-shell .redact-area {
+  background: #0c0c0c;
+  border-color: rgba(255, 255, 255, 0.26);
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.34);
+}
+
+.redact-shell .redact-area:hover:not(:disabled) {
+  border-color: var(--soft-accent, #c94a4a);
+  box-shadow:
+    0 0 0 2px
+    color-mix(
+      in srgb,
+      var(--soft-accent, #c94a4a) 18%,
+      transparent
+    );
+}
+
+.redact-shell .redact-area-draft {
+  border-color: var(--soft-accent, #c94a4a);
+  background: rgba(12, 12, 12, 0.72);
+  box-shadow: none;
+}
+
+.redact-shell .redact-editor-hint {
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+/* Controls */
+
+.redact-shell .crop-controls-panel {
+  overflow: hidden;
+}
+
+.redact-shell .crop-controls-scroll {
+  background: transparent;
+}
+
+.redact-shell .crop-control-section {
+  background: transparent;
+}
+
+.redact-shell
+  .crop-control-section
+  + .crop-control-section,
+.redact-shell .redact-security-note {
+  border-top-color: color-mix(
+    in srgb,
+    var(--separator) 82%,
+    transparent
+  );
+}
+
+.redact-shell .crop-panel-kicker {
+  color: var(--soft-accent, #c94a4a);
+  font-family: inherit;
+  font-weight: 720;
+  letter-spacing: 0.07em;
+}
+
+.redact-shell .crop-control-section h2 {
+  color: var(--text);
+  font-family: inherit;
+  font-weight: 720;
+  letter-spacing: -0.02em;
+}
+
+.redact-shell .redact-panel-copy {
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.redact-shell .redact-action-stack {
+  gap: 9px;
+}
+
+.redact-shell .crop-panel-button {
+  min-height: 42px;
+  border: 1px solid var(--separator);
+  border-radius: 11px;
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 74%,
+    var(--content-bg)
+  );
+  color: var(--text);
+  box-shadow: none;
+  font-family: inherit;
+}
+
+.redact-shell
+  .crop-panel-button:hover:not(:disabled) {
+  border-color: color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 26%,
+    var(--separator)
+  );
+  background: color-mix(
+    in srgb,
+    var(--soft-accent-soft, rgba(201, 74, 74, 0.13)) 34%,
+    var(--surface-strong)
+  );
+  box-shadow: none;
+}
+
+.redact-shell .crop-panel-button:disabled {
+  opacity: 0.42;
+  box-shadow: none;
+}
+
+.redact-shell .redact-clear-all:not(:disabled) {
+  border-color: color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 28%,
+    var(--separator)
+  );
+  background: transparent;
+  color: var(--soft-accent, #c94a4a);
+  box-shadow: none;
+}
+
+/* Progress */
+
+.redact-shell .redact-progress-section {
+  background: color-mix(
+    in srgb,
+    var(--soft-accent-soft, rgba(201, 74, 74, 0.13)) 28%,
+    transparent
+  );
+}
+
+.redact-shell .redact-progress-track {
+  overflow: hidden;
+  border: 1px solid var(--separator);
+  border-radius: 999px;
+  background: color-mix(
+    in srgb,
+    var(--content-bg) 72%,
+    var(--surface-strong)
+  );
+  box-shadow: none;
+}
+
+.redact-shell .redact-progress-track > span {
+  background: var(--soft-accent, #c94a4a);
+  box-shadow: none;
+}
+
+/* Result */
+
+.redact-shell .redact-result-section {
+  border: 1px solid rgba(62, 141, 91, 0.32);
+  border-radius: 14px;
+  background: rgba(62, 141, 91, 0.09);
+  box-shadow: none;
+}
+
+.redact-shell
+  .redact-result-section
+  .crop-panel-kicker {
+  color: #68a77b;
+}
+
+.redact-shell .redact-download-again {
+  min-height: 42px;
+  border-radius: 11px;
+  box-shadow: none;
+}
+
+/* Security verification */
+
+.redact-shell .redact-security-note {
+  border: 1px solid rgba(62, 141, 91, 0.28);
+  border-radius: 14px;
+  background: rgba(62, 141, 91, 0.08);
+  color: var(--text-secondary);
+  box-shadow: none;
+}
+
+.redact-shell .redact-security-note > svg {
+  color: #68a77b;
+}
+
+.redact-shell .redact-security-note strong {
+  color: var(--text);
+  font-family: inherit;
+}
+
+.redact-shell .redact-security-note span {
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+/* Status messages */
+
+.redact-shell .crop-message {
+  border-radius: 13px;
+  box-shadow: none;
+  font-family: inherit;
+}
+
+.redact-shell .crop-error {
+  border-color: color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 36%,
+    transparent
+  );
+  background: color-mix(
+    in srgb,
+    var(--soft-accent-soft, rgba(201, 74, 74, 0.13)) 56%,
+    var(--surface-strong)
+  );
+  color: var(--text);
+}
+
+.redact-shell .crop-success {
+  border-color: rgba(62, 141, 91, 0.34);
+  background: rgba(62, 141, 91, 0.1);
+  color: var(--text);
+}
+
+/* Topbar export */
+
+.redact-shell .redact-export-topbar {
+  box-shadow: none;
+}
+
+.redact-shell .redact-export-topbar:disabled {
+  border-color: color-mix(
+    in srgb,
+    var(--separator) 88%,
+    transparent
+  );
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 90%,
+    var(--content-bg)
+  );
+  color: var(--text-secondary);
+  opacity: 0.62;
+  box-shadow: none;
+}
+
+/* Prevent legacy blue focus / glow */
+
+.redact-shell .brand-button:focus-visible,
+.redact-shell .topbar-actions button:focus-visible,
+.redact-shell .crop-empty-dropzone button:focus-visible,
+.redact-shell .crop-editor-toolbar button:focus-visible,
+.redact-shell .crop-panel-button:focus-visible,
+.redact-shell .redact-area:focus-visible,
+.redact-shell .redact-download-again:focus-visible,
+.redact-shell .crop-thumbnail-item button:focus-visible {
+  outline: 2px solid color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 72%,
+    transparent
+  );
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .redact-shell .crop-layout {
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .redact-shell .crop-thumbnail-sidebar,
+  .redact-shell .crop-editor,
+  .redact-shell .crop-controls-panel {
+    border-radius: 15px;
+  }
+}
+
+@media (max-width: 640px) {
+  .redact-shell .crop-empty-content {
+    padding:
+      28px
+      16px
+      40px;
+    gap: 22px;
+  }
+
+  .redact-shell .crop-empty-dropzone {
+    min-height: 230px;
+    padding: 28px 18px;
+    border-radius: 18px;
+  }
+
+  .redact-shell .crop-layout {
+    padding: 8px;
+  }
+
+  .redact-shell .crop-thumbnail-sidebar,
+  .redact-shell .crop-editor,
+  .redact-shell .crop-controls-panel {
+    border-radius: 14px;
+  }
+
+  .redact-shell .crop-panel-button,
+  .redact-shell .redact-download-again,
+  .redact-shell .redact-empty-choose-button {
+    min-height: 46px;
+  }
+}
+
+/* Redact PDF visual micro-polish */
+
+/*
+ * WorkspaceHeader:
+ * i controlli marcati hidden devono restare realmente nascosti
+ * anche quando le classi dei button impostano display.
+ */
+.redact-shell [hidden] {
+  display: none !important;
+}
+
+/*
+ * PdfThumbnail conserva legacy var(--accent) nello stato selected.
+ * Redact usa superficie neutra + coral border.
+ */
+.redact-shell
+  .crop-thumbnail-item
+  .thumbnail.thumbnail-selected {
+  background: transparent;
+}
+
+.redact-shell
+  .crop-thumbnail-item
+  .thumbnail.thumbnail-selected::before {
+  border-color: color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 36%,
+    transparent
+  );
+}
+
+.redact-shell
+  .crop-thumbnail-item
+  .thumbnail.thumbnail-active {
+  border-color: var(--soft-accent, #c94a4a);
+  box-shadow: none;
+}
+
+.redact-shell
+  .crop-thumbnail-item
+  .thumbnail.thumbnail-active.thumbnail-selected::before {
+  border-color: var(--soft-accent, #c94a4a);
+}
+
+/*
+ * Mantieni lo scroll di preview e controlli,
+ * ma elimina le barre interne che sembrano divisori.
+ */
+.redact-shell .crop-editor-scroll,
+.redact-shell .crop-controls-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.redact-shell .crop-editor-scroll::-webkit-scrollbar,
+.redact-shell .crop-controls-scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
