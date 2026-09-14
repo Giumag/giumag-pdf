@@ -8681,3 +8681,549 @@
     margin-bottom: 16px;
   }
 }
+
+/* Forms PDF Soft Utility migration */
+
+.forms-shell {
+  background: var(--content-bg);
+  color: var(--text);
+}
+
+.forms-shell .soft-workspace-topbar {
+  border-bottom-color: color-mix(
+    in srgb,
+    var(--separator) 84%,
+    transparent
+  );
+  background: color-mix(
+    in srgb,
+    var(--content-bg) 94%,
+    transparent
+  );
+}
+
+.forms-shell .forms-brand {
+  color: var(--text);
+}
+
+.forms-shell .forms-brand:hover {
+  color: var(--text);
+}
+
+.forms-shell .forms-document-title span svg {
+  color: #5c9c70;
+}
+
+.forms-shell .forms-topbar-actions .secondary-button {
+  box-shadow: none;
+}
+
+.forms-shell .forms-content {
+  width: min(1120px, 100%);
+  min-height: 0;
+  margin: 0 auto;
+  padding:
+    clamp(34px, 5vh, 62px)
+    clamp(20px, 4vw, 52px)
+    clamp(44px, 7vh, 78px);
+  overflow-y: auto;
+  background: var(--content-bg);
+}
+
+.forms-shell .soft-workspace-intro {
+  margin-bottom: clamp(24px, 3vw, 34px);
+}
+
+.forms-shell .forms-dropzone {
+  width: 100%;
+  min-height: 250px;
+  margin: 0;
+  padding: clamp(26px, 4vw, 42px);
+  gap: 22px;
+  border: 1px dashed color-mix(
+    in srgb,
+    var(--separator) 88%,
+    var(--text-secondary)
+  );
+  border-radius: 24px;
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 78%,
+    var(--content-bg)
+  );
+  box-shadow: none;
+}
+
+.forms-shell .forms-dropzone.is-dragging {
+  border-color: var(--soft-accent, #c94a4a);
+  background: color-mix(
+    in srgb,
+    var(--soft-accent-soft, rgba(201, 74, 74, 0.13)) 52%,
+    var(--surface-strong)
+  );
+  box-shadow:
+    inset 0 0 0 1px
+    color-mix(
+      in srgb,
+      var(--soft-accent, #c94a4a) 28%,
+      transparent
+    );
+}
+
+.forms-shell .forms-empty-icon {
+  border: 1px solid color-mix(
+    in srgb,
+    var(--separator) 84%,
+    transparent
+  );
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 90%,
+    var(--content-bg)
+  );
+  color: var(--soft-accent, #c94a4a);
+  box-shadow: none;
+}
+
+.forms-shell .forms-dropzone-copy strong {
+  color: var(--text);
+  font-family: inherit;
+  font-weight: 720;
+  letter-spacing: -0.015em;
+}
+
+.forms-shell .forms-dropzone-copy span {
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.forms-shell .forms-choose-button,
+.forms-shell .forms-create-button {
+  min-height: 44px;
+  border-radius: 12px;
+  box-shadow: none;
+}
+
+.forms-shell .forms-document-card,
+.forms-shell .forms-fields-panel,
+.forms-shell .forms-output-card {
+  border: 1px solid color-mix(
+    in srgb,
+    var(--separator) 90%,
+    transparent
+  );
+  border-radius: 18px;
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 88%,
+    var(--content-bg)
+  );
+  box-shadow: none;
+}
+
+.forms-shell .forms-document-card {
+  padding: 18px 20px;
+}
+
+.forms-shell .forms-document-icon {
+  border: 1px solid color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 24%,
+    var(--separator)
+  );
+  background: color-mix(
+    in srgb,
+    var(--soft-accent-soft, rgba(201, 74, 74, 0.13)) 55%,
+    var(--surface-strong)
+  );
+  color: var(--soft-accent, #c94a4a);
+  box-shadow: none;
+}
+
+.forms-shell .forms-document-copy strong {
+  color: var(--text);
+  font-family: inherit;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+}
+
+.forms-shell .forms-document-copy span {
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.forms-shell .forms-document-stat {
+  border-left-color: color-mix(
+    in srgb,
+    var(--separator) 88%,
+    transparent
+  );
+}
+
+.forms-shell .forms-document-stat strong {
+  color: var(--text);
+  font-family: inherit;
+  font-weight: 730;
+  font-variant-numeric: tabular-nums;
+}
+
+.forms-shell .forms-document-stat span {
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.forms-shell .forms-fields-panel {
+  overflow: hidden;
+}
+
+.forms-shell .forms-section-heading {
+  border-bottom: 1px solid color-mix(
+    in srgb,
+    var(--separator) 84%,
+    transparent
+  );
+}
+
+.forms-shell .forms-kicker {
+  color: var(--soft-accent, #c94a4a);
+  font-family: inherit;
+  font-weight: 720;
+  letter-spacing: 0.07em;
+}
+
+.forms-shell .forms-section-heading h2,
+.forms-shell .forms-output-card h2,
+.forms-shell .forms-result-card h2 {
+  color: var(--text);
+  font-family: inherit;
+  font-weight: 720;
+  letter-spacing: -0.02em;
+}
+
+.forms-shell .forms-section-heading > span {
+  border: 1px solid var(--separator);
+  border-radius: 999px;
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 84%,
+    var(--content-bg)
+  );
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-weight: 650;
+}
+
+.forms-shell .forms-field-list {
+  gap: 12px;
+}
+
+.forms-shell .forms-field-card {
+  border: 1px solid color-mix(
+    in srgb,
+    var(--separator) 88%,
+    transparent
+  );
+  border-radius: 14px;
+  background: color-mix(
+    in srgb,
+    var(--content-bg) 58%,
+    var(--surface-strong)
+  );
+  box-shadow: none;
+}
+
+.forms-shell .forms-field-label strong {
+  color: var(--text);
+  font-family: inherit;
+  font-weight: 680;
+}
+
+.forms-shell .forms-field-label span {
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.forms-shell .forms-field-card input[type='text'],
+.forms-shell .forms-field-card textarea,
+.forms-shell .forms-field-card select {
+  border: 1px solid var(--separator);
+  border-radius: 11px;
+  background: color-mix(
+    in srgb,
+    var(--content-bg) 76%,
+    var(--surface-strong)
+  );
+  color: var(--text);
+  font-family: inherit;
+  box-shadow: none;
+  outline: none;
+}
+
+.forms-shell .forms-field-card input[type='text']:hover:not(:disabled),
+.forms-shell .forms-field-card textarea:hover:not(:disabled),
+.forms-shell .forms-field-card select:hover:not(:disabled) {
+  border-color: color-mix(
+    in srgb,
+    var(--text-secondary) 38%,
+    var(--separator)
+  );
+}
+
+.forms-shell .forms-field-card input[type='text']:focus,
+.forms-shell .forms-field-card textarea:focus,
+.forms-shell .forms-field-card select:focus {
+  border-color: var(--soft-accent, #c94a4a);
+  outline: none;
+  box-shadow:
+    0 0 0 2px
+    color-mix(
+      in srgb,
+      var(--soft-accent, #c94a4a) 15%,
+      transparent
+    );
+}
+
+.forms-shell .forms-field-card input:disabled,
+.forms-shell .forms-field-card textarea:disabled,
+.forms-shell .forms-field-card select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.forms-shell .forms-field-card option {
+  background: var(--surface-strong);
+  color: var(--text);
+}
+
+.forms-shell .forms-check-control,
+.forms-shell .forms-flatten-option {
+  color: var(--text);
+  font-family: inherit;
+}
+
+.forms-shell .forms-check-control input,
+.forms-shell .forms-flatten-option input {
+  accent-color: var(--soft-accent, #c94a4a);
+}
+
+.forms-shell .forms-check-control {
+  border: 1px solid color-mix(
+    in srgb,
+    var(--separator) 86%,
+    transparent
+  );
+  border-radius: 11px;
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 74%,
+    var(--content-bg)
+  );
+}
+
+.forms-shell .forms-unsupported {
+  border-color: color-mix(
+    in srgb,
+    var(--separator) 88%,
+    transparent
+  );
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 72%,
+    var(--content-bg)
+  );
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.forms-shell .forms-output-card {
+  gap: 18px;
+}
+
+.forms-shell .forms-flatten-option {
+  border: 1px solid color-mix(
+    in srgb,
+    var(--separator) 88%,
+    transparent
+  );
+  border-radius: 13px;
+  background: color-mix(
+    in srgb,
+    var(--content-bg) 56%,
+    var(--surface-strong)
+  );
+  box-shadow: none;
+}
+
+.forms-shell .forms-flatten-option strong {
+  color: var(--text);
+  font-family: inherit;
+  font-weight: 680;
+}
+
+.forms-shell .forms-flatten-option small {
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.forms-shell .forms-message {
+  border-radius: 13px;
+  box-shadow: none;
+  font-family: inherit;
+}
+
+.forms-shell .forms-warning {
+  border-color: rgba(190, 142, 61, 0.34);
+  background: rgba(190, 142, 61, 0.1);
+  color: var(--text);
+}
+
+.forms-shell .forms-error {
+  border-color: color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 36%,
+    transparent
+  );
+  background: color-mix(
+    in srgb,
+    var(--soft-accent-soft, rgba(201, 74, 74, 0.13)) 56%,
+    var(--surface-strong)
+  );
+  color: var(--text);
+}
+
+.forms-shell .forms-result-card {
+  border: 1px solid rgba(62, 141, 91, 0.34);
+  border-radius: 18px;
+  background: rgba(62, 141, 91, 0.1);
+  box-shadow: none;
+}
+
+.forms-shell .forms-result-card .forms-kicker {
+  color: #68a77b;
+}
+
+.forms-shell .forms-result-card > div > span {
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.forms-shell .forms-result-card .primary-button {
+  box-shadow: none;
+}
+
+.forms-shell .forms-privacy {
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.forms-shell .forms-privacy svg {
+  color: #68a77b;
+}
+
+/*
+ * Prevent legacy blue focus / glow on Forms controls.
+ */
+.forms-shell .forms-brand:focus-visible,
+.forms-shell .forms-topbar-actions button:focus-visible,
+.forms-shell .forms-dropzone button:focus-visible,
+.forms-shell .forms-field-card input:focus-visible,
+.forms-shell .forms-field-card textarea:focus-visible,
+.forms-shell .forms-field-card select:focus-visible,
+.forms-shell .forms-check-control:focus-within,
+.forms-shell .forms-flatten-option:focus-within,
+.forms-shell .forms-result-card button:focus-visible {
+  outline: 2px solid color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 72%,
+    transparent
+  );
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+@media (max-width: 760px) {
+  .forms-shell .forms-content {
+    padding:
+      28px
+      16px
+      42px;
+  }
+
+  .forms-shell .soft-workspace-intro {
+    margin-bottom: 22px;
+  }
+
+  .forms-shell .forms-dropzone {
+    min-height: 230px;
+    padding: 28px 20px;
+    border-radius: 18px;
+  }
+
+  .forms-shell .forms-document-card,
+  .forms-shell .forms-fields-panel,
+  .forms-shell .forms-output-card,
+  .forms-shell .forms-result-card {
+    border-radius: 15px;
+  }
+
+  .forms-shell .forms-document-stat {
+    border-left: 0;
+    border-top: 1px solid color-mix(
+      in srgb,
+      var(--separator) 84%,
+      transparent
+    );
+  }
+
+  .forms-shell .forms-choose-button,
+  .forms-shell .forms-create-button {
+    min-height: 46px;
+  }
+}
+/* Forms PDF visual micro-polish */
+
+/*
+ * Lo scroll resta interno alla workspace,
+ * ma non deve apparire come un divisore verticale sospeso.
+ */
+.forms-shell .forms-content {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.forms-shell .forms-content::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+/*
+ * Il conteggio dei campi deve restare secondario
+ * ma più leggibile.
+ */
+.forms-shell .forms-section-heading > span {
+  min-height: 26px;
+  padding: 4px 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/*
+ * Privacy: discreta ma leggibile.
+ */
+.forms-shell .forms-privacy {
+  margin-top: 16px;
+  gap: 7px;
+  font-size: 12px;
+  line-height: 1.4;
+  opacity: 0.88;
+}
+
+.forms-shell .forms-privacy svg {
+  flex: 0 0 auto;
+}

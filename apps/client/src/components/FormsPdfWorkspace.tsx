@@ -22,6 +22,10 @@ import {
   ShieldIcon,
   ToolIcon,
 } from './Icons';
+import {
+  WorkspaceHeader,
+  WorkspaceIntro,
+} from './ui/WorkspaceChrome';
 
 interface FormsPdfWorkspaceProps {
   onClose: () => void;
@@ -426,10 +430,10 @@ export function FormsPdfWorkspace({
         }}
       />
 
-      <header className="forms-topbar">
+      <WorkspaceHeader empty={!source}>
         <button
           type="button"
-          className="forms-brand"
+          className="brand-button forms-brand"
           onClick={onClose}
           aria-label="Torna alla home"
         >
@@ -442,7 +446,20 @@ export function FormsPdfWorkspace({
           </span>
         </button>
 
-        <div className="forms-topbar-actions">
+        {source && (
+          <div className="document-title forms-document-title">
+            <strong>
+              Compila PDF
+            </strong>
+
+            <span>
+              <ShieldIcon />
+              Elaborazione sul dispositivo
+            </span>
+          </div>
+        )}
+
+        <div className="topbar-actions forms-topbar-actions">
           {source && (
             <button
               type="button"
@@ -455,7 +472,7 @@ export function FormsPdfWorkspace({
             >
               <ReplaceIcon />
               <span>
-                Sostituisci
+                Sostituisci PDF
               </span>
             </button>
           )}
@@ -468,24 +485,14 @@ export function FormsPdfWorkspace({
             Chiudi
           </button>
         </div>
-      </header>
+      </WorkspaceHeader>
 
       <div className="forms-content">
-        <section className="forms-heading">
-          <p className="forms-kicker">
-            MODULI PDF
-          </p>
-
-          <h1>
-            Compila il tuo PDF
-          </h1>
-
-          <p>
-            Modifica i campi presenti nel documento
-            e crea una nuova copia direttamente
-            sul dispositivo.
-          </p>
-        </section>
+        <WorkspaceIntro
+          eyebrow="Moduli PDF"
+          title="Compila il tuo PDF"
+          description="Modifica i campi presenti nel documento e crea una nuova copia direttamente sul dispositivo."
+        />
 
         {!source ? (
           <section
