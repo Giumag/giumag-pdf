@@ -27,6 +27,11 @@ import {
   ToolIcon,
 } from './Icons';
 
+import {
+  WorkspaceHeader,
+  WorkspaceIntro,
+} from './ui/WorkspaceChrome';
+
 interface PageNumbersWorkspaceProps {
   onClose: () => void;
 }
@@ -404,7 +409,7 @@ export function PageNumbersWorkspace({
 
   return (
     <main className="workspace-shell page-numbers-shell">
-      <header className="workspace-topbar glass-surface">
+            <WorkspaceHeader empty={!pdf}>
         <button
           className="brand-button"
           type="button"
@@ -420,23 +425,23 @@ export function PageNumbersWorkspace({
           </span>
         </button>
 
-        <div className="document-title">
-          <strong>
-            Numeri di pagina
-          </strong>
+        {pdf ? (
+          <div className="document-title">
+            <strong>
+              Numeri di pagina
+            </strong>
 
-          <span>
-            <ShieldIcon />
+            <span>
+              <ShieldIcon />
 
-            {pdf
-              ? `Area di lavoro locale · ${pageCount} ${
-                  pageCount === 1
-                    ? 'pagina'
-                    : 'pagine'
-                }`
-              : 'Area di lavoro locale'}
-          </span>
-        </div>
+              {pageCount}{' '}
+              {pageCount === 1
+                ? 'pagina'
+                : 'pagine'}
+              {' · locale'}
+            </span>
+          </div>
+        ) : null}
 
         <div className="topbar-actions">
           <input
@@ -459,31 +464,52 @@ export function PageNumbersWorkspace({
             }}
           />
 
-          <button
-            className="secondary-button compact-button"
-            type="button"
-            disabled={controlsDisabled}
-            onClick={() =>
-              fileInputRef
-                .current
-                ?.click()
-            }
-            aria-label={
-              pdf
-                ? 'Sostituisci PDF'
-                : 'Scegli PDF'
-            }
-          >
-            <ReplaceIcon />
+          {!pdf ? (
+            <button
+              className="secondary-button coherence-close-button"
+              type="button"
+              onClick={onClose}
+            >
+              Chiudi
+            </button>
+          ) : (
+            <>
+              <button
+                className="secondary-button compact-button"
+                type="button"
+                disabled={controlsDisabled}
+                onClick={() =>
+                  fileInputRef
+                    .current
+                    ?.click()
+                }
+              >
+                <ReplaceIcon />
+                <span>
+                  Sostituisci PDF
+                </span>
+              </button>
 
-            <span>
-              {pdf
-                ? 'Sostituisci PDF'
-                : 'Scegli PDF'}
-            </span>
-          </button>
+              <button
+                className="primary-button compact-button"
+                type="button"
+                disabled={controlsDisabled}
+                onClick={() =>
+                  void addNumbers()
+                }
+              >
+                <ToolIcon id="page-numbers" />
+
+                <span>
+                  {busy
+                    ? 'Creazione...'
+                    : 'Aggiungi numeri'}
+                </span>
+              </button>
+            </>
+          )}
         </div>
-      </header>
+      </WorkspaceHeader>
 
       <div
         className={`page-numbers-workspace ${
@@ -545,22 +571,11 @@ export function PageNumbersWorkspace({
         }}
       >
         <div className="page-numbers-content">
-          <section className="page-numbers-heading">
-            <div>
-              <p className="page-numbers-kicker">
-                Numerazione locale
-              </p>
-
-              <h1 className="page-numbers-title">
-                Aggiungi i numeri alle pagine.
-              </h1>
-            </div>
-
-            <p className="page-numbers-description">
-              Scegli la posizione e crea una copia numerata
-              senza caricare il documento online.
-            </p>
-          </section>
+                    <WorkspaceIntro
+            eyebrow="Numeri di pagina"
+            title="Numera le pagine del PDF"
+            description="Scegli posizione, pagina iniziale e numerazione. La nuova copia viene creata interamente sul dispositivo."
+          />
 
           {!pdf ? (
             <section
