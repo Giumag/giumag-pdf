@@ -10824,3 +10824,977 @@
   box-sizing: border-box;
   background: var(--content-bg);
 }
+
+/* Compare PDF Soft Utility migration */
+
+.compare-shell {
+  min-height: 100vh;
+  min-height: 100dvh;
+  box-sizing: border-box;
+  background: var(--content-bg);
+  color: var(--text);
+}
+
+.compare-shell .soft-workspace-topbar {
+  border-bottom-color: color-mix(
+    in srgb,
+    var(--separator) 84%,
+    transparent
+  );
+  background: color-mix(
+    in srgb,
+    var(--content-bg) 94%,
+    transparent
+  );
+}
+
+.compare-shell [hidden] {
+  display: none !important;
+}
+
+.compare-shell .compare-document-title span svg {
+  color: #68a77b;
+}
+
+.compare-shell .coherence-close-button {
+  border-color: var(--separator);
+  background: transparent;
+  color: var(--text-secondary);
+  box-shadow: none;
+}
+
+.compare-shell .compare-recompare-button {
+  box-shadow: none;
+}
+
+.compare-shell .compare-recompare-button:disabled {
+  border-color: color-mix(
+    in srgb,
+    var(--separator) 88%,
+    transparent
+  );
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 90%,
+    var(--content-bg)
+  );
+  color: var(--text-secondary);
+  opacity: 0.58;
+  box-shadow: none;
+}
+
+/* Main content */
+
+.compare-shell .compare-content {
+  width: min(1240px, 100%);
+  margin: 0 auto;
+  padding:
+    clamp(34px, 5vh, 58px)
+    clamp(20px, 4vw, 48px)
+    clamp(44px, 7vh, 76px);
+  background: var(--content-bg);
+}
+
+.compare-shell .soft-workspace-intro {
+  margin-bottom: clamp(26px, 3vw, 36px);
+}
+
+/* File pair */
+
+.compare-shell .compare-file-grid {
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.compare-shell .compare-file-slot {
+  min-height: 126px;
+  padding: 18px;
+  gap: 14px;
+  border: 1px solid color-mix(
+    in srgb,
+    var(--separator) 90%,
+    transparent
+  );
+  border-radius: 18px;
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 84%,
+    var(--content-bg)
+  );
+  box-shadow: none;
+}
+
+.compare-shell .compare-file-slot.has-file {
+  border-color: color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 20%,
+    var(--separator)
+  );
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 90%,
+    var(--content-bg)
+  );
+}
+
+.compare-shell .compare-file-slot-icon {
+  border: 1px solid color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 24%,
+    var(--separator)
+  );
+  border-radius: 13px;
+  background: color-mix(
+    in srgb,
+    var(--soft-accent-soft, rgba(201, 74, 74, 0.13)) 46%,
+    var(--surface-strong)
+  );
+  color: var(--soft-accent, #c94a4a);
+  box-shadow: none;
+}
+
+.compare-shell .compare-file-slot-copy > span {
+  color: var(--soft-accent, #c94a4a);
+  font-family: inherit;
+  font-weight: 720;
+  letter-spacing: 0.055em;
+}
+
+.compare-shell .compare-file-slot-copy strong {
+  color: var(--text);
+  font-family: inherit;
+  font-weight: 680;
+  letter-spacing: -0.01em;
+}
+
+.compare-shell .compare-file-slot-copy small {
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.compare-shell .compare-file-button {
+  min-height: 42px;
+  border-color: var(--separator);
+  border-radius: 11px;
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 76%,
+    var(--content-bg)
+  );
+  color: var(--text);
+  box-shadow: none;
+}
+
+.compare-shell
+  .compare-file-button:hover:not(:disabled) {
+  border-color: color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 28%,
+    var(--separator)
+  );
+  background: color-mix(
+    in srgb,
+    var(--soft-accent-soft, rgba(201, 74, 74, 0.13)) 32%,
+    var(--surface-strong)
+  );
+  color: var(--text);
+  box-shadow: none;
+}
+
+/* Empty / waiting states */
+
+.compare-shell .compare-empty-state {
+  min-height: 190px;
+  margin-top: 14px;
+  padding: 28px;
+  border: 1px dashed color-mix(
+    in srgb,
+    var(--separator) 84%,
+    var(--text-secondary)
+  );
+  border-radius: 18px;
+  background:
+    radial-gradient(
+      circle at 50% 40%,
+      color-mix(
+        in srgb,
+        var(--soft-accent-soft, rgba(201, 74, 74, 0.13)) 28%,
+        transparent
+      ) 0%,
+      transparent 42%
+    ),
+    color-mix(
+      in srgb,
+      var(--surface-strong) 76%,
+      var(--content-bg)
+    );
+  box-shadow: none;
+}
+
+.compare-shell .compare-empty-icon {
+  border: 1px solid color-mix(
+    in srgb,
+    var(--separator) 84%,
+    transparent
+  );
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 90%,
+    var(--content-bg)
+  );
+  color: var(--soft-accent, #c94a4a);
+  box-shadow: none;
+}
+
+.compare-shell .compare-empty-state strong {
+  color: var(--text);
+  font-family: inherit;
+  font-weight: 700;
+}
+
+.compare-shell .compare-empty-state span {
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+/* Progress */
+
+.compare-shell .compare-progress-card {
+  border: 1px solid color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 20%,
+    var(--separator)
+  );
+  border-radius: 15px;
+  background: color-mix(
+    in srgb,
+    var(--soft-accent-soft, rgba(201, 74, 74, 0.13)) 24%,
+    var(--surface-strong)
+  );
+  box-shadow: none;
+}
+
+.compare-shell .compare-progress-card strong {
+  color: var(--text);
+  font-family: inherit;
+}
+
+.compare-shell .compare-progress-card span {
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.compare-shell .compare-progress-track {
+  overflow: hidden;
+  border: 1px solid var(--separator);
+  border-radius: 999px;
+  background: color-mix(
+    in srgb,
+    var(--content-bg) 72%,
+    var(--surface-strong)
+  );
+  box-shadow: none;
+}
+
+.compare-shell .compare-progress-track > span {
+  background: var(--soft-accent, #c94a4a);
+  box-shadow: none;
+}
+
+/* Error */
+
+.compare-shell .compare-message {
+  border-radius: 13px;
+  box-shadow: none;
+  font-family: inherit;
+}
+
+.compare-shell .compare-error {
+  border-color: color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 34%,
+    transparent
+  );
+  background: color-mix(
+    in srgb,
+    var(--soft-accent-soft, rgba(201, 74, 74, 0.13)) 54%,
+    var(--surface-strong)
+  );
+  color: var(--text);
+}
+
+/* Result summary */
+
+.compare-shell .compare-summary {
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.compare-shell .compare-summary-item {
+  min-height: 82px;
+  border: 1px solid color-mix(
+    in srgb,
+    var(--separator) 88%,
+    transparent
+  );
+  border-radius: 14px;
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 86%,
+    var(--content-bg)
+  );
+  box-shadow: none;
+}
+
+.compare-shell .compare-summary-item strong {
+  color: var(--text);
+  font-family: inherit;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+
+.compare-shell .compare-summary-item span {
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.compare-shell
+  .compare-summary-item:nth-child(1)
+  strong {
+  color: #68a77b;
+}
+
+.compare-shell
+  .compare-summary-item:nth-child(2)
+  strong {
+  color: var(--soft-accent, #c94a4a);
+}
+
+.compare-shell
+  .compare-summary-item:nth-child(3)
+  strong {
+  color: #c58d46;
+}
+
+/* Severity */
+
+.compare-shell {
+  --compare-trace: #8f959d;
+  --compare-low: #b0a58e;
+  --compare-medium: #c9a44e;
+  --compare-high: #d27c43;
+  --compare-critical: var(--soft-accent, #c94a4a);
+  --compare-structural: #9a78ad;
+}
+
+.compare-shell .compare-page-list-item.severity-same {
+  --compare-severity: #68a77b;
+}
+
+.compare-shell .compare-page-list-item.severity-trace {
+  --compare-severity: var(--compare-trace);
+}
+
+.compare-shell .compare-page-list-item.severity-low {
+  --compare-severity: var(--compare-low);
+}
+
+.compare-shell .compare-page-list-item.severity-medium {
+  --compare-severity: var(--compare-medium);
+}
+
+.compare-shell .compare-page-list-item.severity-high {
+  --compare-severity: var(--compare-high);
+}
+
+.compare-shell .compare-page-list-item.severity-critical {
+  --compare-severity: var(--compare-critical);
+}
+
+.compare-shell .compare-page-list-item.severity-structural {
+  --compare-severity: var(--compare-structural);
+}
+
+.compare-shell .compare-severity-legend {
+  border: 1px solid color-mix(
+    in srgb,
+    var(--separator) 86%,
+    transparent
+  );
+  border-radius: 13px;
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 80%,
+    var(--content-bg)
+  );
+  box-shadow: none;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.compare-shell
+  .compare-severity-legend::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.compare-shell .compare-severity-legend > span {
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.compare-shell
+  .compare-severity-legend
+  i.severity-trace {
+  background: var(--compare-trace);
+}
+
+.compare-shell
+  .compare-severity-legend
+  i.severity-low {
+  background: var(--compare-low);
+}
+
+.compare-shell
+  .compare-severity-legend
+  i.severity-medium {
+  background: var(--compare-medium);
+}
+
+.compare-shell
+  .compare-severity-legend
+  i.severity-high {
+  background: var(--compare-high);
+}
+
+.compare-shell
+  .compare-severity-legend
+  i.severity-critical {
+  background: var(--compare-critical);
+}
+
+.compare-shell
+  .compare-severity-legend
+  i.severity-structural {
+  background: var(--compare-structural);
+}
+
+/* Main compare workspace */
+
+.compare-shell .compare-workspace {
+  gap: 14px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.compare-shell .compare-page-list {
+  border: 1px solid color-mix(
+    in srgb,
+    var(--separator) 90%,
+    transparent
+  );
+  border-radius: 17px;
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 86%,
+    var(--content-bg)
+  );
+  box-shadow: none;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.compare-shell
+  .compare-page-list::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.compare-shell .compare-page-list-item {
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text);
+  box-shadow: none;
+}
+
+.compare-shell
+  .compare-page-list-item:hover {
+  border-color: var(--separator);
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 70%,
+    var(--content-bg)
+  );
+  box-shadow: none;
+}
+
+.compare-shell
+  .compare-page-list-item[class*='severity-']
+  > span {
+  border-color: color-mix(
+    in srgb,
+    var(--compare-severity) 52%,
+    var(--separator)
+  );
+  background: color-mix(
+    in srgb,
+    var(--compare-severity) 9%,
+    var(--surface-strong)
+  );
+  color: var(--compare-severity);
+}
+
+.compare-shell
+  .compare-page-list-item[class*='severity-']
+  > em {
+  color: var(--compare-severity);
+}
+
+.compare-shell
+  .compare-page-list-item[class*='severity-'].is-active {
+  border-color: var(--compare-severity);
+  background: color-mix(
+    in srgb,
+    var(--compare-severity) 7%,
+    var(--surface-strong)
+  );
+  box-shadow:
+    inset 0 0 0 1px
+    color-mix(
+      in srgb,
+      var(--compare-severity) 14%,
+      transparent
+    );
+}
+
+.compare-shell .compare-page-list-item strong {
+  color: var(--text);
+  font-family: inherit;
+}
+
+.compare-shell .compare-page-list-item small {
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+/* Main panel */
+
+.compare-shell .compare-main {
+  min-width: 0;
+}
+
+.compare-shell .compare-navigation {
+  border: 1px solid color-mix(
+    in srgb,
+    var(--separator) 88%,
+    transparent
+  );
+  border-radius: 14px;
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 88%,
+    var(--content-bg)
+  );
+  box-shadow: none;
+}
+
+.compare-shell .compare-navigation .toolbar-button {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  box-shadow: none;
+}
+
+.compare-shell
+  .compare-navigation
+  .toolbar-button:hover:not(:disabled) {
+  border-color: var(--separator);
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 72%,
+    var(--content-bg)
+  );
+  color: var(--text);
+  box-shadow: none;
+}
+
+.compare-shell .compare-navigation strong {
+  color: var(--text);
+  font-family: inherit;
+  font-weight: 680;
+}
+
+.compare-shell .compare-navigation span {
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+/* Page panes */
+
+.compare-shell .compare-panes {
+  gap: 12px;
+}
+
+.compare-shell .compare-page-pane {
+  overflow: hidden;
+  border: 1px solid color-mix(
+    in srgb,
+    var(--separator) 88%,
+    transparent
+  );
+  border-radius: 16px;
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 82%,
+    var(--content-bg)
+  );
+  box-shadow: none;
+}
+
+.compare-shell .compare-pane-label {
+  border-bottom: 1px solid color-mix(
+    in srgb,
+    var(--separator) 82%,
+    transparent
+  );
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 92%,
+    var(--content-bg)
+  );
+  color: var(--text);
+  font-family: inherit;
+  font-weight: 680;
+}
+
+.compare-shell .compare-page-stage {
+  background: color-mix(
+    in srgb,
+    var(--content-bg) 72%,
+    var(--surface-strong)
+  );
+}
+
+.compare-shell .compare-page-canvas {
+  background: #fff;
+  box-shadow:
+    0 12px 34px rgba(0, 0, 0, 0.15);
+}
+
+.compare-shell .compare-page-loading,
+.compare-shell .compare-missing-page {
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.compare-shell .compare-page-error {
+  color: var(--soft-accent, #c94a4a);
+  font-family: inherit;
+}
+
+/* Difference map */
+
+.compare-shell .compare-diff-card {
+  border: 1px solid color-mix(
+    in srgb,
+    var(--separator) 88%,
+    transparent
+  );
+  border-radius: 17px;
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 86%,
+    var(--content-bg)
+  );
+  box-shadow: none;
+}
+
+.compare-shell .compare-diff-heading {
+  border-bottom-color: color-mix(
+    in srgb,
+    var(--separator) 84%,
+    transparent
+  );
+}
+
+.compare-shell .compare-kicker {
+  color: var(--soft-accent, #c94a4a);
+  font-family: inherit;
+  font-weight: 720;
+  letter-spacing: 0.07em;
+}
+
+.compare-shell .compare-diff-heading h2 {
+  color: var(--text);
+  font-family: inherit;
+  font-weight: 720;
+  letter-spacing: -0.018em;
+}
+
+.compare-shell .compare-status-pill {
+  border: 1px solid var(--separator);
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 82%,
+    var(--content-bg)
+  );
+  color: var(--text-secondary);
+  box-shadow: none;
+  font-family: inherit;
+}
+
+.compare-shell .compare-status-pill.is-same {
+  border-color: rgba(62, 141, 91, 0.3);
+  background: rgba(62, 141, 91, 0.08);
+  color: #68a77b;
+}
+
+.compare-shell .compare-status-pill.is-changed {
+  border-color: color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 32%,
+    var(--separator)
+  );
+  background: color-mix(
+    in srgb,
+    var(--soft-accent-soft, rgba(201, 74, 74, 0.13)) 40%,
+    var(--surface-strong)
+  );
+  color: var(--soft-accent, #c94a4a);
+}
+
+.compare-shell .compare-status-pill.is-only-left,
+.compare-shell .compare-status-pill.is-only-right {
+  border-color: color-mix(
+    in srgb,
+    var(--compare-structural) 36%,
+    var(--separator)
+  );
+  background: color-mix(
+    in srgb,
+    var(--compare-structural) 8%,
+    var(--surface-strong)
+  );
+  color: var(--compare-structural);
+}
+
+.compare-shell .compare-diff-stage {
+  border: 1px solid color-mix(
+    in srgb,
+    var(--separator) 84%,
+    transparent
+  );
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: none;
+}
+
+.compare-shell .compare-diff-stage img {
+  background: #fff;
+}
+
+.compare-shell .compare-diff-empty {
+  border: 1px dashed color-mix(
+    in srgb,
+    var(--separator) 84%,
+    transparent
+  );
+  border-radius: 13px;
+  background: color-mix(
+    in srgb,
+    var(--content-bg) 54%,
+    var(--surface-strong)
+  );
+  color: var(--text-secondary);
+  box-shadow: none;
+}
+
+.compare-shell .compare-diff-empty strong {
+  color: var(--text);
+  font-family: inherit;
+}
+
+.compare-shell .compare-diff-empty span {
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.compare-shell .compare-diff-empty.is-same {
+  border-color: rgba(62, 141, 91, 0.26);
+  background: rgba(62, 141, 91, 0.07);
+}
+
+.compare-shell .compare-diff-empty.is-same strong {
+  color: #68a77b;
+}
+
+/* Privacy */
+
+.compare-shell .compare-privacy {
+  margin-top: 18px;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.compare-shell .compare-privacy svg {
+  color: #68a77b;
+}
+
+/* Focus / no legacy blue */
+
+.compare-shell .brand-button:focus-visible,
+.compare-shell .topbar-actions button:focus-visible,
+.compare-shell .compare-file-button:focus-visible,
+.compare-shell .compare-page-list-item:focus-visible,
+.compare-shell .compare-navigation button:focus-visible {
+  outline: 2px solid color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 72%,
+    transparent
+  );
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .compare-shell .compare-content {
+    padding:
+      30px
+      18px
+      48px;
+  }
+
+  .compare-shell .compare-file-grid {
+    gap: 10px;
+  }
+
+  .compare-shell .compare-workspace {
+    gap: 10px;
+  }
+
+  .compare-shell .compare-page-list,
+  .compare-shell .compare-page-pane,
+  .compare-shell .compare-diff-card {
+    border-radius: 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  .compare-shell .compare-content {
+    padding:
+      26px
+      14px
+      40px;
+  }
+
+  .compare-shell .soft-workspace-intro {
+    margin-bottom: 22px;
+  }
+
+  .compare-shell .compare-file-slot {
+    min-height: auto;
+    padding: 16px;
+    border-radius: 15px;
+  }
+
+  .compare-shell .compare-empty-state {
+    min-height: 170px;
+    padding: 24px 18px;
+    border-radius: 15px;
+  }
+
+  .compare-shell .compare-file-button {
+    min-height: 46px;
+  }
+
+  .compare-shell .compare-page-list,
+  .compare-shell .compare-page-pane,
+  .compare-shell .compare-diff-card {
+    border-radius: 13px;
+  }
+}
+
+/* Compare PDF visual micro-polish */
+
+/*
+ * La legenda resta compatta ma non microscopica.
+ */
+.compare-shell .compare-severity-legend {
+  min-height: 36px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+.compare-shell .compare-severity-legend > span {
+  gap: 6px;
+  font-size: 11px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.compare-shell .compare-severity-legend i {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+}
+
+/* Compare close button polish */
+
+/*
+ * Chiudi deve sembrare chiaramente cliccabile,
+ * non un controllo disabilitato.
+ */
+.compare-shell .coherence-close-button {
+  border-color: color-mix(
+    in srgb,
+    var(--text-secondary) 32%,
+    var(--separator)
+  );
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 94%,
+    var(--content-bg)
+  );
+  color: var(--text);
+  font-weight: 650;
+  opacity: 1;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+.compare-shell
+  .coherence-close-button:hover:not(:disabled) {
+  border-color: color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 34%,
+    var(--separator)
+  );
+  background: color-mix(
+    in srgb,
+    var(--soft-accent-soft, rgba(201, 74, 74, 0.13)) 30%,
+    var(--surface-strong)
+  );
+  color: var(--text);
+  box-shadow: none;
+}
+
+.compare-shell
+  .coherence-close-button:active:not(:disabled) {
+  background: color-mix(
+    in srgb,
+    var(--surface-strong) 82%,
+    var(--content-bg)
+  );
+  box-shadow: none;
+}
