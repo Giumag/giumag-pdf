@@ -12,6 +12,7 @@ import {
   TrashIcon,
 } from './Icons';
 import { MergePdfPreview } from './MergePdfPreview';
+import { WorkspaceHeader, WorkspaceIntro } from './ui/WorkspaceChrome';
 interface MergePdfWorkspaceProps {
   onClose: () => void;
 }
@@ -264,9 +265,7 @@ export function MergePdfWorkspace({ onClose }: MergePdfWorkspaceProps) {
 
   return (
     <main className="workspace-shell merge-shell">
-      <header
-        className={`workspace-topbar glass-surface coherence-topbar${items.length === 0 ? ' is-empty' : ''}`}
-      >
+      <WorkspaceHeader empty={items.length === 0}>
         <button
           className="brand-button"
           type="button"
@@ -337,7 +336,7 @@ export function MergePdfWorkspace({ onClose }: MergePdfWorkspaceProps) {
             </>
           )}
         </div>
-      </header>
+      </WorkspaceHeader>
 
       <div
         className={`merge-workspace${externalDragging ? ' merge-workspace-dragging' : ''}`}
@@ -371,16 +370,11 @@ export function MergePdfWorkspace({ onClose }: MergePdfWorkspaceProps) {
         }}
       >
         <div className="merge-content">
-          <section className="merge-heading">
-            <div>
-              <p className="merge-kicker">Unisci PDF</p>
-              <h1 className="merge-title">Unisci i tuoi PDF</h1>
-            </div>
-
-            <p className="merge-description">
-              Ordina due o più documenti e crea un unico PDF direttamente sul dispositivo.
-            </p>
-          </section>
+          <WorkspaceIntro
+            eyebrow="Unisci PDF"
+            title="Unisci i tuoi PDF"
+            description="Ordina due o più documenti e crea un unico PDF direttamente sul dispositivo."
+          />
 
           {items.length === 0 ? (
             <section
