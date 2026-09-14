@@ -16,6 +16,11 @@ import {
   VisualSignatureCanvas,
 } from './VisualSignatureCanvas';
 
+import {
+  WorkspaceHeader,
+  WorkspaceIntro,
+} from './ui/WorkspaceChrome';
+
 interface VisualSignatureWorkspaceProps {
   onClose: () => void;
 }
@@ -716,10 +721,10 @@ export function VisualSignatureWorkspace({
         }}
       />
 
-      <header className="visual-signature-appbar">
+      <WorkspaceHeader empty={!pdfFile}>
         <button
           type="button"
-          className="visual-signature-brand"
+          className="brand-button visual-signature-brand"
           onClick={onClose}
           title="Torna agli strumenti"
         >
@@ -735,18 +740,20 @@ export function VisualSignatureWorkspace({
           </span>
         </button>
 
-        <div className="visual-signature-tool-identity">
-          <strong>
-            Firma visiva
-          </strong>
+        {pdfFile ? (
+          <div className="document-title visual-signature-tool-identity">
+            <strong>
+              Firma visiva
+            </strong>
 
-          <span>
-            <i aria-hidden="true" />
-            Firma grafica locale
-          </span>
-        </div>
+            <span>
+              <i aria-hidden="true" />
+              Firma grafica locale
+            </span>
+          </div>
+        ) : null}
 
-        <div className="visual-signature-appbar-actions">
+        <div className="topbar-actions visual-signature-appbar-actions">
           {pdfFile ? (
             <>
               <button
@@ -763,7 +770,7 @@ export function VisualSignatureWorkspace({
 
               <button
                 type="button"
-                className="primary-button"
+                className="primary-button visual-signature-export"
                 disabled={
                   !signature ||
                   signedPageCount === 0 ||
@@ -779,42 +786,38 @@ export function VisualSignatureWorkspace({
               </button>
             </>
           ) : (
-            <span
-              className="visual-signature-appbar-spacer"
-              aria-hidden="true"
-            />
+            <button
+              type="button"
+              className="secondary-button coherence-close-button"
+              onClick={onClose}
+            >
+              Chiudi
+            </button>
           )}
         </div>
-      </header>
+      </WorkspaceHeader>
 
       <div
         className={
           pdfBytes
-            ? 'visual-signature-hero is-compact'
-            : 'visual-signature-hero'
+            ? 'visual-signature-intro is-compact'
+            : 'visual-signature-intro'
         }
       >
-        <span className="visual-signature-eyebrow">
-          FIRMA VISIVA
-        </span>
-
-        <h1>
-          Metti la tua firma dove serve.
-        </h1>
-
-        <p>
-          Disegna o importa la firma, posizionala sulle pagine
-          e scarica il PDF. Tutto viene elaborato localmente.
-        </p>
+        <WorkspaceIntro
+          eyebrow="Firma visiva"
+          title="Aggiungi la tua firma al PDF"
+          description="Disegna o importa la firma, posizionala sulle pagine e scarica il PDF. Tutto resta sul dispositivo."
+        />
       </div>
 
       <div className="visual-signature-notice">
         <strong>
-          Firma visiva
+          Firma visiva, non digitale
         </strong>
 
         <span>
-          Aggiunge la rappresentazione grafica della firma al documento. Non è una firma digitale crittografica o certificata.
+          Aggiunge al PDF solo la rappresentazione grafica della firma. Non crea una firma crittografica o certificata.
         </span>
       </div>
 
@@ -963,7 +966,13 @@ export function VisualSignatureWorkspace({
               </div>
             </div>
 
-            <div className="visual-signature-summary">
+            <div
+              className={`visual-signature-summary${
+                signedPageCount > 0
+                  ? ' has-signatures'
+                  : ''
+              }`}
+            >
               <span>
                 Pagine firmate
               </span>
