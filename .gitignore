@@ -22,3 +22,6 @@ apps/client/public/tesseract/
 keystore.properties
 signing.properties
 local.properties
+
+# TypeScript incremental build metadata
+*.tsbuildinfo
