@@ -26,6 +26,11 @@ import {
   ToolIcon,
 } from './Icons';
 
+import {
+  WorkspaceHeader,
+  WorkspaceIntro,
+} from './ui/WorkspaceChrome';
+
 interface UnlockPdfWorkspaceProps {
   onClose: () => void;
 }
@@ -358,7 +363,7 @@ export function UnlockPdfWorkspace({
 
   return (
     <main className="workspace-shell protect-shell unlock-shell">
-      <header className="workspace-topbar glass-surface">
+            <WorkspaceHeader empty={!source}>
         <button
           className="brand-button"
           type="button"
@@ -374,21 +379,18 @@ export function UnlockPdfWorkspace({
           </span>
         </button>
 
-        <div className="document-title">
-          <strong>
-            Sblocca PDF
-          </strong>
+        {source ? (
+          <div className="document-title">
+            <strong>
+              Sblocca PDF
+            </strong>
 
-          <span>
-            <ShieldIcon />
-
-            {source
-              ? `Area di lavoro locale · ${formatBytes(
-                  source.file.size,
-                )}`
-              : 'Area di lavoro locale'}
-          </span>
-        </div>
+            <span>
+              <ShieldIcon />
+              {formatBytes(source.file.size)} · locale
+            </span>
+          </div>
+        ) : null}
 
         <div className="topbar-actions">
           <input
@@ -410,25 +412,50 @@ export function UnlockPdfWorkspace({
             }}
           />
 
-          <button
-            className="secondary-button compact-button"
-            type="button"
-            disabled={disabled}
-            onClick={() =>
-              inputRef.current
-                ?.click()
-            }
-          >
-            <ReplaceIcon />
+          {!source ? (
+            <button
+              className="secondary-button coherence-close-button"
+              type="button"
+              onClick={onClose}
+            >
+              Chiudi
+            </button>
+          ) : (
+            <>
+              <button
+                className="secondary-button compact-button"
+                type="button"
+                disabled={disabled}
+                onClick={() =>
+                  inputRef.current?.click()
+                }
+              >
+                <ReplaceIcon />
+                <span>Sostituisci PDF</span>
+              </button>
 
-            <span>
-              {source
-                ? 'Sostituisci PDF'
-                : 'Scegli PDF'}
-            </span>
-          </button>
+              <button
+                className="primary-button compact-button"
+                type="button"
+                disabled={
+                  disabled ||
+                  !canUnlock
+                }
+                onClick={() =>
+                  void handleUnlock()
+                }
+              >
+                <ToolIcon id="unlock" />
+                <span>
+                  {busy
+                    ? 'Sblocco in corso…'
+                    : 'Sblocca PDF'}
+                </span>
+              </button>
+            </>
+          )}
         </div>
-      </header>
+      </WorkspaceHeader>
 
       <div
         className={`protect-workspace ${
@@ -472,20 +499,11 @@ export function UnlockPdfWorkspace({
         }}
       >
         <div className="protect-content">
-          <section className="protect-heading">
-            <p className="protect-kicker">
-              Rimuovi la cifratura
-            </p>
-
-            <h1 className="protect-title">
-              Sblocca il tuo PDF
-            </h1>
-
-            <p className="protect-description">
-              Rimuovi la protezione quando conosci la password.
-              Tutto avviene direttamente sul dispositivo.
-            </p>
-          </section>
+                    <WorkspaceIntro
+            eyebrow="Sblocca PDF"
+            title="Sblocca il tuo PDF"
+            description="Rimuovi la protezione quando conosci la password. Tutto avviene direttamente sul dispositivo."
+          />
 
           {!source ? (
             <button

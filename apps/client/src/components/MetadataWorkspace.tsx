@@ -26,6 +26,11 @@ import {
   ToolIcon,
 } from './Icons';
 
+import {
+  WorkspaceHeader,
+  WorkspaceIntro,
+} from './ui/WorkspaceChrome';
+
 interface MetadataWorkspaceProps {
   onClose: () => void;
 }
@@ -503,7 +508,7 @@ export function MetadataWorkspace({
 
   return (
     <main className="workspace-shell metadata-shell">
-      <header className="workspace-topbar glass-surface">
+            <WorkspaceHeader empty={!pdf}>
         <button
           className="brand-button"
           type="button"
@@ -519,23 +524,22 @@ export function MetadataWorkspace({
           </span>
         </button>
 
-        <div className="document-title">
-          <strong>
-            Rimuovi metadati
-          </strong>
+        {pdf ? (
+          <div className="document-title">
+            <strong>
+              Rimuovi metadati
+            </strong>
 
-          <span>
-            <ShieldIcon />
-
-            {pdf
-              ? `Area di lavoro locale · ${pageCount} ${
-                  pageCount === 1
-                    ? 'pagina'
-                    : 'pagine'
-                }`
-              : 'Area di lavoro locale'}
-          </span>
-        </div>
+            <span>
+              <ShieldIcon />
+              {pageCount}{' '}
+              {pageCount === 1
+                ? 'pagina'
+                : 'pagine'}
+              {' · locale'}
+            </span>
+          </div>
+        ) : null}
 
         <div className="topbar-actions">
           <input
@@ -558,31 +562,53 @@ export function MetadataWorkspace({
             }}
           />
 
-          <button
-            className="secondary-button compact-button"
-            type="button"
-            disabled={controlsDisabled}
-            onClick={() =>
-              fileInputRef
-                .current
-                ?.click()
-            }
-            aria-label={
-              pdf
-                ? 'Sostituisci PDF'
-                : 'Scegli PDF'
-            }
-          >
-            <ReplaceIcon />
+          {!pdf ? (
+            <button
+              className="secondary-button coherence-close-button"
+              type="button"
+              onClick={onClose}
+            >
+              Chiudi
+            </button>
+          ) : (
+            <>
+              <button
+                className="secondary-button compact-button"
+                type="button"
+                disabled={controlsDisabled}
+                onClick={() =>
+                  fileInputRef
+                    .current
+                    ?.click()
+                }
+              >
+                <ReplaceIcon />
+                <span>
+                  Sostituisci PDF
+                </span>
+              </button>
 
-            <span>
-              {pdf
-                ? 'Sostituisci PDF'
-                : 'Scegli PDF'}
-            </span>
-          </button>
+              {hasMetadata ? (
+                <button
+                  className="primary-button compact-button"
+                  type="button"
+                  disabled={controlsDisabled}
+                  onClick={() =>
+                    void cleanMetadata()
+                  }
+                >
+                  <ToolIcon id="metadata" />
+                  <span>
+                    {busy
+                      ? 'Pulizia...'
+                      : 'Rimuovi metadati'}
+                  </span>
+                </button>
+              ) : null}
+            </>
+          )}
         </div>
-      </header>
+      </WorkspaceHeader>
 
       <div
         className={`metadata-workspace ${
@@ -632,22 +658,11 @@ export function MetadataWorkspace({
         }}
       >
         <div className="metadata-content">
-          <section className="metadata-heading">
-            <div>
-              <p className="metadata-kicker">
-                Privacy del documento
-              </p>
-
-              <h1 className="metadata-title">
-                Controlla cosa nasconde il PDF.
-              </h1>
-            </div>
-
-            <p className="metadata-description">
-              Individua proprietà, metadati XMP e
-              identificatori del file, poi crea una copia pulita.
-            </p>
-          </section>
+                    <WorkspaceIntro
+            eyebrow="Rimuovi metadati"
+            title="Controlla cosa nasconde il PDF"
+            description="Individua proprietà, metadati XMP e identificatori del file, poi crea una copia pulita."
+          />
 
           {!pdf ? (
             <section

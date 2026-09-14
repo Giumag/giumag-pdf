@@ -32,6 +32,11 @@ import {
   ToolIcon,
 } from './Icons';
 
+import {
+  WorkspaceHeader,
+  WorkspaceIntro,
+} from './ui/WorkspaceChrome';
+
 interface ProtectPdfWorkspaceProps {
   onClose: () => void;
 }
@@ -632,7 +637,7 @@ export function ProtectPdfWorkspace({
 
   return (
     <main className="workspace-shell protect-shell">
-      <header className="workspace-topbar glass-surface">
+            <WorkspaceHeader empty={!pdf}>
         <button
           className="brand-button"
           type="button"
@@ -648,23 +653,22 @@ export function ProtectPdfWorkspace({
           </span>
         </button>
 
-        <div className="document-title">
-          <strong>
-            Proteggi PDF
-          </strong>
+        {pdf ? (
+          <div className="document-title">
+            <strong>
+              Proteggi PDF
+            </strong>
 
-          <span>
-            <ShieldIcon />
-
-            {pdf
-              ? `Area di lavoro locale · ${pageCount} ${
-                  pageCount === 1
-                    ? 'pagina'
-                    : 'pagine'
-                }`
-              : 'Area di lavoro locale'}
-          </span>
-        </div>
+            <span>
+              <ShieldIcon />
+              {pageCount}{' '}
+              {pageCount === 1
+                ? 'pagina'
+                : 'pagine'}
+              {' · locale'}
+            </span>
+          </div>
+        ) : null}
 
         <div className="topbar-actions">
           <input
@@ -687,29 +691,51 @@ export function ProtectPdfWorkspace({
             }}
           />
 
-          <button
-            className="secondary-button compact-button"
-            type="button"
-            disabled={disabled}
-            onClick={() =>
-              inputRef.current?.click()
-            }
-            aria-label={
-              pdf
-                ? 'Sostituisci PDF'
-                : 'Scegli PDF'
-            }
-          >
-            <ReplaceIcon />
+          {!pdf ? (
+            <button
+              className="secondary-button coherence-close-button"
+              type="button"
+              onClick={onClose}
+            >
+              Chiudi
+            </button>
+          ) : (
+            <>
+              <button
+                className="secondary-button compact-button"
+                type="button"
+                disabled={disabled}
+                onClick={() =>
+                  inputRef.current?.click()
+                }
+              >
+                <ReplaceIcon />
+                <span>Sostituisci PDF</span>
+              </button>
 
-            <span>
-              {pdf
-                ? 'Sostituisci PDF'
-                : 'Scegli PDF'}
-            </span>
-          </button>
+              <button
+                className="primary-button compact-button"
+                type="button"
+                disabled={
+                  disabled ||
+                  password.length < 8 ||
+                  password !== confirmation
+                }
+                onClick={() =>
+                  void protectPdf()
+                }
+              >
+                <ToolIcon id="protect" />
+                <span>
+                  {busy
+                    ? 'Cifratura...'
+                    : 'Proteggi PDF'}
+                </span>
+              </button>
+            </>
+          )}
         </div>
-      </header>
+      </WorkspaceHeader>
 
       <div
         className={`protect-workspace ${
@@ -766,22 +792,11 @@ export function ProtectPdfWorkspace({
         }}
       >
         <div className="protect-content">
-          <section className="protect-heading">
-            <div>
-              <p className="protect-kicker">
-                Cifratura locale
-              </p>
-
-              <h1 className="protect-title">
-                Metti il PDF sotto chiave.
-              </h1>
-            </div>
-
-            <p className="protect-description">
-              Crea una copia cifrata AES-256 che richiede
-              la password scelta per essere aperta.
-            </p>
-          </section>
+                    <WorkspaceIntro
+            eyebrow="Proteggi PDF"
+            title="Proteggi il tuo PDF"
+            description="Crea una copia cifrata AES-256 che richiede la password scelta per essere aperta."
+          />
 
           {!pdf ? (
             <section
