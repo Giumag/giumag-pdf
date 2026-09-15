@@ -28,6 +28,10 @@ import {
   type NormalizedCrop,
 } from './CropPdfCanvas';
 import { PdfThumbnail } from './PdfThumbnail';
+import {
+  WorkspaceHeader,
+  WorkspaceIntro,
+} from './ui/WorkspaceChrome';
 
 interface CropPdfWorkspaceProps {
   onClose: () => void;
@@ -580,10 +584,8 @@ export function CropPdfWorkspace({
     draftCrop.height;
 
   return (
-    <main className={`workspace-shell crop-shell${!pdf ? ' ui-empty-shell' : ''}`}>
-      <header
-        className={`workspace-topbar glass-surface coherence-topbar${!pdf ? ' is-empty' : ''}`}
-      >
+    <main className="workspace-shell crop-shell">
+      <WorkspaceHeader empty={!pdf}>
         <button
           className="brand-button"
           type="button"
@@ -687,7 +689,7 @@ export function CropPdfWorkspace({
             </>
           )}
         </div>
-      </header>
+      </WorkspaceHeader>
 
       <div
         className={[
@@ -756,22 +758,11 @@ export function CropPdfWorkspace({
       >
         {!pdf ? (
           <div className="crop-empty-content">
-            <section className="crop-heading">
-              <div>
-                <p className="crop-kicker">
-                  Ritaglia PDF
-                </p>
-
-                <h1 className="crop-title">
-                  Ritaglia il tuo PDF
-                </h1>
-              </div>
-
-              <p className="crop-description">
-                Seleziona l’area da mantenere e applicala
-                alle pagine che preferisci.
-              </p>
-            </section>
+            <WorkspaceIntro
+              eyebrow="Ritaglia PDF"
+              title="Ritaglia il tuo PDF"
+              description="Seleziona l’area da mantenere e applicala alle pagine che preferisci."
+            />
 
             <section
               className={[
@@ -1153,7 +1144,11 @@ export function CropPdfWorkspace({
                   </div>
                 </section>
 
-                <section className="crop-control-section crop-summary-section">
+                <section
+                  className={`crop-control-section crop-summary-section${
+                    modifiedCount > 0 ? ' has-crops' : ''
+                  }`}
+                >
                   <span>
                     Pagine con ritaglio
                   </span>

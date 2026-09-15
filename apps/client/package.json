@@ -11,6 +11,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@fontsource-variable/onest": "5.3.1",
+    "@fontsource/ibm-plex-mono": "5.3.0",
     "@giumag/pdf-engine": "workspace:*",
     "@giumag/shared": "workspace:*",
     "@tesseract.js-data/eng": "1.0.0",

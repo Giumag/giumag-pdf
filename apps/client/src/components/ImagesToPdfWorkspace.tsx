@@ -33,6 +33,8 @@ import {
   ToolIcon,
 } from './Icons';
 
+import { WorkspaceHeader, WorkspaceIntro } from './ui/WorkspaceChrome';
+
 interface ImagesToPdfWorkspaceProps {
   onClose: () => void;
 }
@@ -589,7 +591,7 @@ export function ImagesToPdfWorkspace({
 
   return (
     <main className="workspace-shell images-pdf-shell">
-      <header className="workspace-topbar glass-surface">
+      <WorkspaceHeader empty={images.length === 0}>
         <button
           className="brand-button"
           type="button"
@@ -605,23 +607,23 @@ export function ImagesToPdfWorkspace({
           </span>
         </button>
 
-        <div className="document-title">
-          <strong>
-            Immagini in PDF
-          </strong>
+        {images.length > 0 && (
+          <div className="document-title">
+            <strong>
+              Immagini in PDF
+            </strong>
 
-          <span>
-            <ShieldIcon />
+            <span>
+              <ShieldIcon />
 
-            {images.length > 0
-              ? `${images.length} ${
-                  images.length === 1
-                    ? 'immagine'
-                    : 'immagini'
-                } · locale`
-              : 'Area di lavoro locale'}
-          </span>
-        </div>
+              {`${images.length} ${
+                images.length === 1
+                  ? 'immagine'
+                  : 'immagini'
+              } · locale`}
+            </span>
+          </div>
+        )}
 
         <div className="topbar-actions">
           <input
@@ -650,40 +652,52 @@ export function ImagesToPdfWorkspace({
             }}
           />
 
-          <button
-            className="secondary-button compact-button"
-            type="button"
-            disabled={busy}
-            onClick={() =>
-              inputRef.current?.click()
-            }
-          >
-            <span>
-              + Aggiungi
-            </span>
-          </button>
+          {images.length === 0 ? (
+            <button
+              type="button"
+              className="secondary-button coherence-close-button"
+              onClick={onClose}
+            >
+              Chiudi
+            </button>
+          ) : (
+            <>
+              <button
+                className="secondary-button compact-button"
+                type="button"
+                disabled={busy}
+                onClick={() =>
+                  inputRef.current?.click()
+                }
+              >
+                <span>
+                  + Aggiungi
+                </span>
+              </button>
 
-          <button
-            className="primary-button compact-button"
-            type="button"
-            disabled={
-              busy ||
-              images.length === 0
-            }
-            onClick={() =>
-              void generatePdf()
-            }
-          >
-            <ToolIcon id="images-to-pdf" />
+              <button
+                className="primary-button compact-button"
+                type="button"
+                disabled={
+                  busy ||
+                  images.length === 0
+                }
+                onClick={() =>
+                  void generatePdf()
+                }
+              >
+                <ToolIcon id="images-to-pdf" />
 
-            <span>
-              {generating
-                ? 'Creazione...'
-                : 'Crea PDF'}
-            </span>
-          </button>
+                <span>
+                  {generating
+                    ? 'Creazione...'
+                    : 'Crea PDF'}
+                </span>
+              </button>
+            </>
+          )}
         </div>
-      </header>
+      </WorkspaceHeader>
 
       <div
         className={[
@@ -753,25 +767,11 @@ export function ImagesToPdfWorkspace({
         }}
       >
         <div className="images-pdf-content">
-          <section className="images-pdf-heading">
-            <div>
-              <p className="images-pdf-kicker">
-                Immagini in PDF
-              </p>
-
-              <h1>
-                Da immagini a documento,
-                tutto qui.
-              </h1>
-            </div>
-
-            <p>
-              Ordina, ruota e impagina
-              JPEG, PNG e WebP.
-              Il documento viene creato
-              interamente sul dispositivo.
-            </p>
-          </section>
+          <WorkspaceIntro
+            eyebrow="Immagini in PDF"
+            title="Crea un PDF dalle tue immagini"
+            description="Ordina, ruota e impagina JPEG, PNG e WebP. Il documento viene creato interamente sul dispositivo."
+          />
 
           {images.length === 0 ? (
             <section
@@ -784,6 +784,10 @@ export function ImagesToPdfWorkspace({
             >
               <div className="images-pdf-empty-icon">
                 <DocumentIcon />
+
+                <span className="images-pdf-empty-badge">
+                  <ToolIcon id="images-to-pdf" />
+                </span>
               </div>
 
               <strong>

@@ -20,6 +20,7 @@ import {
   TrashIcon,
   UndoIcon,
 } from './Icons';
+import { WorkspaceHeader } from './ui/WorkspaceChrome';
 
 interface PdfWorkspaceProps {
   pdf: LoadedPdf;
@@ -370,8 +371,8 @@ export function PdfWorkspace({ pdf, onClose, onReplace }: PdfWorkspaceProps) {
   }
 
   return (
-    <main className="workspace-shell">
-      <header className="workspace-topbar glass-surface">
+    <main className="workspace-shell organize-shell">
+      <WorkspaceHeader>
         <button className="brand-button" type="button" onClick={onClose} aria-label="Torna alla home di Giumag PDF">
           <span className="brand-mark">G</span>
           <span>Giumag PDF</span>
@@ -403,7 +404,7 @@ export function PdfWorkspace({ pdf, onClose, onReplace }: PdfWorkspaceProps) {
             <span>{busyAction === 'export' ? 'Esportazione...' : 'Esporta PDF'}</span>
           </button>
         </div>
-      </header>
+      </WorkspaceHeader>
 
       <div className="workspace-layout">
         <aside className="thumbnail-sidebar" aria-label="Pagine del documento">

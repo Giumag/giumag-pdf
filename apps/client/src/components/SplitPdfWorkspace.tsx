@@ -13,6 +13,7 @@ import {
   ToolIcon,
 } from './Icons';
 import { SplitPdfPagePreview } from './SplitPdfPagePreview';
+import { WorkspaceHeader, WorkspaceIntro } from './ui/WorkspaceChrome';
 
 interface SplitPdfWorkspaceProps {
   onClose: () => void;
@@ -536,9 +537,7 @@ export function SplitPdfWorkspace({
 
   return (
     <main className="workspace-shell split-shell">
-      <header
-        className={`workspace-topbar glass-surface coherence-topbar${!pdf ? ' is-empty' : ''}`}
-      >
+      <WorkspaceHeader empty={!pdf}>
         <button
           className="brand-button"
           type="button"
@@ -618,7 +617,7 @@ export function SplitPdfWorkspace({
             </>
           )}
         </div>
-      </header>
+      </WorkspaceHeader>
 
       <div
         className={[
@@ -661,22 +660,11 @@ export function SplitPdfWorkspace({
         }}
       >
         <div className="split-content">
-          <section className="split-heading">
-            <div>
-              <p className="split-kicker">
-                Dividi PDF
-              </p>
-
-              <h1 className="split-title">
-                Dividi il tuo PDF
-              </h1>
-            </div>
-
-            <p className="split-description">
-                            Separa intervalli di pagine oppure crea un PDF
-              per ogni pagina direttamente sul dispositivo.
-            </p>
-          </section>
+          <WorkspaceIntro
+            eyebrow="Dividi PDF"
+            title="Dividi il tuo PDF"
+            description="Separa intervalli di pagine oppure crea un PDF per ogni pagina direttamente sul dispositivo."
+          />
 
           {!pdf ? (
             <section

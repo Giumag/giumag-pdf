@@ -10,6 +10,7 @@ import {
   ShieldIcon,
   ToolIcon,
 } from './Icons';
+import { WorkspaceHeader, WorkspaceIntro } from './ui/WorkspaceChrome';
 
 interface CompressPdfWorkspaceProps {
   onClose: () => void;
@@ -357,9 +358,7 @@ export function CompressPdfWorkspace({
 
   return (
     <main className="workspace-shell compress-shell">
-      <header
-        className={`workspace-topbar glass-surface coherence-topbar${!pdf ? ' is-empty' : ''}`}
-      >
+      <WorkspaceHeader empty={!pdf}>
         <button
           className="brand-button"
           type="button"
@@ -452,7 +451,7 @@ export function CompressPdfWorkspace({
             </>
           )}
         </div>
-      </header>
+      </WorkspaceHeader>
 
       <div
         className={[
@@ -516,22 +515,11 @@ export function CompressPdfWorkspace({
         }}
       >
         <div className="compress-content">
-          <section className="compress-heading">
-            <div>
-              <p className="compress-kicker">
-                Comprimi PDF
-              </p>
-
-              <h1 className="compress-title">
-                Comprimi il tuo PDF
-              </h1>
-            </div>
-
-            <p className="compress-description">
-                            Scegli il livello di compressione e confronta
-              la riduzione realmente ottenuta sul documento.
-            </p>
-          </section>
+          <WorkspaceIntro
+            eyebrow="Comprimi PDF"
+            title="Comprimi il tuo PDF"
+            description="Scegli il livello di compressione e confronta la riduzione realmente ottenuta sul documento."
+          />
 
           {!pdf ? (
             <section

@@ -42,6 +42,11 @@ import {
   SplitPdfPagePreview,
 } from './SplitPdfPagePreview';
 
+import {
+  WorkspaceHeader,
+  WorkspaceIntro,
+} from './ui/WorkspaceChrome';
+
 interface PdfToImagesWorkspaceProps {
   onClose: () => void;
 }
@@ -714,9 +719,7 @@ export function PdfToImagesWorkspace({
 
   return (
     <main className="workspace-shell pdf-images-shell">
-      <header
-        className={`workspace-topbar glass-surface coherence-topbar${!pdf ? ' is-empty' : ''}`}
-      >
+      <WorkspaceHeader empty={!pdf}>
         <button
           className="brand-button"
           type="button"
@@ -801,7 +804,7 @@ export function PdfToImagesWorkspace({
 
             <span>
               {pdf
-                ? 'Sostituisci'
+                ? 'Sostituisci PDF'
                 : 'Apri PDF'}
             </span>
           </button>
@@ -830,7 +833,7 @@ export function PdfToImagesWorkspace({
             </>
           )}
         </div>
-      </header>
+      </WorkspaceHeader>
 
       <div
         className={[
@@ -904,22 +907,11 @@ export function PdfToImagesWorkspace({
         }}
       >
         <div className="pdf-images-content">
-          <section className="pdf-images-heading">
-            <div>
-              <p className="pdf-images-kicker">
-                PDF in immagini
-              </p>
-
-              <h1>
-                                Converti il PDF in immagini
-              </h1>
-            </div>
-
-            <p>
-                            Converti le pagine in PNG o JPEG e scegli
-              la risoluzione prima di esportarle.
-            </p>
-          </section>
+          <WorkspaceIntro
+            eyebrow="PDF in immagini"
+            title="Converti il PDF in immagini"
+            description="Converti le pagine in PNG o JPEG e scegli la risoluzione prima di esportarle."
+          />
 
           {!pdf ? (
             <section

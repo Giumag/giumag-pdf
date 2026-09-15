@@ -27,6 +27,11 @@ import {
   ToolIcon,
 } from './Icons';
 
+import {
+  WorkspaceHeader,
+  WorkspaceIntro,
+} from './ui/WorkspaceChrome';
+
 interface WatermarkWorkspaceProps {
   onClose: () => void;
 }
@@ -447,7 +452,7 @@ export function WatermarkWorkspace({
 
   return (
     <main className="workspace-shell watermark-shell">
-      <header className="workspace-topbar glass-surface">
+            <WorkspaceHeader empty={!pdf}>
         <button
           className="brand-button"
           type="button"
@@ -463,23 +468,23 @@ export function WatermarkWorkspace({
           </span>
         </button>
 
-        <div className="document-title">
-          <strong>
-            Filigrana
-          </strong>
+        {pdf ? (
+          <div className="document-title">
+            <strong>
+              Filigrana
+            </strong>
 
-          <span>
-            <ShieldIcon />
+            <span>
+              <ShieldIcon />
 
-            {pdf
-              ? `Area di lavoro locale · ${pageCount} ${
-                  pageCount === 1
-                    ? 'pagina'
-                    : 'pagine'
-                }`
-              : 'Area di lavoro locale'}
-          </span>
-        </div>
+              {pageCount}{' '}
+              {pageCount === 1
+                ? 'pagina'
+                : 'pagine'}
+              {' · locale'}
+            </span>
+          </div>
+        ) : null}
 
         <div className="topbar-actions">
           <input
@@ -502,31 +507,52 @@ export function WatermarkWorkspace({
             }}
           />
 
-          <button
-            className="secondary-button compact-button"
-            type="button"
-            disabled={controlsDisabled}
-            onClick={() =>
-              fileInputRef
-                .current
-                ?.click()
-            }
-            aria-label={
-              pdf
-                ? 'Sostituisci PDF'
-                : 'Scegli PDF'
-            }
-          >
-            <ReplaceIcon />
+          {!pdf ? (
+            <button
+              className="secondary-button coherence-close-button"
+              type="button"
+              onClick={onClose}
+            >
+              Chiudi
+            </button>
+          ) : (
+            <>
+              <button
+                className="secondary-button compact-button"
+                type="button"
+                disabled={controlsDisabled}
+                onClick={() =>
+                  fileInputRef
+                    .current
+                    ?.click()
+                }
+              >
+                <ReplaceIcon />
+                <span>
+                  Sostituisci PDF
+                </span>
+              </button>
 
-            <span>
-              {pdf
-                ? 'Sostituisci PDF'
-                : 'Scegli PDF'}
-            </span>
-          </button>
+              <button
+                className="primary-button compact-button"
+                type="button"
+                disabled={controlsDisabled}
+                onClick={() =>
+                  void createWatermark()
+                }
+              >
+                <ToolIcon id="watermark" />
+
+                <span>
+                  {busy
+                    ? 'Creazione...'
+                    : 'Aggiungi filigrana'}
+                </span>
+              </button>
+            </>
+          )}
         </div>
-      </header>
+      </WorkspaceHeader>
 
       <div
         className={`watermark-workspace ${
@@ -576,22 +602,11 @@ export function WatermarkWorkspace({
         }}
       >
         <div className="watermark-content">
-          <section className="watermark-heading">
-            <div>
-              <p className="watermark-kicker">
-                Filigrana locale
-              </p>
-
-              <h1 className="watermark-title">
-                Segna il tuo PDF.
-              </h1>
-            </div>
-
-            <p className="watermark-description">
-              Aggiungi una scritta visibile alle pagine
-              senza caricare il documento online.
-            </p>
-          </section>
+                    <WorkspaceIntro
+            eyebrow="Filigrana"
+            title="Aggiungi una filigrana al PDF"
+            description="Aggiungi una scritta visibile alle pagine e regola posizione, dimensione e opacità. Il documento resta sul dispositivo."
+          />
 
           {!pdf ? (
             <section

@@ -19,6 +19,11 @@ import {
   ToolIcon,
 } from './Icons';
 
+import {
+  WorkspaceHeader,
+  WorkspaceIntro,
+} from './ui/WorkspaceChrome';
+
 interface OcrPdfWorkspaceProps {
   onClose: () => void;
 }
@@ -560,12 +565,12 @@ export function OcrPdfWorkspace({
         }}
       />
 
-      <header className="ocr-topbar">
+            <WorkspaceHeader empty={!source}>
         <button
           type="button"
-          className="ocr-brand"
+          className="brand-button"
           onClick={closeWorkspace}
-          aria-label="Torna alla home"
+          aria-label="Torna alla home di Giumag PDF"
         >
           <span className="brand-mark">
             G
@@ -576,51 +581,72 @@ export function OcrPdfWorkspace({
           </span>
         </button>
 
-        <div className="ocr-topbar-actions">
-          {source && (
+        {source ? (
+          <div className="document-title">
+            <strong>
+              OCR PDF
+            </strong>
+
+            <span>
+              <ShieldIcon />
+              {formatBytes(source.file.size)} · locale
+            </span>
+          </div>
+        ) : null}
+
+        <div className="topbar-actions">
+          {!source ? (
             <button
               type="button"
-              className="secondary-button"
-              disabled={busy}
-              aria-label="Sostituisci PDF"
-              onClick={() =>
-                inputRef.current
-                  ?.click()
-              }
+              className="secondary-button coherence-close-button"
+              onClick={closeWorkspace}
             >
-              <ReplaceIcon />
-              <span>
-                Sostituisci
-              </span>
+              Chiudi
             </button>
-          )}
+          ) : (
+            <>
+              <button
+                type="button"
+                className="secondary-button compact-button"
+                disabled={busy}
+                onClick={() =>
+                  inputRef.current
+                    ?.click()
+                }
+              >
+                <ReplaceIcon />
+                <span>
+                  Sostituisci PDF
+                </span>
+              </button>
 
-          <button
-            type="button"
-            className="secondary-button"
-            onClick={closeWorkspace}
-          >
-            Chiudi
-          </button>
+              <button
+                type="button"
+                className="primary-button compact-button"
+                disabled={busy}
+                onClick={() =>
+                  void startOcr()
+                }
+              >
+                <ToolIcon id="ocr" />
+
+                <span>
+                  {busy
+                    ? 'OCR in corso…'
+                    : 'Avvia OCR'}
+                </span>
+              </button>
+            </>
+          )}
         </div>
-      </header>
+      </WorkspaceHeader>
 
       <div className="ocr-content">
-        <section className="ocr-heading">
-          <p className="ocr-kicker">
-            OCR PDF
-          </p>
-
-          <h1>
-            Rendi il PDF ricercabile
-          </h1>
-
-                    <p>
-            Riconosce il testo nelle scansioni e crea
-            una copia ricercabile direttamente
-            sul dispositivo.
-          </p>
-        </section>
+                <WorkspaceIntro
+          eyebrow="OCR PDF"
+          title="Rendi il PDF ricercabile"
+          description="Riconosce il testo nelle scansioni e crea una copia ricercabile direttamente sul dispositivo."
+        />
 
         {!source ? (
           <section

@@ -18,6 +18,11 @@ import {
   ShieldIcon,
 } from './Icons';
 
+import {
+  WorkspaceHeader,
+  WorkspaceIntro,
+} from './ui/WorkspaceChrome';
+
 interface RepairPdfWorkspaceProps {
   onClose: () => void;
 }
@@ -285,7 +290,7 @@ export function RepairPdfWorkspace({
         }}
       />
 
-      <header className="workspace-topbar glass-surface repair-topbar">
+            <WorkspaceHeader empty={!file}>
         <button
           className="brand-button"
           type="button"
@@ -301,19 +306,29 @@ export function RepairPdfWorkspace({
           </span>
         </button>
 
-        <div className="document-title">
-          <strong>
-            Ripara PDF
-          </strong>
+        {file ? (
+          <div className="document-title">
+            <strong>
+              Ripara PDF
+            </strong>
 
-          <span>
-            <ShieldIcon />
-            Riparazione strutturale locale
-          </span>
-        </div>
+            <span>
+              <ShieldIcon />
+              {formatBytes(file.size)} · locale
+            </span>
+          </div>
+        ) : null}
 
         <div className="topbar-actions">
-          {file ? (
+          {!file ? (
+            <button
+              type="button"
+              className="secondary-button coherence-close-button"
+              onClick={onClose}
+            >
+              Chiudi
+            </button>
+          ) : (
             <>
               <button
                 type="button"
@@ -324,7 +339,7 @@ export function RepairPdfWorkspace({
                 }
               >
                 <ReplaceIcon />
-                Sostituisci
+                Sostituisci PDF
               </button>
 
               <button
@@ -343,31 +358,16 @@ export function RepairPdfWorkspace({
                   : 'Ripara PDF'}
               </button>
             </>
-          ) : (
-            <span
-              className="repair-topbar-placeholder"
-              aria-hidden="true"
-            />
           )}
         </div>
-      </header>
+      </WorkspaceHeader>
 
       <main className="repair-main">
-        <section className="repair-hero">
-          <span className="repair-eyebrow">
-            RIPARA PDF
-          </span>
-
-          <h1>
-            Prova a recuperare un PDF danneggiato.
-          </h1>
-
-          <p>
-            Giumag PDF riscrive la struttura del documento
-            e prova a ricostruire riferimenti e tabelle interne
-            danneggiate, senza caricare il file online.
-          </p>
-        </section>
+                <WorkspaceIntro
+          eyebrow="Ripara PDF"
+          title="Prova a recuperare un PDF danneggiato"
+          description="Riscrive la struttura del documento e prova a recuperare i problemi riparabili, interamente sul dispositivo."
+        />
 
         <div className="repair-local-note">
           <ShieldIcon />
@@ -448,7 +448,7 @@ export function RepairPdfWorkspace({
 
             <div className="repair-dropzone-copy">
               <span className="repair-dropzone-label">
-                PDF DA RIPARARE
+                PDF da riparare
               </span>
 
               <h2>
@@ -480,7 +480,7 @@ export function RepairPdfWorkspace({
 
             <div className="repair-file-copy">
               <span className="repair-file-label">
-                PDF SELEZIONATO
+                PDF selezionato
               </span>
 
               <strong>

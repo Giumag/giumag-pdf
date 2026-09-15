@@ -32,6 +32,11 @@ import {
   ComparePdfPagePane,
 } from './ComparePdfPagePane';
 
+import {
+  WorkspaceHeader,
+  WorkspaceIntro,
+} from './ui/WorkspaceChrome';
+
 interface ComparePdfWorkspaceProps {
   onClose: () => void;
 }
@@ -602,7 +607,13 @@ export function ComparePdfWorkspace({
         : rightInputRef;
 
     return (
-      <section className="compare-file-slot">
+      <section
+        className={`compare-file-slot${
+          pdf
+            ? ' has-file'
+            : ''
+        }`}
+      >
         <input
           ref={inputRef}
           className="visually-hidden"
@@ -701,7 +712,7 @@ export function ComparePdfWorkspace({
       className="workspace-shell compare-shell"
       aria-busy={disabled}
     >
-      <header className="workspace-topbar glass-surface compare-topbar">
+      <WorkspaceHeader empty={!left && !right}>
         <button
           className="brand-button"
           type="button"
@@ -717,26 +728,28 @@ export function ComparePdfWorkspace({
           </span>
         </button>
 
-        <div className="document-title">
-          <strong>
-            Confronta PDF
-          </strong>
+        {(left || right) && (
+          <div className="document-title compare-document-title">
+            <strong>
+              Confronta PDF
+            </strong>
 
-          <span>
-            <ShieldIcon />
-            Confronto visivo locale
-          </span>
-        </div>
+            <span>
+              <ShieldIcon />
 
-        <div className="topbar-actions">
+              {left && right
+                ? 'Confronto visivo locale · 2 PDF'
+                : 'Seleziona il secondo PDF'}
+            </span>
+          </div>
+        )}
+
+        <div className="topbar-actions compare-topbar-actions">
           <button
             type="button"
-            className="primary-button compact-button"
-            disabled={
-              disabled ||
-              !left ||
-              !right
-            }
+            className="primary-button compact-button compare-recompare-button"
+            hidden={!left || !right}
+            disabled={disabled}
             onClick={() => {
               const currentLeft =
                 leftRef.current;
@@ -763,25 +776,24 @@ export function ComparePdfWorkspace({
                 : 'Riconfronta'}
             </span>
           </button>
+
+          <button
+            type="button"
+            className="secondary-button coherence-close-button"
+            hidden={Boolean(left && right)}
+            onClick={onClose}
+          >
+            Chiudi
+          </button>
         </div>
-      </header>
+      </WorkspaceHeader>
 
       <div className="compare-content">
-        <section className="compare-heading">
-          <p className="compare-kicker">
-            CONFRONTA PDF
-          </p>
-
-          <h1>
-            Trova cosa è cambiato.
-          </h1>
-
-          <p>
-            Carica due versioni dello stesso documento.
-            Il confronto viene eseguito localmente
-            pagina per pagina.
-          </p>
-        </section>
+        <WorkspaceIntro
+          eyebrow="Confronta PDF"
+          title="Trova cosa è cambiato"
+          description="Carica due versioni dello stesso documento. Il confronto viene eseguito localmente, pagina per pagina."
+        />
 
         <div className="compare-file-grid">
           {renderFileSlot(
@@ -848,12 +860,21 @@ export function ComparePdfWorkspace({
             </div>
 
             <strong>
-              Carica entrambi i documenti
+              {!left && !right
+                ? 'Carica entrambi i documenti'
+                : !left
+                  ? 'Carica il PDF A'
+                  : 'Carica il PDF B'}
             </strong>
 
             <span>
-              Il confronto parte automaticamente
-              appena PDF A e PDF B sono disponibili.
+              {!left && !right
+                ? 'Scegli PDF A e PDF B. Il confronto partirà automaticamente.'
+                : `Manca solo ${
+                    !left
+                      ? 'PDF A'
+                      : 'PDF B'
+                  }. Il confronto partirà automaticamente appena lo carichi.`}
             </span>
           </section>
         ) : results.length === 0 ? (
