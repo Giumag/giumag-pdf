@@ -451,13 +451,25 @@ export function App() {
               />
 
               {normalizedToolQuery && (
-                <span
-                  id="tool-search-status"
-                  className="soft-search-count"
-                  aria-live="polite"
-                >
-                  {filteredAvailableTools.length}
-                </span>
+                <>
+                  <span
+                    className="soft-search-count"
+                    aria-hidden="true"
+                  >
+                    {filteredAvailableTools.length}
+                  </span>
+
+                  <span
+                    id="tool-search-status"
+                    className="visually-hidden"
+                    aria-live="polite"
+                  >
+                    {filteredAvailableTools.length}{' '}
+                    {filteredAvailableTools.length === 1
+                      ? 'strumento trovato'
+                      : 'strumenti trovati'}
+                  </span>
+                </>
               )}
             </div>
           </div>

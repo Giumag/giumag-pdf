@@ -1,9 +1,9 @@
 /*
  * Giumag PDF — Soft Utility
  *
- * Phase 1: Home only.
- * Existing workspace styles remain untouched until
- * Home, Merge and Compress are validated as reference screens.
+ * Shared visual layer for the Home and migrated workspaces.
+ * Legacy workspace CSS remains in styles.css and is overridden
+ * incrementally here to preserve behavior and reduce migration risk.
  */
 
 :root {
@@ -610,7 +610,7 @@
 }
 
 .soft-search input::placeholder {
-  color: var(--soft-text-tertiary);
+  color: var(--soft-text-secondary);
 }
 
 .soft-search-count {
@@ -815,7 +815,7 @@
 .soft-privacy-copy
 .soft-privacy-note {
   margin-top: 4px;
-  color: var(--soft-text-tertiary);
+  color: var(--soft-text-secondary);
   font-size: 11px;
 }
 
@@ -6204,8 +6204,8 @@
   --su-border-strong: #d3d5d0;
   --su-text: #17181a;
   --su-muted: #686d73;
-  --su-coral: #d34c4c;
-  --su-coral-hover: #c74444;
+  --su-coral: var(--soft-accent, #c94a4a);
+  --su-coral-hover: var(--soft-accent-hover, #b94040);
   --su-coral-soft: #fff8f7;
   --su-green: #3f7d62;
   --su-green-soft: #f5faf7;
@@ -6236,7 +6236,7 @@
 .ocr-shell input:focus-visible,
 .metadata-shell button:focus-visible,
 .metadata-shell input:focus-visible {
-  outline-color: rgba(211, 76, 76, 0.58);
+  outline-color: rgba(201, 74, 74, 0.58);
 }
 
 .ocr-shell .soft-workspace-topbar .coherence-close-button,
@@ -6475,7 +6475,7 @@
 .ocr-shell .ocr-language-option.is-active {
   border-color: var(--su-coral);
   background: var(--su-panel);
-  box-shadow: inset 0 0 0 1px rgba(211, 76, 76, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(201, 74, 74, 0.14);
 }
 
 .ocr-shell .ocr-language-option strong {
@@ -6554,7 +6554,7 @@
 .ocr-shell .ocr-error {
   margin-top: 14px;
   padding: 12px 14px;
-  border: 1px solid rgba(211, 76, 76, 0.3);
+  border: 1px solid rgba(201, 74, 74, 0.3);
   border-radius: 13px;
   background: var(--su-coral-soft);
   color: #a43b3b;
@@ -6774,8 +6774,8 @@
 }
 
 .metadata-shell .ux-badge {
-  border-color: rgba(211, 76, 76, 0.24);
-  background: rgba(211, 76, 76, 0.08);
+  border-color: rgba(201, 74, 74, 0.24);
+  background: rgba(201, 74, 74, 0.08);
   color: #a43b3b;
   font-family: inherit;
   font-style: normal;
@@ -6925,7 +6925,7 @@
 }
 
 .metadata-shell .metadata-error {
-  border: 1px solid rgba(211, 76, 76, 0.3);
+  border: 1px solid rgba(201, 74, 74, 0.3);
   background: var(--su-coral-soft);
   color: #a43b3b;
 }
@@ -6964,7 +6964,7 @@
     --su-border-strong: #4a4f46;
     --su-text: #f2f3ef;
     --su-muted: #a4aaa1;
-    --su-coral-soft: rgba(211, 76, 76, 0.09);
+    --su-coral-soft: rgba(201, 74, 74, 0.09);
     --su-green-soft: rgba(63, 125, 98, 0.08);
   }
 
@@ -7076,8 +7076,8 @@
   --mark-border-strong: #d3d5d0;
   --mark-text: #17181a;
   --mark-muted: #686d73;
-  --mark-coral: #d34c4c;
-  --mark-coral-hover: #c74444;
+  --mark-coral: var(--soft-accent, #c94a4a);
+  --mark-coral-hover: var(--soft-accent-hover, #b94040);
   --mark-coral-soft: #fff8f7;
   --mark-green: #3f7d62;
   --mark-green-soft: #f5faf7;
@@ -7134,7 +7134,7 @@
 .page-numbers-shell button:focus-visible,
 .page-numbers-shell input:focus-visible,
 .page-numbers-shell select:focus-visible {
-  outline-color: rgba(211, 76, 76, 0.58);
+  outline-color: rgba(201, 74, 74, 0.58);
 }
 
 .watermark-shell .watermark-content,
@@ -7387,8 +7387,8 @@
 }
 
 .watermark-shell .watermark-text-field input:focus {
-  border-color: rgba(211, 76, 76, 0.58);
-  outline: 2px solid rgba(211, 76, 76, 0.14);
+  border-color: rgba(201, 74, 74, 0.58);
+  outline: 2px solid rgba(201, 74, 74, 0.14);
   outline-offset: 1px;
 }
 
@@ -7420,8 +7420,8 @@
 }
 
 .watermark-shell .ux-badge {
-  border-color: rgba(211, 76, 76, 0.24);
-  background: rgba(211, 76, 76, 0.08);
+  border-color: rgba(201, 74, 74, 0.24);
+  background: rgba(201, 74, 74, 0.08);
   color: #a43b3b;
   font-family: inherit;
   font-style: normal;
@@ -7469,7 +7469,7 @@
   top: 50%;
   left: 50%;
   z-index: 1;
-  color: #c74444;
+  color: var(--mark-coral-hover);
   font-family: inherit;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -7544,8 +7544,8 @@
 .watermark-shell .watermark-field input:focus,
 .watermark-shell .watermark-field select:focus,
 .page-numbers-shell .page-numbers-field input:focus {
-  border-color: rgba(211, 76, 76, 0.58);
-  outline: 2px solid rgba(211, 76, 76, 0.14);
+  border-color: rgba(201, 74, 74, 0.58);
+  outline: 2px solid rgba(201, 74, 74, 0.14);
   outline-offset: 1px;
 }
 
@@ -7612,7 +7612,7 @@
   background: var(--mark-panel);
   box-shadow:
     inset 0 0 0 1px
-    rgba(211, 76, 76, 0.14);
+    rgba(201, 74, 74, 0.14);
 }
 
 .page-numbers-shell .page-numbers-position-preview {
@@ -7686,8 +7686,8 @@
 }
 
 .page-numbers-shell .ux-badge {
-  border-color: rgba(211, 76, 76, 0.24);
-  background: rgba(211, 76, 76, 0.08);
+  border-color: rgba(201, 74, 74, 0.24);
+  background: rgba(201, 74, 74, 0.08);
   color: #a43b3b;
   font-family: inherit;
   font-style: normal;
@@ -7756,7 +7756,7 @@
 
 .watermark-shell .watermark-error,
 .page-numbers-shell .page-numbers-error {
-  border: 1px solid rgba(211, 76, 76, 0.3);
+  border: 1px solid rgba(201, 74, 74, 0.3);
   background: var(--mark-coral-soft);
   color: #a43b3b;
 }
@@ -7813,7 +7813,7 @@
     --mark-border-strong: #4a4f46;
     --mark-text: #f2f3ef;
     --mark-muted: #a4aaa1;
-    --mark-coral-soft: rgba(211, 76, 76, 0.09);
+    --mark-coral-soft: rgba(201, 74, 74, 0.09);
     --mark-green-soft: rgba(63, 125, 98, 0.08);
   }
 
@@ -9099,7 +9099,7 @@
 }
 
 .forms-shell .forms-result-card .forms-kicker {
-  color: #68a77b;
+  color: var(--soft-local, #3f7d62);
 }
 
 .forms-shell .forms-result-card > div > span {
@@ -9119,7 +9119,7 @@
 }
 
 .forms-shell .forms-privacy svg {
-  color: #68a77b;
+  color: var(--soft-local, #3f7d62);
 }
 
 /*
@@ -9254,7 +9254,7 @@
 }
 
 .redact-shell .redact-document-title span svg {
-  color: #68a77b;
+  color: var(--soft-local, #3f7d62);
 }
 
 .redact-shell .coherence-close-button {
@@ -9668,7 +9668,7 @@
 .redact-shell
   .redact-result-section
   .crop-panel-kicker {
-  color: #68a77b;
+  color: var(--soft-local, #3f7d62);
 }
 
 .redact-shell .redact-download-again {
@@ -9688,7 +9688,7 @@
 }
 
 .redact-shell .redact-security-note > svg {
-  color: #68a77b;
+  color: var(--soft-local, #3f7d62);
 }
 
 .redact-shell .redact-security-note strong {
@@ -9884,6 +9884,7 @@
   min-height: 100%;
   background: var(--content-bg);
   color: var(--text);
+  font-family: var(--soft-font, Onest, sans-serif);
 }
 
 .visual-signature-shell .soft-workspace-topbar {
@@ -9936,7 +9937,7 @@
   width: 7px;
   height: 7px;
   border-radius: 999px;
-  background: #68a77b;
+  background: var(--soft-local, #3f7d62);
   box-shadow: none;
 }
 
@@ -10261,7 +10262,7 @@
 }
 
 .visual-signature-shell .visual-signature-selected span {
-  color: #68a77b;
+  color: var(--soft-local, #3f7d62);
   font-family: inherit;
   font-weight: 680;
 }
@@ -10853,7 +10854,7 @@
 }
 
 .compare-shell .compare-document-title span svg {
-  color: #68a77b;
+  color: var(--soft-local, #3f7d62);
 }
 
 .compare-shell .coherence-close-button {
@@ -11164,7 +11165,7 @@
 .compare-shell
   .compare-summary-item:nth-child(1)
   strong {
-  color: #68a77b;
+  color: var(--soft-local, #3f7d62);
 }
 
 .compare-shell
@@ -11191,7 +11192,7 @@
 }
 
 .compare-shell .compare-page-list-item.severity-same {
-  --compare-severity: #68a77b;
+  --compare-severity: var(--soft-local, #3f7d62);
 }
 
 .compare-shell .compare-page-list-item.severity-trace {
@@ -11553,7 +11554,7 @@
 .compare-shell .compare-status-pill.is-same {
   border-color: rgba(62, 141, 91, 0.3);
   background: rgba(62, 141, 91, 0.08);
-  color: #68a77b;
+  color: var(--soft-local, #3f7d62);
 }
 
 .compare-shell .compare-status-pill.is-changed {
@@ -11632,7 +11633,7 @@
 }
 
 .compare-shell .compare-diff-empty.is-same strong {
-  color: #68a77b;
+  color: var(--soft-local, #3f7d62);
 }
 
 /* Privacy */
@@ -11646,7 +11647,7 @@
 }
 
 .compare-shell .compare-privacy svg {
-  color: #68a77b;
+  color: var(--soft-local, #3f7d62);
 }
 
 /* Focus / no legacy blue */
@@ -11796,5 +11797,183 @@
     var(--surface-strong) 82%,
     var(--content-bg)
   );
+  box-shadow: none;
+}
+
+/* Soft Utility completion audit fixes */
+
+/* Keep the secondary close action reachable on narrow screens. */
+@media (max-width: 760px) {
+  .soft-workspace-topbar .coherence-close-button {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 14px;
+  }
+}
+
+/* Page Organizer Soft Utility completion */
+.organize-shell .thumbnail-sidebar {
+  border-color: var(--soft-border, #e5e6e2);
+  background: var(--soft-surface, #fff);
+}
+
+.organize-shell .sidebar-heading,
+.organize-shell .thumbnail-number,
+.organize-shell .selection-pill,
+.organize-shell .page-counter {
+  color: var(--soft-text-secondary, #686d73);
+}
+
+.organize-shell .count-badge {
+  background: var(--soft-surface-secondary, #f1f2ef);
+  color: var(--soft-text-secondary, #686d73);
+}
+
+.organize-shell .thumbnail:hover {
+  background: var(--soft-surface-secondary, #f1f2ef);
+}
+
+.organize-shell .thumbnail-active,
+.organize-shell .thumbnail-selected {
+  background: var(--soft-surface-secondary, #f1f2ef);
+}
+
+.organize-shell .thumbnail-active .thumbnail-number {
+  color: var(--soft-accent, #c94a4a);
+}
+
+.organize-shell .thumbnail-active .thumbnail-canvas-wrap {
+  border-color: var(--soft-accent, #c94a4a);
+  box-shadow:
+    0 0 0 1px var(--soft-accent, #c94a4a),
+    0 8px 22px rgba(0, 0, 0, 0.1);
+}
+
+.organize-shell .thumbnail-selected::before {
+  border-color: color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 46%,
+    transparent
+  );
+}
+
+.organize-shell .thumbnail-active.thumbnail-selected::before {
+  border-color: color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 72%,
+    transparent
+  );
+}
+
+.organize-shell .viewer {
+  background: var(--soft-bg, #f7f7f5);
+}
+
+.organize-shell .toolbar-button,
+.organize-shell .zoom-value,
+.organize-shell .organizer-action {
+  color: var(--soft-text-secondary, #686d73);
+}
+
+.organize-shell .toolbar-button:hover:not(:disabled),
+.organize-shell .zoom-value:hover,
+.organize-shell .organizer-action:hover:not(:disabled) {
+  background: var(--soft-surface-secondary, #f1f2ef);
+  color: var(--soft-text, #17181a);
+}
+
+.organize-shell .page-counter input {
+  color: var(--soft-text, #17181a);
+  font-family: var(--soft-font, Onest, sans-serif);
+}
+
+.organize-shell .page-counter input:focus-visible {
+  border-radius: 6px;
+  outline: 2px solid color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 58%,
+    transparent
+  );
+  outline-offset: 2px;
+}
+
+/* Soft Utility background + responsive gutter consistency */
+
+/*
+ * Le migrazioni Crop, Forms, Redact, Visual Signature e Compare
+ * usavano ancora i token di superficie legacy. Le riallineiamo
+ * alla stessa base Soft Utility delle workspace precedenti.
+ */
+.crop-shell:not(.redact-shell),
+.forms-shell,
+.redact-shell,
+.visual-signature-shell,
+.compare-shell {
+  --content-bg: var(--soft-bg, #f7f7f5);
+  --surface-strong: var(--soft-surface, #fff);
+  --separator: var(--soft-border, #e5e6e2);
+  --text: var(--soft-text, #17181a);
+  --text-secondary: var(--soft-text-secondary, #686d73);
+}
+
+/*
+ * Questi quattro pilot condividevano width: 100% fino a 1080px,
+ * quindi sotto quella soglia il contenuto arrivava ai bordi.
+ * Il wrapper più largo + padding mantiene invariata la larghezza
+ * utile desktop e introduce gutter progressivi sui viewport stretti.
+ */
+.merge-shell .merge-content,
+.compress-shell .compress-content,
+.split-shell .split-content,
+.images-pdf-shell .images-pdf-content {
+  width: min(1184px, 100%);
+  padding-inline: clamp(20px, 4vw, 52px);
+}
+
+@media (prefers-color-scheme: dark) {
+  .crop-shell:not(.redact-shell),
+  .forms-shell,
+  .redact-shell,
+  .visual-signature-shell,
+  .compare-shell {
+    --content-bg: #151614;
+    --surface-strong: #1f211e;
+    --separator: #343830;
+    --text: #f2f3ef;
+    --text-secondary: #a4aaa1;
+  }
+
+  .crop-shell:not(.redact-shell) .soft-workspace-topbar,
+  .forms-shell .soft-workspace-topbar,
+  .redact-shell .soft-workspace-topbar,
+  .visual-signature-shell .soft-workspace-topbar,
+  .compare-shell .soft-workspace-topbar {
+    border-bottom-color: #343830;
+    background: #1b1d1a;
+  }
+}
+
+/* Home search focus polish */
+.soft-search {
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.soft-search:focus-within {
+  border-color: var(--soft-accent, #c94a4a);
+  box-shadow: 0 0 0 3px color-mix(
+    in srgb,
+    var(--soft-accent, #c94a4a) 16%,
+    transparent
+  );
+}
+
+.soft-search input:focus,
+.soft-search input:focus-visible {
+  border-color: transparent;
+  outline: none;
   box-shadow: none;
 }

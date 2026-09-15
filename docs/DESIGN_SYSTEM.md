@@ -229,15 +229,13 @@ Retain accurate hosting/network metadata disclaimers.
 
 ## Workspace system
 
-Do not migrate every workspace at once.
-
-Validate the visual system first on:
+The visual system was validated incrementally, starting with:
 
 1. Home;
 2. Merge PDF;
 3. Compress PDF.
 
-These three screens must belong to the same product without becoming three copies of one layout.
+The same Soft Utility principles now cover the remaining available workspaces, while preserving tool-specific layouts and behavior instead of forcing every screen into one template.
 
 Every workspace should make its primary action immediately understandable.
 
@@ -427,10 +425,12 @@ The redesign remains incremental.
 
 Do not combine this redesign with a repository-wide CSS architecture migration.
 
-Current validation sequence:
+Current implementation status:
 
-1. correct and visually validate Home;
-2. migrate Merge;
-3. migrate Compress;
-4. validate Home + Merge + Compress together;
-5. only then plan migration of remaining workspaces.
+1. Home foundation validated;
+2. shared workspace chrome established;
+3. available tool workspaces migrated incrementally to Soft Utility;
+4. Page Organizer aligned during the final completion audit;
+5. future CSS maintainability work remains a separate incremental task.
+
+Continue to validate functional behavior, responsive states, accessibility and visual consistency before merging further design changes.
